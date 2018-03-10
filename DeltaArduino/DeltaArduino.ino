@@ -20,24 +20,21 @@
 
 //----SERIAL----//
 
+#define SERIAL_DELAY_MS 100
+
 //SERIAL COM MODES
 #define ASK_FOR_ANGLES  0
 #define GIVE_ANGLES  1
-#define MODE1  2
 
 //GCODE CODES
-#define ASKED_TO_LISTEN 0
-#define PROCEED 1
-#define TRANSMISSION_ENDED 2
+
 #define MOVE_SERVOS 3
 #define CHANGE_SPEED 4
 #define MOVE_EF 5
 #define END_OF_STREAM 6
-#define SEND_MORE 7
-#define ASK_TO_LISTEN 8
 #define EMERGENCY_STOP 9
 
-#define SEND_ANGLES 20
+#define SEND_ME_ANGLES 20
 #define SEND_ANGLES_EFPOS 21
 
 //SERIAL BUFFER
@@ -86,6 +83,7 @@ void loop() {
 //  move_servo_to_limits(1, AngleStep, MinAngle, MaxAngle);
 //  move_servo_to_limits(2, AngleStep2, MinAngle2, MaxAngle2);
 //  move_servo_to_limits(3, AngleStep3, MinAngle3, MaxAngle3);
+
   servos[0].write(servos_angles[0]);
   servos[1].write(servos_angles[1]);
   servos[2].write(servos_angles[2]);
@@ -94,13 +92,15 @@ void loop() {
 
   if(command_recieved) {
     parse_command(buffer.command[buffer.start]);
-    if (inc_buffer_start_pointer()) command_recieved = false; //If stack empty message has been read
+    if (inc_buffer_start_pointer()) {
+      command_recieved = false; //If stack empty message has been read
+      delay(SERIAL_DELAY_MS);
+    }
   }
   
   else check_serial();
       
 
-   delay(50);
 }
 
 

@@ -16,6 +16,7 @@
 //--COMMAND--//
 
 void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
+
   int command_num = chars_to_int('0', command[1], command[2]);
 
   switch(command_num) {
@@ -31,17 +32,18 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
     default:            //Serial.write("BAD COMMAND");
                         break;
   }
+  
 }
 
 void serial_next_instruction() {
 
   switch (serial_mode) {
-    case ASK_FOR_ANGLES:  Serial.write("G20\n"); //Ask for angles
-                          Serial.write("G06\n"); //End of stream
+    case ASK_FOR_ANGLES:  send_command_header(SEND_ME_ANGLES, true);
+                          send_command_header(END_OF_STREAM, true);
                           break;
 
     case GIVE_ANGLES:     serial_send_angles();
-                          Serial.write("G06\n"); //End of stream
+                          send_command_header(END_OF_STREAM, true);
                           break;
 
     default:              break;
@@ -51,6 +53,7 @@ void serial_next_instruction() {
 
 //--RECIEVE DATA--//
 void check_serial() {
+
   static int i = 0; //Number of char recieved from current command
   char incomingByte;
   
@@ -70,19 +73,19 @@ void check_serial() {
 
       i = 0;
 
-      //G06, END OF STREAM
-      if (buffer.command[buffer.end_][2] == '6') {
+      if (buffer.command[buffer.end_][2] == (END_OF_STREAM - '0')) {
         command_recieved = true;
       }
 
-      //Increment position
       inc_buffer_end_pointer();
 
     }
   }
+
 }
 
 bool inc_buffer_end_pointer() {
+
   buffer.end_ = (buffer.end_ + 1) % SERIAL_BUFFER_LEN;
   buffer.empty = false;
   if (buffer.end_ == buffer.start) {
@@ -90,9 +93,11 @@ bool inc_buffer_end_pointer() {
     return true;   
   }
   return false;
+
 }
 
 bool inc_buffer_start_pointer() {
+
   buffer.start = (buffer.start + 1) % SERIAL_BUFFER_LEN;
   buffer.full = false;
 
@@ -101,10 +106,12 @@ bool inc_buffer_start_pointer() {
     return true;
   }
   return false;
+
 }
 
 
 void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
+
   bool bad_request = false;
   
   for (int i = 4; i < 7; i++) {
@@ -124,9 +131,11 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
     servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
   }
   else Serial.write("BAD REQUEST\n");
+
 }
 
 void serial_recieve_ef_pos(char command[SERIAL_COMMAND_MAX_LEN]) {
+
   bool bad_request = false;
 
   for(int i = 4; i < 7; i++) {
@@ -138,54 +147,83 @@ void serial_recieve_ef_pos(char command[SERIAL_COMMAND_MAX_LEN]) {
     end_effector_pos[1] = command[5];
     end_effector_pos[2] = command[6];
   }
+
 }
 
 //--SEND DATA--//
 void serial_send_angles() {
-  Serial.write("G03 ");
+
+  send_command_header(MOVE_SERVOS, false);
   for (int i = 0; i < 3; i++) {
-    Serial.write(int_to_char(servos_angles[i]));
+    Serial.write(int_to_char_3digits(servos_angles[i]));
     
     if (i == 2) Serial.write("\n");
     else Serial.write(' '); 
   }
+
 }
 
 void serial_send_speed() {
-  Serial.write("G04 ");
-  Serial.write(end_effector_speed + 48);
+
+  send_command_header(CHANGE_SPEED, false);
+  Serial.write(end_effector_speed + '0');
   Serial.write('\n');
+
 }
 
 void serial_send_ef_pos() {
-  Serial.write("G05 ");
+
+  send_command_header(MOVE_EF, false);
   Serial.write(end_effector_pos[0]+'0');
   Serial.write(end_effector_pos[1]+'0');
   Serial.write(end_effector_pos[1]+'0');
   Serial.write('\n');
+
+}
+
+void send_command_header(int command_num, bool end_with_new_line) {
+
+  Serial.write("G");
+  Serial.write(int_to_char_2digits(command_num));
+  if (end_with_new_line) Serial.write('\n');
+  else Serial.write(" ");
+
 }
 
 //--UTILITIES--//
+char* int_to_char_2digits(int numb) {
 
-char* int_to_char(int numb) {
+  char* sentence = "  ";
+
+  sentence[1] = numb % 10 + '0';
+  sentence[0] = numb / 10 % 10 + '0';
+
+  return sentence;
+
+}
+
+char* int_to_char_3digits(int numb) {
+
   char* sentence = "   ";
 
-  sentence[2] = numb % 10 + 48;
-  sentence[1] = numb / 10 % 10 + 48;
-  sentence[0] = numb / 100 % 10 + 48;
+  sentence[2] = numb % 10 + '0';
+  sentence[1] = numb / 10 % 10 + '0';
+  sentence[0] = numb / 100 % 10 + '0';
 
-  return sentence;  
+  return sentence;
+
 }
 
 int chars_to_int(char a, char b, char c) {
   
-  int result = (a-48)*100 + (b-48)*10 + c-48;
-  
-  return result;
+  return (a-'0')*100 + (b-'0')*10 + c-'0';
+
 }
 
-bool is_alphanumeric(char a){
+bool is_alphanumeric(char a) {
+
   if (a > 47 && a < 58) return true;
   return false;
+
 }
 
