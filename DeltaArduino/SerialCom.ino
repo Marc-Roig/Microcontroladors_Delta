@@ -1,6 +1,4 @@
 
-#include "Config.h"
-
 //Comands 
 // G00 - Ready to take command?
 // G01 - Proceed
