@@ -4,3 +4,9 @@
 *.bash
 *.properties
 DeltaPIC24F/Delta_Microcontroladors.X/Makefile
+*.hex
+*.elf
+*.d
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/servos.o
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/main.o
+*.map

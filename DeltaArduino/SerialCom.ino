@@ -1,17 +1,13 @@
 
 //Comands 
-// G00 - Ready to take command?
-// G01 - Proceed
-// G02 - Transmision ended
+
 // G03 XXX XXX XXX - Angles of servos (S1, S2, S3, S4 GRIP)
 // G04 XXX - % Speed Overall
 // G05 XYZ - Position end of arm
 // G06 - End Of Stream
-// G07 - Send More
-// G08 - Ask to listen
 // G09 - Emergency Stop
 
-// G11 - Send Angles
+// G20 - Send me Angles
 
 
 //--COMMAND--//

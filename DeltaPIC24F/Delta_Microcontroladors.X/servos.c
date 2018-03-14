@@ -1,10 +1,10 @@
-int scale_angle(int angle) {
+#include "servos.h"
 
+int scale_angle(int angle){
     int ms_min = 1;
     int ms_max = 2;
-    int ms_duty_cicle = angle * (ms_max - ms_min)/180 + ms_min;
-    return ms_duty_cicle * 1024 / 20;
-
+    int ms_duty_cycle = angle * (ms_max - ms_min)/180 + ms_min;
+    return ms_duty_cycle * 1024 / 20;
 }
 
 void servo1_write(int angle) {
@@ -12,6 +12,7 @@ void servo1_write(int angle) {
     OC1RS = scale_angle(angle);
 
 }
+
 
 void servo2_write(int angle) {
 
@@ -23,6 +24,24 @@ void servo3_write(int angle) {
 
     OC3RS = scale_angle(angle);
 
+}
+
+void servo1_write_duty_cycle(int duty_cycle) {
+
+    OC1RS = duty_cycle;
+    
+}
+
+void servo2_write_duty_cycle(int duty_cycle) {
+
+    OC2RS = duty_cycle;
+    
+}
+
+void servo3_write_duty_cycle(int duty_cycle) {
+
+    OC3RS = duty_cycle;
+    
 }
 
 void disengage_servos() {
