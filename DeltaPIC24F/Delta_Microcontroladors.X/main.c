@@ -61,64 +61,75 @@ void show_dutycycle_leds(int duty_cycle) {
     LATA = LATA & (0xFF00 + duty_cycle);
 }
 
- void polsadors(int* duty_cycle) {
-    
-     static int S3 = 0, S6 = 0, S4 = 0;
-     static int mode = 0; //Used to 
+void polsadors(int* duty_cycle) {
 
-     static int max_duty_cycle = 200;
-     static int min_duty_cycle = 10;
+    static int S3 = 0, S6 = 0, S4 = 0;
+    static int mode = 0; //Used to 
 
-     static int step1 = 10, step2 = 25, step3 = 50;
+    static int max_duty_cycle = 200;
+    static int min_duty_cycle = 10;
 
-     //--INCREMENT duty_cycle--//
-     if ((PORTD & 0x0040) == 0 & S3 == 0) {
+    static int step1 = 10, step2 = 25, step3 = 50;
 
-         switch(mode) {
-            case 0:
-                *duty_cycle = *duty_cycle + step1;
-                break;
-            case 1:
-                *duty_cycle = *duty_cycle + step2;
-                break;
-            default:
-                *duty_cycle = *duty_cycle + step3;
-                break;
-         }
+    //--INCREMENT duty_cycle--//
+    if ((PORTD & 0x0040) == 0 & S3 == 0) {
 
-         if (duty_cycle >= max_duty_cycle) duty_cycle = 150;
-
-         S3 = 1;
+     switch(mode) {
+        case 0:
+            *duty_cycle = *duty_cycle + step1;
+            break;
+        case 1:
+            *duty_cycle = *duty_cycle + step2;
+            break;
+        default:
+            *duty_cycle = *duty_cycle + step3;
+            break;
      }
-     else if (PORTD & 0x0040) S3 = 0;
 
-     //--DECREMENT duty_cycle--//
-     if ((PORTD & 0x0080) == 0 & S6 == 0) {
-         
-         switch(mode) {
-            case 0:
-                *duty_cycle = *duty_cycle - step1;
-                break;
-            case 1:
-                *duty_cycle = *duty_cycle - step2;
-                break;
-            default:
-                *duty_cycle = *duty_cycle - step3;
-                break;
-         }
+     if (duty_cycle >= max_duty_cycle) duty_cycle = 150;
 
-         if (duty_cycle <= min_duty_cycle) duty_cycle = 20;
-         S6 = 1;
-     }
-     else if (PORTD & 0x0080) S6 = 0;
+     S3 = 1;
+    }
+    else if (PORTD & 0x0040) S3 = 0;
+
+    //--DECREMENT duty_cycle--//
+    if ((PORTD & 0x0080) == 0 & S6 == 0) {
      
-     //--CHANGE STEP--//
-     if ((PORTD & 0x2000) == 0 & S4 == 0) {
-         mode = (mode + 1) % 3; 
-         S4 = 1;
+     switch(mode) {
+        case 0:
+            *duty_cycle = *duty_cycle - step1;
+            break;
+        case 1:
+            *duty_cycle = *duty_cycle - step2;
+            break;
+        default:
+            *duty_cycle = *duty_cycle - step3;
+            break;
      }
-     else if (PORTD & 0x2000) S4 = 0;
+
+     if (duty_cycle <= min_duty_cycle) duty_cycle = 20;
+     S6 = 1;
+    }
+    else if (PORTD & 0x0080) S6 = 0;
+
+    //--CHANGE STEP--//
+    if ((PORTD & 0x2000) == 0 & S4 == 0) {
+     mode = (mode + 1) % 3; 
+     S4 = 1;
+    }
+    else if (PORTD & 0x2000) S4 = 0;
+}
 
 
- }
+//JOYSTICK
+ // set new angles 
+ // Set modes of movement
+    // Simulation
+    // Move with joystick
+    // Move preset values
 
+//
+
+ //Implement delays
+ //Implement Serial.write
+    
