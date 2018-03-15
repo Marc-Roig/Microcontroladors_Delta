@@ -1,12 +1,21 @@
-
-#ifndef MAIN_H  //INCLUDE GUARD
-
-    #define MAIN_H
+#ifndef MAIN_H
 
     #include "xc.h"
     #include <p24fj128ga010.h>
+	#include <stdbool.h>
+
+	#include "defines.h"
+	
+	#include "serialcom.h"
+	#include "servos.h"
+
 
 	
+
+	//-----------------------------//
+	//----------FUNCTIONS----------//
+	//-----------------------------//
+
     //--SERVOS--//
 
     void disengage_servos();
@@ -27,7 +36,6 @@
     //--MISC--//
     void polsadors(int* angle);
     void show_dutycycle_leds(int duty_cycle);
-
 
 
 #endif //MAIN_H
