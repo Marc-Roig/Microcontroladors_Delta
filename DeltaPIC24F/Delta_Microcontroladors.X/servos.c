@@ -56,31 +56,28 @@ void engage_servos() {
 
     //OUTPUT COMPARE 1
     PR1 = 9999;
-    OC1RS = 90;
-    OC1R = 90;
+    OC1RS = 750;
+    OC1R = 750;
     
-    OC1CON = OC1CON | 0XFFF6; //PWM MODE ON OC1, FAULT PIN DISABLED
-    OC1CON = OC1CON & 0xFFFC; 
+    OC1CON = 0X0006;
     
     T1CON = 0X8010; //T1 PREESCALER 1:8
 
     //OUTPUT COMPARE 2
     PR2 = 9999;
-    OC2RS = 90;
-    OC2R = 90;
+    OC2RS = 750;
+    OC2R = 750;
     
-    OC2CON = OC2CON | 0XFFF6; //PWM MODE ON OC2, FAULT PIN DISABLED
-    OC2CON = OC2CON & 0xFFFC; 
+    OC2CON = 0X0006;
     
     T2CON = 0X8010; //T2 PREESCALER 1:8
     
     //OUTPUT COMPARE 3
     PR3 = 9999;
-    OC3RS = 90;
-    OC3R = 90;
+    OC3RS = 750;
+    OC3R = 750;
     
-    OC3CON = OC3CON | 0XFFF6; //PWM MODE ON OC3, FAULT PIN DISABLED
-    OC3CON = OC3CON & 0xFFFC; 
+    OC3CON = 0X0006;
     
     T3CON = 0X8010; //T3 PREESCALER 1:8
 
