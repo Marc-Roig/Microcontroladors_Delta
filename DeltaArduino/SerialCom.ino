@@ -106,6 +106,14 @@ bool inc_buffer_start_pointer() {
 
 }
 
+void init_buffer() {
+
+  buffer.start = 0;
+  buffer.end_ = 0;
+  buffer.empty = true;
+  buffer.full = false;
+  
+}
 
 void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
 

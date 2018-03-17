@@ -10,6 +10,7 @@ void setup() {
   servos[1].attach(10);
   servos[2].attach(11);
   
+  init_buffer(); 
 }
 
 void loop() {
@@ -34,9 +35,9 @@ void loop() {
   }
   
   else check_serial();
-      
 
 }
+
 
 
 
