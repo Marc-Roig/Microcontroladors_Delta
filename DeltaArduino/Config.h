@@ -51,17 +51,3 @@ typedef struct Buffer { //Circular buffer, FIFO
   bool full, empty;
 }Buffer;
 
-//GLOBAL VARIABLES
-
-//--MOVEMENT--//
-Servo servos[3];
-int servos_angles[3];
-int end_effector_pos[] = {0, 0, 100};
-int end_effector_speed;
-
-//--SERIAL COMUNICATION--//
-
-Buffer buffer;
-
-bool command_recieved = false;
-int serial_mode = ASK_FOR_ANGLES;

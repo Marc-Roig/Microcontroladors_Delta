@@ -15,7 +15,6 @@
 void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
 
   int command_num = chars_to_int('0', command[1], command[2]);
-
   switch(command_num) {
     case END_OF_STREAM: serial_next_instruction();
                         break;
@@ -26,7 +25,7 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
     case MOVE_EF:       serial_recieve_ef_pos(command);
                         break;
 
-    default:            //Serial.write("BAD COMMAND");
+    default:            Serial.write("BAD REQUEST");
                         break;
   }
   
@@ -64,13 +63,13 @@ void check_serial() {
 
     buffer.command[buffer.end_][i] = incomingByte;
     i++;
-    
+
     if (incomingByte == '\n') {
       buffer.command_len[buffer.end_] = i; 
 
       i = 0;
 
-      if (buffer.command[buffer.end_][2] == (END_OF_STREAM - '0')) {
+      if (buffer.command[buffer.end_][2] == (END_OF_STREAM + '0')) {
         command_recieved = true;
       }
 

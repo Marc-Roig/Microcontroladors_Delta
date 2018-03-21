@@ -1,5 +1,21 @@
 #include "Config.h"
 
+//GLOBAL VARIABLES
+
+//--MOVEMENT--//
+Servo servos[3];
+int servos_angles[3];
+int end_effector_pos[] = {0, 0, 100};
+int end_effector_speed;
+
+//--SERIAL COMUNICATION--//
+
+Buffer buffer;
+
+bool command_recieved = false;
+int serial_mode = ASK_FOR_ANGLES;
+
+
 void setup() {
   Serial.begin(9600);
   
@@ -35,7 +51,7 @@ void loop() {
   }
   
   else check_serial();
-
+  // delay(30);
 }
 
 
