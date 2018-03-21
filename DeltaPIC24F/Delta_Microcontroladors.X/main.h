@@ -1,5 +1,5 @@
 #ifndef MAIN_H
-
+    
     #include "xc.h"
     #include <p24fj128ga010.h>
 	#include <stdbool.h>
@@ -9,27 +9,8 @@
 	#include "serialcom.h"
 	#include "servos.h"
 
-
-	//-----------------------------//
-	//----------FUNCTIONS----------//
-	//-----------------------------//
-
-    //--SERVOS--//
-
-    void disengage_servos();
-
-    void engage_servos();
-
-    void servo1_write(int angle);
-    void servo2_write(int angle);
-    void servo3_write(int angle);
-
-    void servo1_write_duty_cycle(int duty_cycle);
-    void servo2_write_duty_cycle(int duty_cycle);
-    void servo3_write_duty_cycle(int duty_cycle);
-
-    int scale_angle(int angle);
-
+    
+	#define MAIN_H //Include guard
 
     //--MISC--//
     void polsadors(int* angle);

@@ -2,8 +2,6 @@
 //----------DEFINES----------//
 //---------------------------//
 
-#define MAIN_H //Include guard
-
 //----SERIAL----//
 
 #define SERIAL_DELAY_MS 100

@@ -37,6 +37,9 @@
 	//GLOBAL VARIABLES
 	extern volatile Buffer RX_buffer;
 	extern volatile Buffer TX_buffer;
+
+	extern volatile bool Serial_busy;
+
 	extern volatile bool command_recieved;
 
 #endif
