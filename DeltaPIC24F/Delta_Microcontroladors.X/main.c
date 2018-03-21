@@ -27,16 +27,22 @@
 
 //int angles[] = {0, 25, 45, 70, 90};
 
- 
-int main(void) {
-    
+void setup() {
     TRISD = 0xFFFF; //POLSADORS
     TRISA = 0xFF00; //LEDS
 
     engage_servos();
 
-    int duty_cycle = 0;
+    // init_buffer(&RX_buffer);
+    // init_buffer(&TX_buffer);
+
+}
+
+int main(void) {
     
+    setup();
+
+    int duty_cycle = 0;
 
     while (1) {
         
@@ -65,7 +71,7 @@ void show_dutycycle_leds(int duty_cycle) {
 void polsadors(int* duty_cycle) {
 
     static int S3 = 0, S6 = 0, S4 = 0;
-    static int mode = 0; //Used to 
+    static int mode = 0; 
 
     static int max_duty_cycle = 200;
     static int min_duty_cycle = 10;
