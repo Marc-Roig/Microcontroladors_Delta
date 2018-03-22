@@ -41,5 +41,7 @@
 	extern volatile bool Serial_busy;
 
 	extern volatile bool command_recieved;
+    
+    extern volatile int serial_mode;
 
 #endif

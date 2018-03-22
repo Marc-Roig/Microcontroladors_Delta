@@ -7,6 +7,8 @@ volatile Buffer TX_buffer;
 
 volatile bool Serial_busy = false; //True if sending data through TX
 
+volatile int serial_mode = 0;
+
 void init_UART() {
 
 	// U2MODEbits.UARTEN = 1; //Enable UART2
@@ -82,15 +84,16 @@ void serial_write(char data_to_print[]) {
 
   static int last_char_position = 0;
 
-  int data_size = sizeof(h) - 1;
+  int data_size = sizeof(data_to_print) - 1;
 
   //Prompt lcd error
   if (data_size <= SERIAL_COMMAND_MAX_LEN) return;
   if (TX_buffer.full) return;
   
-
-  for (int i = 0; i < data_size; i++) {
+  int i;
+  for (i = 0 ; i < data_size; i++) {
     TX_buffer.command[TX_buffer.end_][i + last_char_position] = data_to_print[i];
+    last_char_position++;
   }
 
   if (data_to_print[data_size-1] == '\n') {
@@ -105,7 +108,7 @@ void serial_write(char data_to_print[]) {
 
     inc_buffer_end_pointer(&TX_buffer);
 
-    i = 0;
+    last_char_position = 0;
   }
     
 }
@@ -122,7 +125,7 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
     case MOVE_SERVOS:   serial_recieve_angles(command);
                         break;
 
-    default:            Serial.write("BAD REQUEST");
+    default:            serial_write("BAD REQUEST");
                         break;
   }
   
@@ -146,10 +149,10 @@ void serial_next_instruction() {
 
 void send_command_header(int command_num, bool end_with_new_line) {
 
-  Serial.write("G");
-  Serial.write(int_to_char_2digits(command_num));
-  if (end_with_new_line) Serial.write('\n');
-  else Serial.write(" ");
+  serial_write("G");
+  serial_write(int_to_char_2digits(command_num));
+  if (end_with_new_line) serial_write("\n");
+  else serial_write(" ");
 
 }
 
@@ -157,11 +160,12 @@ void send_command_header(int command_num, bool end_with_new_line) {
 void serial_send_angles() {
 
   send_command_header(MOVE_SERVOS, false);
-  for (int i = 0; i < 3; i++) {
-    Serial.write(int_to_char_3digits(servos_angles[i]));
+  int i;
+  for (i = 0; i < 3; i++) {
+//    serial_write(int_to_char_3digits(servos_angles[i]));
     
-    if (i == 2) Serial.write("\n");
-    else Serial.write(' '); 
+    if (i == 2) serial_write("\n");
+    else serial_write(" "); 
   }
 
 }
@@ -198,22 +202,24 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
 
   bool bad_request = false;
   
-  for (int i = 4; i < 7; i++) {
+  int i;
+  
+  for (i = 4; i < 7; i++) {
     if (!is_alphanumeric(command[i])) bad_request = true; 
   }
-  for (int i = 8; i < 11; i++) {
+  for (i = 8; i < 11; i++) {
     if (!is_alphanumeric(command[i])) bad_request = true;
   }
-  for (int i = 12; i < 15; i++) {
+  for (i = 12; i < 15; i++) {
     if (!is_alphanumeric(command[i])) bad_request = true;
   }
 
   if (!bad_request) {
-    servos_angles[0] = chars_to_int(command[4], command[5], command[6]);
-    servos_angles[1] = chars_to_int(command[8], command[9], command[10]);
-    servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
+//    servos_angles[0] = chars_to_int(command[4], command[5], command[6]);
+//    servos_angles[1] = chars_to_int(command[8], command[9], command[10]);
+//    servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
   }
-  else //serial_write("BAD REQUEST\n");
+  else; //serial_write("BAD REQUEST\n");
 
 }
 
