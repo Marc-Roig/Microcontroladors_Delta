@@ -28,6 +28,9 @@
 //int angles[] = {0, 25, 45, 70, 90};
 
 void setup() {
+
+    T4CON = 0X8030;
+
     TRISD = 0xFFFF; //POLSADORS
     TRISA = 0xFF00; //LEDS
 
@@ -59,6 +62,13 @@ int main(void) {
 
 }
 
+void delay(int valor_retard) {
+
+    TMR4 = 0;
+    while (TMR4 < valor_retard);
+
+}
+
 void show_dutycycle_leds(int duty_cycle) {
 
     if (duty_cycle <= 0xff ) {
@@ -73,10 +83,10 @@ void polsadors(int* duty_cycle) {
     static int S3 = 0, S6 = 0, S4 = 0;
     static int mode = 0; 
 
-    static int max_duty_cycle = 200;
-    static int min_duty_cycle = 10;
+    int max_duty_cycle = 1100;
+    int min_duty_cycle = 430;
 
-    static int step1 = 10, step2 = 25, step3 = 50;
+    int step1 = 25, step2 = 50, step3 = 100;
 
     //--INCREMENT duty_cycle--//
     if ((PORTD & 0x0040) == 0 & S3 == 0) {

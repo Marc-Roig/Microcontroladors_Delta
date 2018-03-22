@@ -15,6 +15,7 @@
     //--MISC--//
     void polsadors(int* angle);
     void show_dutycycle_leds(int duty_cycle);
+    void delay(int cicles);
 
 
 #endif //MAIN_H

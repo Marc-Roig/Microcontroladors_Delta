@@ -33,7 +33,7 @@ void init_UART() {
 
 void _ISR _U2TXInterrupt() {
 
-  static int i = 1;
+  static int i = 1; //Pivot of the sentence, first character already sent.
 
   char ByteToSend;
 
@@ -47,19 +47,18 @@ void _ISR _U2TXInterrupt() {
 
     if (ByteToSend == '\n') {
 
-      i = 0;
+      i = 0; 
       inc_buffer_start_pointer(&TX_buffer);
 
     }
 
-  }
-  else {
+  } else {
 
     Serial_busy = false;
     i = 1;
 
   }
-  
+
 	_U2TXIF = 0;
 
 }

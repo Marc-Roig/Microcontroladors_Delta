@@ -1,4 +1,5 @@
-#include "servos.h"
+// #include "servos.h"
+#include "main.h"
 
 int scale_angle(int angle){
     int ms_min = 1;
