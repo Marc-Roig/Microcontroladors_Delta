@@ -45,6 +45,27 @@ void servo3_write_duty_cycle(int duty_cycle) {
     
 }
 
+void servo1_writeMicroseconds(int duty_cycle) {
+
+    // int us_per_step = 2; //20MS/PR2 = 2us
+    OCR1S = duty_cycle/2;
+
+}
+
+
+void servo2_writeMicroseconds(int duty_cycle) {
+
+    OCR2S = duty_cycle/2;
+
+}
+
+
+void servo3_writeMicroseconds(int duty_cycle) {
+
+    OCR3S = duty_cycle/2;
+
+}
+
 void disengage_servos() {
 
     OC1CON = OC1CON & 0XFFF8;
