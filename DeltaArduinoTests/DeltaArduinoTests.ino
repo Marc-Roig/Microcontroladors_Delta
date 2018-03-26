@@ -10,8 +10,9 @@
 
 Servo servo;
 
-int max_duty_cycle = 2400;
-int min_duty_cycle = 600;
+//If these values are changed servos need to be calibrated again
+int max_duty_cycle = 2130;
+int min_duty_cycle = 300;
 
 int change_mode_button_pin =  9;
 int increase_dc_button_pin = 10;
@@ -40,11 +41,16 @@ void setup() {
     pinMode(decrease_dc_button_pin, INPUT);
     pinMode(change_step_change_pin, INPUT);
 
+    //THE FIRST MOVE HAS TO LEFT THE SERVO MOVED CLOCKWISED (SLACK CORRECTION)
+    int mean_dc = (max_duty_cycle + min_duty_cycle) / 2;
+    servo.writeMicroseconds(mean_dc + 500);
+    delay(500);
+    servo.writeMicroseconds(mean_dc - 500);
 }
 
 void loop() {
 
-    static int duty_cycle = (min_duty_cycle + max_duty_cycle) / 2; // Start at the middle
+    static int duty_cycle = (min_duty_cycle + max_duty_cycle) / 2 - 500; // Start at the middle
     static int change_dc_mode = CHANGE_WITH_BUTTONS;
 
     switch (change_dc_mode) {
@@ -61,7 +67,7 @@ void loop() {
     
     servo.writeMicroseconds(duty_cycle);
 
-    serial_write_every_ms(1000, duty_cycle);
+    serial_write_every_ms(2000, duty_cycle);
   
 }
 
@@ -107,20 +113,20 @@ void potenciometer(int* duty_cycle) {
     *duty_cycle = map(analogRead(A0) ,0 , 1023, min_duty_cycle, max_duty_cycle);
 
     int difference = *duty_cycle - previous_dc; 
-    int min_differnece = 10; //Min value to apply the compensation, to avoit jitter
+    int min_differnece = 50; //Min value to apply the compensation, to avoit jitter
 
 
     if (difference < -min_differnece) {
-        if (servo_direction == COUNTERCLOCKWISE) {
-            servo_direction = CLOCKWISE;
+        if (servo_direction == CLOCKWISE) {
+            servo_direction = COUNTERCLOCKWISE;
             *duty_cycle -= change_dir_compensation_val;
         }
         previous_dc = *duty_cycle; 
 
     }
     else if (difference > min_differnece) {
-        if (servo_direction == CLOCKWISE) {
-            servo_direction = COUNTERCLOCKWISE;
+        if (servo_direction == COUNTERCLOCKWISE) {
+            servo_direction = CLOCKWISE;
             *duty_cycle += change_dir_compensation_val;
         }   
         previous_dc = *duty_cycle;
