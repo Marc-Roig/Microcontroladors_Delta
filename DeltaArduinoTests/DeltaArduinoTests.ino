@@ -1,7 +1,12 @@
 #include <Servo.h>
 
+//--CHANGE DC MODE--//
 #define CHANGE_WITH_BUTTONS 0
 #define CHANGE_WITH_POTENCIOMETER 1
+
+//--SERVO MOVEMENT--//
+#define CLOCKWISE 0
+#define COUNTERCLOCKWISE 1
 
 Servo servo;
 
@@ -13,6 +18,16 @@ int increase_dc_button_pin = 10;
 int decrease_dc_button_pin = 11;
 int change_step_change_pin = 12;
 
+//Every time the servo turns it has to compensate the slack of it 
+//Track of the previous direction is needed
+int servo_direction = CLOCKWISE;
+int change_dir_compensation_val = 20;
+
+//CALIBRATION :
+    //READ THE CURRENT POSITION WITH THE POT. VALUE
+    //LOOK FOR THE CENTER WITH THE POT. VALUE AND MOVE
+    //CHANGE VARIABLE SERVODIRECTION DEPENDING ON THE TRAJECTORY IT TOOK
+//SYSTEM HAS TO BE ABLE TO COMPENSATE OFFSETS WITH THE POT. VALUE FEEDBACK
 
 void setup() {
 
@@ -87,7 +102,30 @@ char* int_to_char(int number) {
 
 void potenciometer(int* duty_cycle) {
 
-    *duty_cycle = map(analogRead(A0) ,0, 1023, min_duty_cycle, max_duty_cycle);
+    static int previous_dc = *duty_cycle; //
+
+    *duty_cycle = map(analogRead(A0) ,0 , 1023, min_duty_cycle, max_duty_cycle);
+
+    int difference = *duty_cycle - previous_dc; 
+    int min_differnece = 10; //Min value to apply the compensation, to avoit jitter
+
+
+    if (difference < -min_differnece) {
+        if (servo_direction == COUNTERCLOCKWISE) {
+            servo_direction = CLOCKWISE;
+            *duty_cycle -= change_dir_compensation_val;
+        }
+        previous_dc = *duty_cycle; 
+
+    }
+    else if (difference > min_differnece) {
+        if (servo_direction == CLOCKWISE) {
+            servo_direction = COUNTERCLOCKWISE;
+            *duty_cycle += change_dir_compensation_val;
+        }   
+        previous_dc = *duty_cycle;
+
+    } //Do not refresh previous_dc it the change of dc has not surpassed the min_difference
 
 }
 
@@ -119,21 +157,30 @@ void push_buttons(int* duty_cycle) {
     //--INCREMENT duty_cycle--//
     if (increase_dc_button && !S1) {
 
-     switch(mode) {
-        case 0:
-            *duty_cycle = *duty_cycle + step1;
-            break;
-        case 1:
-            *duty_cycle = *duty_cycle + step2;
-            break;
-        default:
+        //Increase value depending on the mode
+        switch(mode) {
+            case 0:
+                *duty_cycle = *duty_cycle + step1;
+                break;
+            case 1:
+                *duty_cycle = *duty_cycle + step2;
+                break;
+            default:
             *duty_cycle = *duty_cycle + step3;
             break;
-     }
+        }
 
-     if (*duty_cycle >= max_duty_cycle) *duty_cycle = max_duty_cycle;
+        //Limit max angle
+        if (*duty_cycle >= max_duty_cycle) *duty_cycle = max_duty_cycle;
 
-     S1 = 1;
+        //Flank detection
+        S1 = 1;
+
+        //Change direction compensation
+        if (servo_direction == CLOCKWISE) {
+            servo_direction = COUNTERCLOCKWISE;
+            *duty_cycle += change_dir_compensation_val;
+        }
 
     }
     else if (!increase_dc_button) S1 = 0;
@@ -156,6 +203,11 @@ void push_buttons(int* duty_cycle) {
      if (*duty_cycle <= min_duty_cycle) *duty_cycle = min_duty_cycle;
 
      S2 = 1;
+
+     if (servo_direction == COUNTERCLOCKWISE) {
+        servo_direction = CLOCKWISE;
+        *duty_cycle -= change_dir_compensation_val;
+     }
 
     }
     else if (!decrease_dc_button) S2 = 0;
