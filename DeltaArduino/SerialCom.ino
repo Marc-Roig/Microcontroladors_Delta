@@ -10,6 +10,23 @@
 // G20 - Send me Angles
 
 
+
+void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
+
+  if(command_recieved) {
+    parse_command(buffer.command[buffer.start]);
+    if (inc_buffer_start_pointer()) {
+      command_recieved = false; //If stack empty message has been read
+      delay(SERIAL_DELAY_MS);
+    }
+  }
+  
+  else check_serial();
+
+    // delay(30);
+
+}
+
 //--COMMAND--//
 
 void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {

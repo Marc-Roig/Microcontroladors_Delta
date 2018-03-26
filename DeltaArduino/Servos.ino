@@ -27,3 +27,9 @@ void move_servo_to_limits(int servo_num, int StepAngle, int min_ang, int max_ang
   servos[servo_num-1].write(i);
 }
 
+// void update_all_servos(){
+//   servos[0].write(servos_angles[0]);
+//   servos[1].write(servos_angles[1]);
+//   servos[2].write(servos_angles[2]);
+// }
+
