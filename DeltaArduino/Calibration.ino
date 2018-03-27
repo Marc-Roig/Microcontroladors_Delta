@@ -1,10 +1,22 @@
 #include "Config.h"
 
-void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
+/*********************************************************************
+* Function: void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3);
+*
+* Overview: Reads the buttons and potentiometer
+*           and then moves the servos
+*
+* PreCondition: Needs to be called in the main loop
+*
+* Input: bool - Will move the servo 1
+*        bool - Will move the servo 2
+*        bool - Will move the servo 3
+*
+* Output: none
+*
+********************************************************************/
 
-    static int duty_cycle[3] = { (min_duty_cycles[0] + max_duty_cycles[0]) / 2 - 500,     // Start at the middle
-                                 (min_duty_cycles[1] + max_duty_cycles[1]) / 2 - 500,
-                                 (min_duty_cycles[2] + max_duty_cycles[2]) / 2 - 500 };
+void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
 
     static int change_dc_mode = CHANGE_WITH_BUTTONS;
 
@@ -30,9 +42,41 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
     if (move_servo2) servos[1].writeMicroseconds(servoinfo[1].duty_cycle);
     if (move_servo3) servos[2].writeMicroseconds(servoinfo[2].duty_cycle);
 
-    serial_write_every_ms(2000, duty_cycle);
+    serial_write_dc_every_ms(2000);
 
 }
+
+
+/*********************************************************************
+* Function: void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3);
+*
+* Overview: Prepare board to calibrate servos
+*
+* PreCondition: Needs to be called in the setup function
+*
+* Input: bool - Will move the servo 1
+*        bool - Will move the servo 2
+*        bool - Will move the servo 3
+*
+* Output: none
+*
+********************************************************************/
+
+void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3) {
+
+    pinMode(CHANGE_MODE_BUTTON_PIN, INPUT);
+    pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
+    pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
+    pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
+
+    init_ServoInfo(&servoinfo[0], 2130, 300, 20);
+    init_ServoInfo(&servoinfo[1], 2130, 300, 20);
+    init_ServoInfo(&servoinfo[2], 2130, 600, 0);
+
+    calibration_initial_positions(move_servo1, move_servo2, move_servo3);
+
+}
+
 
 /*********************************************************************
 * Function: void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3);
@@ -42,7 +86,7 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
 *           they are first moved counterclockwise just in case they
 *           coudln't move any more clockwise.
 *
-* PreCondition: Needs to be called in the setup function
+* PreCondition: none
 *
 * Input: bool - Will move the servo 1
 *        bool - Will move the servo 2
@@ -70,6 +114,51 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
     }
 
 }
+
+
+/*********************************************************************
+* Function: void calibration_change_dc_mode(int* change_dc_mode);
+*
+* Overview: When the change mode button is pressed the duty
+*           cycle changes from the potentiometer to the
+*           buttons or visce versa
+*
+* PreCondition: All servoinfo values have to be set
+*
+* Input: int* - actual duty cycle change mode
+*
+* Output: none
+*
+********************************************************************/
+
+void calibration_change_dc_mode(int* change_dc_mode) {
+
+    static int S4 = 0;
+    bool change_dc_m_button = digitalRead(change_mode_button_pin);
+    
+    if (change_dc_m_button && !S4) {
+    
+      *change_dc_mode = (*change_dc_mode + 1) % 2;
+      S4 = 1;
+      
+    }
+    else if (!change_dc_m_button) S4 = 0;
+
+}
+
+
+/*********************************************************************
+* Function: void calibration_change_dc_potentiometer(int servo_num);
+*
+* Overview: Change duty cycle moving the potentiometer
+*
+* PreCondition: All servoinfo values have to be set
+*
+* Input: int - number of servo to move
+*
+* Output: none
+*
+********************************************************************/
 
 void calibration_change_dc_potentiometer(int servo_num) {
 
@@ -106,19 +195,19 @@ void calibration_change_dc_potentiometer(int servo_num) {
     servoinfo[servo_num].duty_cycle = duty_cycle;
 }
 
-void calibration_change_dc_mode(int* change_dc_mode) {
 
-    static int S4 = 0;
-    bool change_dc_m_button = digitalRead(change_mode_button_pin);
-    
-    if (change_dc_m_button && !S4) {
-    
-      *change_dc_mode = (*change_dc_mode + 1) % 2;
-      S4 = 1;
-      
-    }
-    else if (!change_dc_m_button) S4 = 0;
-}
+/*********************************************************************
+* Function: void calibration_change_dc_buttons(int servo_num);
+*
+* Overview: Change duty cycle pushing buttons
+*
+* PreCondition: All servoinfo values have to be set
+*
+* Input: int - number of servo to move
+*
+* Output: none
+*
+********************************************************************/
 
 void calibration_change_dc_buttons(int servo_num) {
 
@@ -205,22 +294,4 @@ void calibration_change_dc_buttons(int servo_num) {
 
 }
 
-
-
-void init_ServoInfo(struct ServoInfo* servoinfo, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_) {
-
-    servoinfo->angles[0] = 90;
-    servoinfo->angles[1] = 90;
-    servoinfo->angles[2] = 90;
-
-    servoinfo->max_duty_cycle = max_duty_cycle_;
-    servoinfo->min_duty_cycle = min_duty_cycle_;
-
-    servoinfo->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servoinfo->duty_cycle = servoinfo->mean_dc;
-
-    servoinfo->last_direction = CLOCKWISE;
-    servoinfo->slack_compensation_val = slack_compensation_val_;
-
-}
 

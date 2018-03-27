@@ -4,7 +4,10 @@
 
   #define CONFIG_H
   
+  //-------------------//
   //----CALIBRATION----//
+  //-------------------//
+
   //CHANGE DC MODE
   #define CHANGE_WITH_BUTTONS 0
   #define CHANGE_WITH_POTENTIOMETER 1
@@ -12,8 +15,15 @@
   //SERVO MOVEMENT
   #define CLOCKWISE 0
   #define COUNTERCLOCKWISE 1
-  
+
+  #define CHANGE_MODE_BUTTON_PIN 9
+  #define INCREASE_DC_BUTTON_PIN 10
+  #define DECREASE_DC_BUTTON_PIN 11
+  #define CHANGE_STEP_CHANGE_PIN 12
+ 
+  //--------------//	
   //----SERIAL----//
+  //--------------//	
   
   #define SERIAL_DELAY_MS 100
   
@@ -37,19 +47,22 @@
   #define SERIAL_BUFFER_LEN 5
   #define SERIAL_COMMAND_MAX_LEN 16
   
-  
+  //---------------//
+  //----STRUCTS----//
   //---------------//
   
   typedef struct Buffer { //Circular buffer, FIFO
+
     char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
     int command_len[SERIAL_BUFFER_LEN];
     int start, end_;
     bool full, empty;
+
   }Buffer;
 
   typedef struct ServoInfo {
 
-    int angles[3];
+    int angle;
 
     int duty_cycle;
 
@@ -62,7 +75,14 @@
     int slack_compensation_val;
 
   }ServoInfo;
-  
+
+  //------------------------//
+  //----GLOBAL VARIABLES----//
+  //------------------------//
+  Servo servos[3];
+  ServoInfo servoinfo[3];
+  Buffer buffer;
+
   int max_duty_cycles[3];
   int min_duty_cycles[3];
   

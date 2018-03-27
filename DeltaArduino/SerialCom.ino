@@ -1,3 +1,4 @@
+#include "Config.h"
 
 //Comands 
 
@@ -147,9 +148,9 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
 
   if (!bad_request) {
   //    Serial.write("GOOD REQUEST\n");
-    servos_angles[0] = chars_to_int(command[4], command[5], command[6]);
-    servos_angles[1] = chars_to_int(command[8], command[9], command[10]);
-    servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
+    servoinfo[0].angle = chars_to_int(command[4], command[5], command[6]);
+    servoinfo[1].angle  = chars_to_int(command[8], command[9], command[10]);
+    servoinfo[2].angle  = chars_to_int(command[12], command[13], command[14]);
   }
   else Serial.write("BAD REQUEST\n");
 
@@ -176,7 +177,7 @@ void serial_send_angles() {
 
   send_command_header(MOVE_SERVOS, false);
   for (int i = 0; i < 3; i++) {
-    Serial.write(int_to_char_3digits(servos_angles[i]));
+    Serial.write(int_to_char_3digits(servoinfo[i].angle));
     
     if (i == 2) Serial.write("\n");
     else Serial.write(' '); 
@@ -211,7 +212,7 @@ void send_command_header(int command_num, bool end_with_new_line) {
 
 }
 
-void serial_write_every_ms(int wait_time, int duty_cycle[]) {
+void serial_write_dc_every_ms(int wait_time) {
 
     static unsigned long startMilis = millis();
     
@@ -219,11 +220,11 @@ void serial_write_every_ms(int wait_time, int duty_cycle[]) {
 
         startMilis = millis();
 
-        Serial.print(duty_cycle[0]);
+        Serial.print(servoinfo[0].duty_cycle);
         Serial.write(" - ");
-        Serial.print(duty_cycle[1]);
+        Serial.print(servoinfo[0].duty_cycle);
         Serial.write(" - ");
-        Serial.println(duty_cycle[2]);
+        Serial.println(servoinfo[0].duty_cycle);
 
     }
 

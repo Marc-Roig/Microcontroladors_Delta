@@ -1,12 +1,27 @@
 #include "Config.h"
 
-void move_servos(int angles[3]) {
+void move_servos() {
   for (int i = 0; i < 3; i++) {
     //SCALE EVERY ANGLE (???)
   }
   for (int i = 0; i < 3; i++) {
-    servos[i].write(angles[i]);
+    servos[i].write(servoinfo[i].angle);
   }
+}
+
+void init_ServoInfo(struct ServoInfo* servoinfo, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_) {
+
+    servoinfo->angle = 90;
+    
+    servoinfo->max_duty_cycle = max_duty_cycle_;
+    servoinfo->min_duty_cycle = min_duty_cycle_;
+
+    servoinfo->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
+    servoinfo->duty_cycle = servoinfo->mean_dc - 500;
+
+    servoinfo->last_direction = CLOCKWISE;
+    servoinfo->slack_compensation_val = slack_compensation_val_;
+
 }
 
 //void move_servo_to_limits(int servo_num, int StepAngle, int min_ang, int max_ang) {
@@ -29,9 +44,4 @@ void move_servos(int angles[3]) {
 //  servos[servo_num-1].write(i);
 //}
 
-// void update_all_servos(){
-//   servos[0].write(servos_angles[0]);
-//   servos[1].write(servos_angles[1]);
-//   servos[2].write(servos_angles[2]);
-// }
 
