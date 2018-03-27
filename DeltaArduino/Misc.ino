@@ -36,6 +36,21 @@ char* int_to_char(int number) {
     return val;
 }
 
+
+/*********************************************************************
+* Function: char* int_to_char_2digits(int numb);
+*
+* Overview: Returns a String from a number (0 - 99)
+*           String will always have two characters
+*
+* PreCondition: none
+*
+* Input: int - number to convert
+*
+* Output: String - number converted to String
+*
+********************************************************************/
+
 char* int_to_char_2digits(int numb) {
 
   char* sentence = "  ";
@@ -46,6 +61,20 @@ char* int_to_char_2digits(int numb) {
   return sentence;
 
 }
+
+/*********************************************************************
+* Function: char* int_to_char_3digits(int numb);
+*
+* Overview: Returns a String from a number (0 - 999)
+*           String will always have three characters
+*
+* PreCondition: none
+*
+* Input: int - number to convert
+*
+* Output: String - number converted to String
+*
+********************************************************************/
 
 char* int_to_char_3digits(int numb) {
 
@@ -59,11 +88,40 @@ char* int_to_char_3digits(int numb) {
 
 }
 
+/*********************************************************************
+* Function: int chars_to_int(char a, char b, char c);
+*
+* Overview: Returns integer from the three chars introduced
+*
+* PreCondition: none
+*
+* Input: char a - hundreds
+*        char b - tens
+*        char c - units
+*
+* Output: Int - number converted
+*
+********************************************************************/
+
 int chars_to_int(char a, char b, char c) {
   
   return (a-'0')*100 + (b-'0')*10 + c-'0';
 
 }
+
+/*********************************************************************
+* Function: bool is_alphanumeric(char a);
+*
+* Overview: none
+*
+* PreCondition: none
+*
+* Input: char - value to check if its a number
+*
+* Output: Bool - true if it is a number
+*                false if it is not
+*
+********************************************************************/
 
 bool is_alphanumeric(char a) {
 
