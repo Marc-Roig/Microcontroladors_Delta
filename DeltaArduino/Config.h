@@ -46,6 +46,22 @@
     int start, end_;
     bool full, empty;
   }Buffer;
+
+  typedef struct ServoInfo {
+
+    int angles[3];
+
+    int duty_cycle;
+
+    int max_duty_cycle;
+    int min_duty_cycle;
+
+    int mean_dc;
+
+    int last_direction;
+    int slack_compensation_val;
+
+  }ServoInfo;
   
   int max_duty_cycles[3];
   int min_duty_cycles[3];

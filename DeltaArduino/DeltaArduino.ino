@@ -5,6 +5,9 @@
 //--MOVEMENT--//
 Servo servos[3];
 int servos_angles[3];
+
+ServoInfo servoinfo[3];
+
 int end_effector_pos[] = {0, 0, 100};
 int end_effector_speed;
 
@@ -51,13 +54,17 @@ void setup() {
   //Every time the servo turns it has to compensate the slack of it 
   //Track of the previous direction is needed
   servo_direction[0] = CLOCKWISE;
-  servo_direction[0] = CLOCKWISE;
+  servo_direction[1] = CLOCKWISE;
   servo_direction[2] = CLOCKWISE;
   
   change_dir_compensation_val[0] = 20;
   change_dir_compensation_val[1] = 20;
   change_dir_compensation_val[2] = 0;
   
+  init_ServoInfo(&servoinfo[0], 2130, 300, 20);
+  init_ServoInfo(&servoinfo[1], 2130, 300, 20);
+  init_ServoInfo(&servoinfo[2], 2130, 600, 0);
+
   pinMode(change_mode_button_pin, INPUT);
   pinMode(increase_dc_button_pin, INPUT);
   pinMode(decrease_dc_button_pin, INPUT);

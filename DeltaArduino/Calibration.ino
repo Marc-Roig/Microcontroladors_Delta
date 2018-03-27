@@ -10,14 +10,14 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
 
     switch (change_dc_mode) {
 
-        case CHANGE_WITH_POTENTIOMETER:     if (move_servo1) calibration_change_dc_potentiometer(&duty_cycle[0], 0);
-                                            if (move_servo2) calibration_change_dc_potentiometer(&duty_cycle[1], 1);
-                                            if (move_servo3) calibration_change_dc_potentiometer(&duty_cycle[2], 2);
+        case CHANGE_WITH_POTENTIOMETER:     if (move_servo1) calibration_change_dc_potentiometer(0);
+                                            if (move_servo2) calibration_change_dc_potentiometer(1);
+                                            if (move_servo3) calibration_change_dc_potentiometer(2);
                                             break;
 
-        case CHANGE_WITH_BUTTONS:           if (move_servo1) calibration_change_dc_buttons(&duty_cycle[0], 0);
-                                            if (move_servo2) calibration_change_dc_buttons(&duty_cycle[1], 1);
-                                            if (move_servo3) calibration_change_dc_buttons(&duty_cycle[2], 2);
+        case CHANGE_WITH_BUTTONS:           if (move_servo1) calibration_change_dc_buttons(0);
+                                            if (move_servo2) calibration_change_dc_buttons(1);
+                                            if (move_servo3) calibration_change_dc_buttons(2);
                                             break;
 
         default:                            break;
@@ -26,9 +26,9 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
     
     calibration_change_dc_mode(&change_dc_mode);
     
-    if (move_servo1) servos[0].writeMicroseconds(duty_cycle[0]);
-    if (move_servo2) servos[1].writeMicroseconds(duty_cycle[1]);
-    if (move_servo3) servos[2].writeMicroseconds(duty_cycle[2]);
+    if (move_servo1) servos[0].writeMicroseconds(servoinfo[0].duty_cycle);
+    if (move_servo2) servos[1].writeMicroseconds(servoinfo[1].duty_cycle);
+    if (move_servo3) servos[2].writeMicroseconds(servoinfo[2].duty_cycle);
 
     serial_write_every_ms(2000, duty_cycle);
 
@@ -71,34 +71,39 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
 
 }
 
+void calibration_change_dc_potentiometer(int servo_num) {
 
-void calibration_change_dc_potentiometer(int* duty_cycle, int servo_num) {
+    static int previous_dc = servoinfo[servo_num].duty_cycle; //
 
-    static int previous_dc = *duty_cycle; //
+    int min_dc = servoinfo[servo_num].min_duty_cycle;
+    int max_dc = servoinfo[servo_num].max_duty_cycle;
+    int last_direction = servoinfo[servo_num].last_direction;
+    int compensation_val = servoinfo[servo_num].slack_compensation_val;
 
-    *duty_cycle = map(analogRead(A0) ,0 , 1023, min_duty_cycles[servo_num], max_duty_cycles[servo_num]);
+    int duty_cycle = map(analogRead(A0) ,0 , 1023, min_dc, max_dc);
 
-    int difference = *duty_cycle - previous_dc; 
+    int difference = duty_cycle - previous_dc; 
     int min_differnece = 50; //Min value to apply the compensation, to avoit jitter
 
 
     if (difference < -min_differnece) {
-        if (servo_direction[servo_num] == CLOCKWISE) {
-            servo_direction[servo_num] = COUNTERCLOCKWISE;
-            *duty_cycle -= change_dir_compensation_val[servo_num];
+        if (last_direction == CLOCKWISE) {
+            servoinfo[servo_num].last_direction = COUNTERCLOCKWISE;
+            duty_cycle -= compensation_val;
         }
-        previous_dc = *duty_cycle; 
+        previous_dc = duty_cycle; 
 
     }
     else if (difference > min_differnece) {
-        if (servo_direction[servo_num] == COUNTERCLOCKWISE) {
-            servo_direction[servo_num] = CLOCKWISE;
-            *duty_cycle += change_dir_compensation_val[servo_num];
+        if (last_direction == COUNTERCLOCKWISE) {
+            servoinfo[servo_num].last_direction = CLOCKWISE;
+            duty_cycle += compensation_val;
         }   
-        previous_dc = *duty_cycle;
+        previous_dc = duty_cycle;
 
     } //Do not refresh previous_dc it the change of dc has not surpassed the min_difference
 
+    servoinfo[servo_num].duty_cycle = duty_cycle;
 }
 
 void calibration_change_dc_mode(int* change_dc_mode) {
@@ -115,12 +120,14 @@ void calibration_change_dc_mode(int* change_dc_mode) {
     else if (!change_dc_m_button) S4 = 0;
 }
 
-void calibration_change_dc_buttons(int* duty_cycle, int servo_num) {
+void calibration_change_dc_buttons(int servo_num) {
 
     static int S1 = 0, S2 = 0, S3 = 0;
     static int mode = 0; 
 
     int step1 = 20, step2 = 40, step3 = 100;
+
+    int duty_cycle = servoinfo[servo_num].duty_cycle;
 
     bool change_mode_button = digitalRead(change_step_change_pin);
     bool increase_dc_button = digitalRead(increase_dc_button_pin);
@@ -132,26 +139,26 @@ void calibration_change_dc_buttons(int* duty_cycle, int servo_num) {
         //Increase value depending on the mode
         switch(mode) {
             case 0:
-                *duty_cycle = *duty_cycle + step1;
+                duty_cycle = duty_cycle + step1;
                 break;
             case 1:
-                *duty_cycle = *duty_cycle + step2;
+                duty_cycle = duty_cycle + step2;
                 break;
             default:
-            *duty_cycle = *duty_cycle + step3;
+            duty_cycle = duty_cycle + step3;
             break;
         }
 
         //Limit max angle
-        if (*duty_cycle >= max_duty_cycles[servo_num]) *duty_cycle = max_duty_cycles[servo_num];
+        if (duty_cycle >= servoinfo[servo_num].max_duty_cycle) duty_cycle = servoinfo[servo_num].max_duty_cycle;
 
         //Flank detection
         S1 = 1;
 
         //Change direction compensation
-        if (servo_direction[servo_num] == CLOCKWISE) {
-            servo_direction[servo_num] = COUNTERCLOCKWISE;
-            *duty_cycle += change_dir_compensation_val[servo_num];
+        if (servoinfo[servo_num].last_direction == CLOCKWISE) {
+            servoinfo[servo_num].last_direction = COUNTERCLOCKWISE;
+            duty_cycle += servoinfo[servo_num].slack_compensation_val;
         }
 
     }
@@ -162,23 +169,23 @@ void calibration_change_dc_buttons(int* duty_cycle, int servo_num) {
      
      switch(mode) {
         case 0:
-            *duty_cycle = *duty_cycle - step1;
+            duty_cycle = duty_cycle - step1;
             break;
         case 1:
-            *duty_cycle = *duty_cycle - step2;
+            duty_cycle = duty_cycle - step2;
             break;
         default:
-            *duty_cycle = *duty_cycle - step3;
+            duty_cycle = duty_cycle - step3;
             break;
      }
 
-     if (*duty_cycle <= min_duty_cycles[servo_num]) *duty_cycle = min_duty_cycles[servo_num];
+     if (duty_cycle <= servoinfo[servo_num].min_duty_cycle) duty_cycle = servoinfo[servo_num].min_duty_cycle;
 
      S2 = 1;
 
-     if (servo_direction[servo_num] == COUNTERCLOCKWISE) {
-        servo_direction[servo_num] = CLOCKWISE;
-        *duty_cycle -= change_dir_compensation_val[servo_num];
+     if (servoinfo[servo_num].last_direction == COUNTERCLOCKWISE) {
+        servoinfo[servo_num].last_direction = CLOCKWISE;
+        duty_cycle -= servoinfo[servo_num].slack_compensation_val;
      }
 
     }
@@ -193,24 +200,11 @@ void calibration_change_dc_buttons(int* duty_cycle, int servo_num) {
     }
     else if (!change_mode_button) S3 = 0;
 
+
+    servoinfo[servo_num].duty_cycle = duty_cycle;   //Store the value in the global variable
+
 }
 
-typedef struct ServoInfo {
-
-    int angles[3];
-    Servo servo;
-
-    int duty_cycle;
-
-    int max_duty_cycle;
-    int min_duty_cycle;
-
-    int mean_dc;
-
-    int last_direction;
-    int slack_compensation_val;
-
-}ServoInfo;
 
 
 void init_ServoInfo(struct ServoInfo* servoinfo, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_) {
