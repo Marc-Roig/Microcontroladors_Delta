@@ -211,40 +211,15 @@ void send_command_header(int command_num, bool end_with_new_line) {
 
 }
 
-//--UTILITIES--//
-char* int_to_char_2digits(int numb) {
+void serial_write_every_ms(int wait_time, int duty_cycle) {
 
-  char* sentence = "  ";
-
-  sentence[1] = numb % 10 + '0';
-  sentence[0] = numb / 10 % 10 + '0';
-
-  return sentence;
-
-}
-
-char* int_to_char_3digits(int numb) {
-
-  char* sentence = "   ";
-
-  sentence[2] = numb % 10 + '0';
-  sentence[1] = numb / 10 % 10 + '0';
-  sentence[0] = numb / 100 % 10 + '0';
-
-  return sentence;
+    static unsigned long startMilis = millis();
+    
+    if ((millis() - startMilis) > wait_time) {
+        startMilis = millis();
+        Serial.println(duty_cycle);
+    }
 
 }
 
-int chars_to_int(char a, char b, char c) {
-  
-  return (a-'0')*100 + (b-'0')*10 + c-'0';
-
-}
-
-bool is_alphanumeric(char a) {
-
-  if (a > 47 && a < 58) return true;
-  return false;
-
-}
 

@@ -38,6 +38,8 @@ void setup() {
   pinMode(increase_dc_button_pin, INPUT);
   pinMode(decrease_dc_button_pin, INPUT);
   pinMode(change_step_change_pin, INPUT);
+
+  calibration_initial_positions(true, true, true);
   
 }
 

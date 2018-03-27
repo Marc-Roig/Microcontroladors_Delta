@@ -2,7 +2,7 @@
 
 //--CHANGE DC MODE--//
 #define CHANGE_WITH_BUTTONS 0
-#define CHANGE_WITH_POTENCIOMETER 1
+#define CHANGE_WITH_POTENTIOMETER 1
 
 //--SERVO MOVEMENT--//
 #define CLOCKWISE 0
@@ -46,6 +46,7 @@ void setup() {
     servo.writeMicroseconds(mean_dc + 500);
     delay(500);
     servo.writeMicroseconds(mean_dc - 500);
+
 }
 
 void loop() {
@@ -55,7 +56,7 @@ void loop() {
 
     switch (change_dc_mode) {
 
-        case CHANGE_WITH_POTENCIOMETER:     potenciometer(&duty_cycle);
+        case CHANGE_WITH_POTENTIOMETER:     potentiometer(&duty_cycle);
                                             break;
 
         case CHANGE_WITH_BUTTONS:           push_buttons(&duty_cycle);
@@ -106,7 +107,7 @@ char* int_to_char(int number) {
     return val;
 }
 
-void potenciometer(int* duty_cycle) {
+void potentiometer(int* duty_cycle) {
 
     static int previous_dc = *duty_cycle; //
 
@@ -147,6 +148,7 @@ void change_mode(int* change_dc_mode) {
       
     }
     else if (!change_dc_m_button) S4 = 0;
+
 }
 
 void push_buttons(int* duty_cycle) {
