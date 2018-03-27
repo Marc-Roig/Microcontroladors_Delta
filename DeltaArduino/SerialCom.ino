@@ -211,13 +211,20 @@ void send_command_header(int command_num, bool end_with_new_line) {
 
 }
 
-void serial_write_every_ms(int wait_time, int duty_cycle) {
+void serial_write_every_ms(int wait_time, int duty_cycle[]) {
 
     static unsigned long startMilis = millis();
     
     if ((millis() - startMilis) > wait_time) {
+
         startMilis = millis();
-        Serial.println(duty_cycle);
+
+        Serial.print(duty_cycle[0]);
+        Serial.write(" - ");
+        Serial.print(duty_cycle[1]);
+        Serial.write(" - ");
+        Serial.println(duty_cycle[2]);
+
     }
 
 }
