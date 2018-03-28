@@ -1,26 +1,46 @@
 #include "Config.h"
 
-void move_servos() {
+void move_servos(bool move_servo1, bool move_servo2, bool move_servo3) {
+
+  bool move_servos[] = {move_servo1, move_servo2, move_servo3};
+
   for (int i = 0; i < 3; i++) {
-    //SCALE EVERY ANGLE (???)
+    servoinfo[i].duty_cycle = servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n;
   }
+  Serial.print(servoinfo[0].duty_cycle);
+
   for (int i = 0; i < 3; i++) {
-    servos[i].write(servoinfo[i].angle);
+    if (move_servos[i]) servos[i].writeMicroseconds(servoinfo[i].duty_cycle);
   }
+
 }
 
-void init_ServoInfo(struct ServoInfo* servoinfo, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_) {
+void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_) {
 
-    servoinfo->angle = 90;
+    servo_inf->angle = 90;
     
-    servoinfo->max_duty_cycle = max_duty_cycle_;
-    servoinfo->min_duty_cycle = min_duty_cycle_;
+    servo_inf->max_duty_cycle = max_duty_cycle_;
+    servo_inf->min_duty_cycle = min_duty_cycle_;
 
-    servoinfo->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servoinfo->duty_cycle = servoinfo->mean_dc - 500;
+    servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
+    servo_inf->duty_cycle = servo_inf->mean_dc - 500;
 
-    servoinfo->last_direction = CLOCKWISE;
-    servoinfo->slack_compensation_val = slack_compensation_val_;
+    servo_inf->last_direction = CLOCKWISE;
+    servo_inf->slack_compensation_val = slack_compensation_val_;
+
+    servo_inf->m = m_;
+    servo_inf->n = n_;
+}
+
+void init_servos() {
+  
+  servos[0].attach(SERVO1_PIN);
+  servos[1].attach(SERVO2_PIN);
+  servos[2].attach(SERVO3_PIN);
+
+  init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, SERVO1_M_ANGLE_TO_DC, SERVO1_N_ANGLE_TO_DC);
+  init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, SERVO2_M_ANGLE_TO_DC, SERVO2_N_ANGLE_TO_DC);
+  init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
 
 }
 
