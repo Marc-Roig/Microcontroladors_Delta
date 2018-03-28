@@ -4,5 +4,5 @@ DELTA PROJECT
 
 <p align="center">
   <img src="./DeltaArduinoTests/Relation_DC_Angle.png"	 alt="Relation between duty cycle and angle"
-       width="1020" height="448"/>
+       width="1020" height="448">
 </p>
