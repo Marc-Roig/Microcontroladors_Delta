@@ -18,7 +18,7 @@
 
 void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
 
-    static int change_dc_mode = CHANGE_WITH_BUTTONS;
+    static int change_dc_mode = CHANGE_WITH_SERIAL;
 
     switch (change_dc_mode) {
 
@@ -32,6 +32,9 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
                                             if (move_servo3) calibration_change_dc_buttons(2);
                                             break;
 
+        case CHANGE_WITH_SERIAL:            calibration_change_dc_serial();
+                                            break;
+
         default:                            break;
 
     } 
@@ -42,7 +45,7 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
     if (move_servo2) servos[1].writeMicroseconds(servoinfo[1].duty_cycle);
     if (move_servo3) servos[2].writeMicroseconds(servoinfo[2].duty_cycle);
 
-    serial_write_dc_every_ms(2000);
+    // serial_write_dc_every_ms(1000);
 
 }
 
@@ -68,10 +71,6 @@ void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3) {
     pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
     pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
     pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
-
-    init_ServoInfo(&servoinfo[0], 2130, 300, 20);
-    init_ServoInfo(&servoinfo[1], 2130, 300, 20);
-    init_ServoInfo(&servoinfo[2], 2130, 600, 0);
 
     calibration_initial_positions(move_servo1, move_servo2, move_servo3);
 
@@ -100,16 +99,13 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3};
 
-    int mean_dc[3];
-    for (int i = 0; i < 3; i++) {
-        mean_dc[i] = (max_duty_cycles[i] + min_duty_cycles[i]) / 2;
-    }
-
     for (int i = 0; i < 3; i++) {
         
-        servos[i].writeMicroseconds(mean_dc[i] + 500);
-        delay(500);
-        servos[i].writeMicroseconds(mean_dc[i] - 500);
+        if (move_servos[i]) {
+            servos[i].writeMicroseconds(servoinfo[i].mean_dc + 500);
+            delay(500);
+            servos[i].writeMicroseconds(servoinfo[i].mean_dc - 500);
+        }
 
     }
 
@@ -134,11 +130,11 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
 void calibration_change_dc_mode(int* change_dc_mode) {
 
     static int S4 = 0;
-    bool change_dc_m_button = digitalRead(change_mode_button_pin);
+    bool change_dc_m_button = digitalRead(CHANGE_MODE_BUTTON_PIN);
     
     if (change_dc_m_button && !S4) {
     
-      *change_dc_mode = (*change_dc_mode + 1) % 2;
+      *change_dc_mode = (*change_dc_mode + 1) % 3;
       S4 = 1;
       
     }
@@ -172,7 +168,7 @@ void calibration_change_dc_potentiometer(int servo_num) {
     int duty_cycle = map(analogRead(A0) ,0 , 1023, min_dc, max_dc);
 
     int difference = duty_cycle - previous_dc; 
-    int min_differnece = 50; //Min value to apply the compensation, to avoit jitter
+    int min_differnece = compensation_val + 20; //Min value to apply the compensation, to avoit jitter
 
 
     if (difference < -min_differnece) {
@@ -218,9 +214,9 @@ void calibration_change_dc_buttons(int servo_num) {
 
     int duty_cycle = servoinfo[servo_num].duty_cycle;
 
-    bool change_mode_button = digitalRead(change_step_change_pin);
-    bool increase_dc_button = digitalRead(increase_dc_button_pin);
-    bool decrease_dc_button = digitalRead(decrease_dc_button_pin);
+    bool change_mode_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
+    bool increase_dc_button = digitalRead(INCREASE_DC_BUTTON_PIN);
+    bool decrease_dc_button = digitalRead(DECREASE_DC_BUTTON_PIN);
  
     //--INCREMENT duty_cycle--//
     if (increase_dc_button && !S1) {
@@ -294,4 +290,55 @@ void calibration_change_dc_buttons(int servo_num) {
 
 }
 
+
+/*********************************************************************
+* Function: void calibration_change_dc_serial();
+*
+* Overview: Change duty cycle typing angle in serial monitor
+*
+* PreCondition: Always type three digits -> 034
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
+void calibration_change_dc_serial() {
+
+    static char input[] = {0, 0, 0};
+    static int i = 0;
+
+    if (Serial.available() > 0) {
+
+        char incomingByte = Serial.read();
+        if (incomingByte == '\n') {
+
+            int number = chars_to_int(input[0], input[1], input[2]);
+
+            if (number < 160 && number > 10) {
+
+                servoinfo[0].angle = number;
+                servoinfo[1].angle = number;
+                servoinfo[2].angle = number;
+
+            }
+
+            input[0] = 0;
+            input[1] = 0;
+            input[2] = 0;
+            
+            i = 0;
+        }
+
+        if (i < 3 && is_alphanumeric(incomingByte)) {
+
+            input[i] = incomingByte;
+            i++;
+
+        }
+
+    }
+
+}
 

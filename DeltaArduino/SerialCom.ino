@@ -222,9 +222,9 @@ void serial_write_dc_every_ms(int wait_time) {
 
         Serial.print(servoinfo[0].duty_cycle);
         Serial.write(" - ");
-        Serial.print(servoinfo[0].duty_cycle);
+        Serial.print(servoinfo[1].duty_cycle);
         Serial.write(" - ");
-        Serial.println(servoinfo[0].duty_cycle);
+        Serial.println(servoinfo[2].duty_cycle);
 
     }
 

@@ -125,7 +125,7 @@ int chars_to_int(char a, char b, char c) {
 
 bool is_alphanumeric(char a) {
 
-  if (a > 47 && a < 58) return true;
+  if (a >= '0' && a <= '9') return true;
   return false;
 
 }
