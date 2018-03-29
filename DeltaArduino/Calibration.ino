@@ -16,20 +16,22 @@
 *
 ********************************************************************/
 
-void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
+void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    static int change_dc_mode = CHANGE_WITH_SERIAL;
+    static int change_dc_mode = CHANGE_WITH_POTENTIOMETER;
 
     switch (change_dc_mode) {
 
         case CHANGE_WITH_POTENTIOMETER:     if (move_servo1) calibration_change_dc_potentiometer(0);
                                             if (move_servo2) calibration_change_dc_potentiometer(1);
                                             if (move_servo3) calibration_change_dc_potentiometer(2);
+                                            if (move_servo4) calibration_change_dc_potentiometer(3);
                                             break;
 
         case CHANGE_WITH_BUTTONS:           if (move_servo1) calibration_change_dc_buttons(0);
                                             if (move_servo2) calibration_change_dc_buttons(1);
                                             if (move_servo3) calibration_change_dc_buttons(2);
+                                            if (move_servo4) calibration_change_dc_buttons(3);
                                             break;
 
         case CHANGE_WITH_SERIAL:            calibration_change_dc_serial();
@@ -44,8 +46,9 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
     if (move_servo1) servos[0].writeMicroseconds(servoinfo[0].duty_cycle);
     if (move_servo2) servos[1].writeMicroseconds(servoinfo[1].duty_cycle);
     if (move_servo3) servos[2].writeMicroseconds(servoinfo[2].duty_cycle);
+    if (move_servo4) servos[3].writeMicroseconds(servoinfo[3].duty_cycle);
 
-    // serial_write_dc_every_ms(1000);
+    serial_write_dc_every_ms(1000);
 
 }
 
@@ -65,14 +68,14 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3) {
 *
 ********************************************************************/
 
-void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3) {
+void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
     pinMode(CHANGE_MODE_BUTTON_PIN, INPUT);
     pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
     pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
     pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
 
-    calibration_initial_positions(move_servo1, move_servo2, move_servo3);
+    calibration_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4);
 
 }
 
@@ -95,9 +98,9 @@ void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3) {
 *
 ********************************************************************/
 
-void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3) {
+void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    bool move_servos[] = {move_servo1, move_servo2, move_servo3};
+    bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
 
     for (int i = 0; i < 3; i++) {
         
@@ -295,6 +298,8 @@ void calibration_change_dc_buttons(int servo_num) {
 * Function: void calibration_change_dc_serial();
 *
 * Overview: Change duty cycle typing angle in serial monitor
+*           Only works with the three arms servos not with the
+*           gripper.
 *
 * PreCondition: Always type three digits -> 034
 *

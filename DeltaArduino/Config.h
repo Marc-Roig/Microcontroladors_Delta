@@ -14,6 +14,7 @@
 	#define SERVO1_PIN 9
 	#define SERVO2_PIN 10
 	#define SERVO3_PIN 11
+	#define SERVO4_PIN 5 //GRIPPER
 
 	//CALIBRATION
 	#define CHANGE_MODE_BUTTON_PIN 4
@@ -27,14 +28,17 @@
 	#define MAX_DC_SERVO1 2300
 	#define MAX_DC_SERVO2 2200
 	#define MAX_DC_SERVO3 2200
+	#define MAX_DC_SERVO4 1900 //GRIPPER
 
 	#define MIN_DC_SERVO1 300
 	#define MIN_DC_SERVO2 300
 	#define MIN_DC_SERVO3 500
+	#define MIN_DC_SERVO4 965 //GRIPPER
 
 	#define SERVO1_COMPENSATION_VAL 100
 	#define SERVO2_COMPENSATION_VAL 110
 	#define SERVO3_COMPENSATION_VAL 0
+	#define SERVO4_COMPENSATION_VAL 0
 
 	#define SERVO1_M_ANGLE_TO_DC -10.478
 	#define SERVO2_M_ANGLE_TO_DC -10.868
@@ -120,19 +124,20 @@
 	//------------------------//
 	//----GLOBAL VARIABLES----//
 	//------------------------//
-	Servo servos[3];
-	ServoInfo servoinfo[3];
 	Buffer buffer;
 
-	int max_duty_cycles[3];
-	int min_duty_cycles[3];
+	Servo servos[4];
+	ServoInfo servoinfo[4];
+
+	int max_duty_cycles[4];
+	int min_duty_cycles[4];
 
 	int change_mode_button_pin;
 	int increase_dc_button_pin;
 	int decrease_dc_button_pin;
 	int change_step_change_pin;
 
-	int servo_direction[3];
-	int change_dir_compensation_val[3];
+	int servo_direction[4];
+	int change_dir_compensation_val[4];
 
 #endif
