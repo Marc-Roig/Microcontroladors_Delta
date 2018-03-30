@@ -20,6 +20,7 @@
 		int angle;
 
 		int duty_cycle;
+		int dc_offset;
 
 		int max_duty_cycle;
 		int min_duty_cycle;
@@ -30,8 +31,8 @@
 		int slack_compensation_val;
 
 		//--ANGLE TO DUTY_CYCLE
-		int m;
-		int n;
+		float m;
+		float n;
 
 	}ServoInfo;
 

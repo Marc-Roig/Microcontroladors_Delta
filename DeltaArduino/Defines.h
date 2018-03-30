@@ -9,7 +9,7 @@
 	//SERVOS
 	#define SERVO1_PIN 9
 	#define SERVO2_PIN 10
-	#define SERVO3_PIN 11
+	#define SERVO3_PIN 3
 	#define SERVO4_PIN 5 //GRIPPER
 
 	//CALIBRATION
@@ -18,30 +18,36 @@
 	#define DECREASE_DC_BUTTON_PIN 8
 	#define CHANGE_STEP_CHANGE_PIN 12
 
+	#define CALIBRATION_POTE_PIN A0
+	
+	//JOYSTICK
+	#define JOYSTICK_X_PIN A1
+	#define JOYSTICK_Y_PIN A2
+
 	//----------------//
 	//-----SERVOS-----//
 	//----------------//
 
 	//ARMS
 	#define MAX_DC_SERVO1 2300
-	#define MAX_DC_SERVO2 2200
-	#define MAX_DC_SERVO3 2200
+	#define MAX_DC_SERVO2 2300
+	#define MAX_DC_SERVO3 2300
 
-	#define MIN_DC_SERVO1 300
-	#define MIN_DC_SERVO2 300
+	#define MIN_DC_SERVO1 500
+	#define MIN_DC_SERVO2 500
 	#define MIN_DC_SERVO3 500
 
-	#define SERVO1_COMPENSATION_VAL 100
-	#define SERVO2_COMPENSATION_VAL 110
+	#define SERVO1_COMPENSATION_VAL 50
+	#define SERVO2_COMPENSATION_VAL 50
 	#define SERVO3_COMPENSATION_VAL 0
 
 	#define SERVO1_M_ANGLE_TO_DC -10.478
-	#define SERVO2_M_ANGLE_TO_DC -10.868
-	#define SERVO3_M_ANGLE_TO_DC -8.41
+	#define SERVO2_M_ANGLE_TO_DC -11.041
+	#define SERVO3_M_ANGLE_TO_DC -9.0743
 
 	#define SERVO1_N_ANGLE_TO_DC 2542.5
-	#define SERVO2_N_ANGLE_TO_DC 2335.7
-	#define SERVO3_N_ANGLE_TO_DC 2389.3
+	#define SERVO2_N_ANGLE_TO_DC 2701.8
+	#define SERVO3_N_ANGLE_TO_DC 2692.1
 
 	//GRIPPER
 	#define MAX_DC_SERVO4 1900 
@@ -72,10 +78,15 @@
 	#define CLOCKWISE 0
 	#define COUNTERCLOCKWISE 1
 
+	//------------------//
+	//-----JOYSTICK-----//
+	//------------------//
 
-	//--------------//	
-	//----SERIAL----//
-	//--------------//	
+	#define JOYSTICK_NUMBER_OF_SPEEDS 10
+
+	//------------------//	
+	//------SERIAL------//
+	//------------------//	
 
 	#define SERIAL_DELAY_MS 100
 
