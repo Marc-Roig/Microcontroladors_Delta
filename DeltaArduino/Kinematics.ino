@@ -1,3 +1,5 @@
+#include "Config.h"
+
  // robot geometry
  // (look at pics above for explanation)
  const float e = 115.0;     // end effector
@@ -89,4 +91,30 @@
      if (status == 0) status = delta_calcAngleYZ(x0*cos120 + y0*sin120, y0*cos120-x0*sin120, z0, theta2);  // rotate coords to +120 deg
      if (status == 0) status = delta_calcAngleYZ(x0*cos120 - y0*sin120, y0*cos120+x0*sin120, z0, theta3);  // rotate coords to -120 deg
      return status;
+ }
+
+ void print_xyz_from_anlges() {
+
+     float x = 0;
+     float y = 0;
+     float z = 0;
+
+     delta_calcForward((float)servoinfo[0].angle, (float)servoinfo[1].angle, (float)servoinfo[2].angle, x, y, z);
+
+     // deltainfo.x = x;
+     // deltainfo.y = y;
+     // deltainfo.z = z;
+
+     Serial.write("X - ");
+     Serial.print(x);
+     Serial.write("   Y - ");
+     Serial.print(y);
+     Serial.write("   Z - ");
+     Serial.print(z);
+
+
+ }
+
+ void print_xyz_from_dc() {
+
  }
