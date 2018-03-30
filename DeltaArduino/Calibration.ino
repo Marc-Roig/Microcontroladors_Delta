@@ -18,7 +18,7 @@
 
 void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    static int change_dc_mode = CHANGE_WITH_POTENTIOMETER;
+    static int change_dc_mode = CHANGE_WITH_BUTTONS;
 
     switch (change_dc_mode) {
 
@@ -106,9 +106,9 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
         
         if (move_servos[i]) {
             servos[i].writeMicroseconds(servoinfo[i].mean_dc + 500);
-            delay(500);
-            servos[i].writeMicroseconds(servoinfo[i].mean_dc - 500);
+            servos[i].writeMicroseconds(servoinfo[i].mean_dc - 500); //left sevo moved counterclowised
         }
+        delay(500);
 
     }
 
@@ -214,16 +214,14 @@ void calibration_change_dc_buttons(int servo_num) {
     static int mode = 0; 
 
     int step1 = 20, step2 = 40, step3 = 100;
-
     int duty_cycle = servoinfo[servo_num].duty_cycle;
 
-    bool change_mode_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
+    bool chante_step_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
     bool increase_dc_button = digitalRead(INCREASE_DC_BUTTON_PIN);
     bool decrease_dc_button = digitalRead(DECREASE_DC_BUTTON_PIN);
  
     //--INCREMENT duty_cycle--//
     if (increase_dc_button && !S1) {
-
         //Increase value depending on the mode
         switch(mode) {
             case 0:
@@ -280,14 +278,15 @@ void calibration_change_dc_buttons(int servo_num) {
     else if (!decrease_dc_button) S2 = 0;
 
     //--CHANGE STEP--//
-    if (change_mode_button && !S3) {
+    if (chante_step_button && !S3) {
 
         mode = (mode + 1) % 3; 
         S3 = 1;
 
     }
-    else if (!change_mode_button) S3 = 0;
+    else if (!chante_step_button) S3 = 0;
 
+    Serial.print(duty_cycle);
 
     servoinfo[servo_num].duty_cycle = duty_cycle;   //Store the value in the global variable
 

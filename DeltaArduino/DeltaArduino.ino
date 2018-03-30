@@ -38,8 +38,14 @@ void loop() {
   // serial_com_with_simulator();
 
   //--CALIBRATION--//
-  servo_calibration(false, false, true, false);
+  servo_calibration(true, true, true, false);
   
+}
+
+void init_delta() {
+
+  // deltainfo.x = 
+
 }
 
 
