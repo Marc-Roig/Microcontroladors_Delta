@@ -26,10 +26,10 @@ void move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3
 
     new_duty_cycle = servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n;
 
-    check_servo_change_direction(i, new_duty_cycle);
 
     if (move_servos[i]) {
 
+      check_servo_change_direction(i, new_duty_cycle);
       servoinfo[i].duty_cycle = new_duty_cycle;
       servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
 
@@ -90,14 +90,16 @@ void move_servos_from_dc(bool move_servo1, bool move_servo2, bool move_servo3, b
 
 void check_servo_change_direction(int num_servo, int new_duty_cycle) {
 
-  int min_step_to_change_dir = 10;
+  int min_step_to_change_dir = 30;
 
   if (new_duty_cycle > servoinfo[num_servo].duty_cycle + min_step_to_change_dir) {
 
     if (servoinfo[num_servo].last_direction == COUNTERCLOCKWISE) {
 
-      servoinfo[num_servo].last_direction = CLOCKWISE;
-      servoinfo[num_servo].dc_offset += servoinfo[num_servo].slack_compensation_val;
+        // Serial.write("changed to CLOCKWISE\n");
+
+        servoinfo[num_servo].last_direction = CLOCKWISE;
+        servoinfo[num_servo].dc_offset += servoinfo[num_servo].slack_compensation_val;
 
     }
 
@@ -106,8 +108,10 @@ void check_servo_change_direction(int num_servo, int new_duty_cycle) {
 
     if (servoinfo[num_servo].last_direction == CLOCKWISE) {
 
-      servoinfo[num_servo].last_direction = COUNTERCLOCKWISE;
-      servoinfo[num_servo].dc_offset -= servoinfo[num_servo].slack_compensation_val;
+        // Serial.write("changed to COUNTERCLOCKWISE\n");
+
+        servoinfo[num_servo].last_direction = COUNTERCLOCKWISE;
+        servoinfo[num_servo].dc_offset -= servoinfo[num_servo].slack_compensation_val;
 
     }
 

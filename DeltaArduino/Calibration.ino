@@ -41,11 +41,15 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
 
     } 
     
-    calibration_change_dc_mode(&change_dc_mode);
 
-    move_servos_from_dc(move_servo1, move_servo2, move_servo3, move_servo4);
+    if (change_dc_mode == CHANGE_WITH_SERIAL) move_servos_from_angle(move_servo1, move_servo2, move_servo3);
+    else {
+        calibration_change_dc_mode(&change_dc_mode);
+        move_servos_from_dc(move_servo1, move_servo2, move_servo3, move_servo4);
+    }
 
     serial_write_dc_every_ms(1000);
+    // delay(500);
 
 }
 
@@ -172,6 +176,8 @@ void calibration_change_dc_potentiometer(int servo_num) {
 
     int duty_cycle = map(analogRead(CALIBRATION_POTE_PIN) ,0 , 1023, min_dc, max_dc);
 
+    // Serial.println(duty_cycle);
+
     check_servo_change_direction(servo_num, duty_cycle);
 
     servoinfo[servo_num].duty_cycle = duty_cycle;
@@ -194,29 +200,21 @@ void calibration_change_dc_potentiometer(int servo_num) {
 void calibration_change_dc_buttons(int servo_num) {
 
     static int S1 = 0, S2 = 0, S3 = 0;
-    static int mode = 0; 
+    static int step_val = 0; 
 
     int step1 = 20, step2 = 40, step3 = 100;
+    int steps = {20, 40, 100};
     int duty_cycle = servoinfo[servo_num].duty_cycle;
 
-    bool chante_step_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
+    bool change_step_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
     bool increase_dc_button = digitalRead(INCREASE_DC_BUTTON_PIN);
     bool decrease_dc_button = digitalRead(DECREASE_DC_BUTTON_PIN);
  
     //--INCREMENT duty_cycle--//
     if (increase_dc_button && !S1) {
-        //Increase value depending on the mode
-        switch(mode) {
-            case 0:
-                duty_cycle = duty_cycle + step1;
-                break;
-            case 1:
-                duty_cycle = duty_cycle + step2;
-                break;
-            default:
-            duty_cycle = duty_cycle + step3;
-            break;
-        }
+
+        //Increase value depending on the step_val
+        duty_cycle += steps[step_val];
 
         //Limit max angle
         if (duty_cycle >= servoinfo[servo_num].max_duty_cycle) duty_cycle = servoinfo[servo_num].max_duty_cycle;
@@ -235,41 +233,33 @@ void calibration_change_dc_buttons(int servo_num) {
 
     //--DECREMENT duty_cycle--//
     if (decrease_dc_button && !S2) {
-     
-     switch(mode) {
-        case 0:
-            duty_cycle = duty_cycle - step1;
-            break;
-        case 1:
-            duty_cycle = duty_cycle - step2;
-            break;
-        default:
-            duty_cycle = duty_cycle - step3;
-            break;
-     }
 
-     if (duty_cycle <= servoinfo[servo_num].min_duty_cycle) duty_cycle = servoinfo[servo_num].min_duty_cycle;
+        duty_cycle -= steps[step_val];
 
-     S2 = 1;
+        if (duty_cycle <= servoinfo[servo_num].min_duty_cycle) duty_cycle = servoinfo[servo_num].min_duty_cycle;
 
-     if (servoinfo[servo_num].last_direction == COUNTERCLOCKWISE) {
-        servoinfo[servo_num].last_direction = CLOCKWISE;
-        duty_cycle -= servoinfo[servo_num].slack_compensation_val;
-     }
+        S2 = 1;
+
+        if (servoinfo[servo_num].last_direction == COUNTERCLOCKWISE) {
+
+            servoinfo[servo_num].last_direction = CLOCKWISE;
+            duty_cycle -= servoinfo[servo_num].slack_compensation_val;
+
+        }
 
     }
     else if (!decrease_dc_button) S2 = 0;
 
     //--CHANGE STEP--//
-    if (chante_step_button && !S3) {
+    if (change_step_button && !S3) {
 
-        mode = (mode + 1) % 3; 
+        step_val = (step_val + 1) % 3; 
         S3 = 1;
 
     }
-    else if (!chante_step_button) S3 = 0;
+    else if (!change_step_button) S3 = 0;
 
-    servoinfo[servo_num].min_duty_cycle = duty_cycle;   //Store the value in the global variable
+    servoinfo[servo_num].duty_cycle = duty_cycle;   //Store the value in the global variable
 
 }
 
@@ -297,6 +287,7 @@ void calibration_change_dc_serial() {
     if (Serial.available() > 0) {
 
         char incomingByte = Serial.read();
+
         if (incomingByte == '\n') {
 
             int number = chars_to_int(input[0], input[1], input[2]);
