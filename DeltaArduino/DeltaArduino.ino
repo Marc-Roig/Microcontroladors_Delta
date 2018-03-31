@@ -25,14 +25,14 @@ void setup() {
   init_servos();
 
   //--CALIBRATION--//
-  calibration_start(true, true, true, true);
+  calibration_start(true, true, true, false);
 
 }
 
 void loop() {
 
   //--SERVOS--//
-  move_servos(false, false, false); //Angle to duty cycle, only with three arm servos  
+  move_servos_from_angle(false, false, false); //Angle to duty cycle, only with three arm servos  
 
   //--SERIAL--//
   // serial_com_with_simulator();

@@ -30,8 +30,8 @@ void joystick_change_xy() {
 
 		float base_speed_increment = 0.1;
 
-		deltainfo.x += joys_x * base_speed; 
-		deltainfo.y += joys_y * base_speed; 
+		deltainfo.x += joys_x * base_speed_increment; 
+		deltainfo.y += joys_y * base_speed_increment; 
 
 		StartTime = millis();
 	}

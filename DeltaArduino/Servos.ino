@@ -26,7 +26,7 @@ void move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3
 
     new_duty_cycle = servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n;
 
-    check_servo_change_direction(new_duty_cycle);
+    check_servo_change_direction(i, new_duty_cycle);
 
     if (move_servos[i]) {
 
@@ -97,7 +97,7 @@ void check_servo_change_direction(int num_servo, int new_duty_cycle) {
     if (servoinfo[num_servo].last_direction == COUNTERCLOCKWISE) {
 
       servoinfo[num_servo].last_direction = CLOCKWISE;
-      servoinfo[num_servo].dc_offset += servoinfo[i].slack_compensation_val;
+      servoinfo[num_servo].dc_offset += servoinfo[num_servo].slack_compensation_val;
 
     }
 
@@ -107,7 +107,7 @@ void check_servo_change_direction(int num_servo, int new_duty_cycle) {
     if (servoinfo[num_servo].last_direction == CLOCKWISE) {
 
       servoinfo[num_servo].last_direction = COUNTERCLOCKWISE;
-      servoinfo[num_servo].dc_offset -= servoinfo[i].slack_compensation_val;
+      servoinfo[num_servo].dc_offset -= servoinfo[num_servo].slack_compensation_val;
 
     }
 
