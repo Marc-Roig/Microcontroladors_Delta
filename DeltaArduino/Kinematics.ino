@@ -2,10 +2,10 @@
 
  // robot geometry
  // (look at pics above for explanation)
- const float e = 115.0;     // end effector
- const float f = 457.3;     // base
- const float re = 232.0;
- const float rf = 112.0;
+ const float e = 150.0;     // end effector
+ const float f = 207.85;     // base
+ const float re = 200.0;
+ const float rf = 100.0;
  
  // trigonometric constants
  const float sqrt3 = sqrt(3.0);
@@ -18,7 +18,7 @@
  
  // forward kinematics: (theta1, theta2, theta3) -> (x0, y0, z0)
  // returned status: 0=OK, -1=non-existing position
- int delta_calcForward(float theta1, float theta2, float theta3, float &x0, float &y0, float &z0) {
+ int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float* y0, float* z0) {
      float t = (f-e)*tan30/2;
      float dtr = pi/(float)180.0;
  
@@ -60,9 +60,9 @@
      float d = b*b - (float)4.0*a*c;
      if (d < 0) return -1; // non-existing point
  
-     z0 = -(float)0.5*(b+sqrt(d))/a;
-     x0 = (a1*z0 + b1)/dnm;
-     y0 = (a2*z0 + b2)/dnm;
+     *z0 = -(float)0.5*(b+sqrt(d))/a;
+     *x0 = (a1*(*z0) + b1)/dnm;
+     *y0 = (a2*(*z0) + b2)/dnm;
      return 0;
  }
  
@@ -70,7 +70,7 @@
  // helper functions, calculates angle theta1 (for YZ-pane)
  int delta_calcAngleYZ(float x0, float y0, float z0, float &theta) {
      float y1 = -0.5 * 0.57735 * f; // f/2 * tg 30
-     y0 -= 0.5 * 0.57735    * e;    // shift center to edge
+     y0 -= 0.5 * 0.57735 * e;    // shift center to edge
      // z = a + b*y
      float a = (x0*x0 + y0*y0 + z0*z0 +rf*rf - re*re - y1*y1)/(2*z0);
      float b = (y1-y0)/z0;
@@ -93,28 +93,24 @@
      return status;
  }
 
- void print_xyz_from_anlges() {
+void serial_write_xyz_from_anlges() {
 
      float x = 0;
      float y = 0;
      float z = 0;
 
-     delta_calcForward((float)servoinfo[0].angle, (float)servoinfo[1].angle, (float)servoinfo[2].angle, x, y, z);
+     int is_valid = delta_calcForward((float)servoinfo[0].angle - 90, (float)servoinfo[1].angle - 90, (float)servoinfo[2].angle - 90, &x, &y, &z);
 
-     // deltainfo.x = x;
-     // deltainfo.y = y;
-     // deltainfo.z = z;
+     if (is_valid != -1) {
+          Serial.write("X - ");
+          Serial.print(x);
+          Serial.write("   Y - ");
+          Serial.print(y);
+          Serial.write("   Z - ");
+          Serial.println(z);
+     }
+     else {
+          Serial.write("INVALID POSITION\n");
+     }
 
-     Serial.write("X - ");
-     Serial.print(x);
-     Serial.write("   Y - ");
-     Serial.print(y);
-     Serial.write("   Z - ");
-     Serial.print(z);
-
-
- }
-
- void print_xyz_from_dc() {
-
- }
+}
