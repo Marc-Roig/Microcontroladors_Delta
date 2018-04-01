@@ -220,6 +220,7 @@ void serial_write_dc_every_ms(int wait_time) {
 
         startMilis = millis();
 
+        Serial.write("Duty cycle: ");
         Serial.print(servoinfo[0].duty_cycle);
         Serial.write(" - ");
         Serial.print(servoinfo[1].duty_cycle);
@@ -230,4 +231,15 @@ void serial_write_dc_every_ms(int wait_time) {
 
 }
 
+
+void serial_write_angles() {
+
+    Serial.write("Angles: ");
+    Serial.print(servoinfo[0].angle);
+    Serial.print(" - ");
+    Serial.print(servoinfo[1].angle);
+    Serial.print(" - ");
+    Serial.println(servoinfo[2].angle);
+
+}
 

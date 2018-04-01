@@ -18,7 +18,7 @@
 
 void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    static int change_dc_mode = CHANGE_WITH_BUTTONS;
+    static int change_dc_mode = CHANGE_WITH_POTENTIOMETER;
 
     switch (change_dc_mode) {
 
@@ -41,14 +41,18 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
 
     } 
     
+    calibration_change_dc_mode(&change_dc_mode);
 
     if (change_dc_mode == CHANGE_WITH_SERIAL) move_servos_from_angle(move_servo1, move_servo2, move_servo3);
-    else {
-        calibration_change_dc_mode(&change_dc_mode);
-        move_servos_from_dc(move_servo1, move_servo2, move_servo3, move_servo4);
-    }
+    else move_servos_from_dc(move_servo1, move_servo2, move_servo3, move_servo4);
 
-    serial_write_dc_every_ms(1000);
+    serial_write_xyz_from_anlges();
+    serial_write_dc_every_ms(0);
+    serial_write_angles();
+    Serial.write("-----------------------\n");
+
+    delay(1500);
+
     // delay(500);
 
 }
@@ -115,8 +119,10 @@ void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move
     for (int i = 0; i < 3; i++) {
         
         if (move_servos[i]) {
+
             servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
             servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
+
         }
     }
 
@@ -181,6 +187,7 @@ void calibration_change_dc_potentiometer(int servo_num) {
     check_servo_change_direction(servo_num, duty_cycle);
 
     servoinfo[servo_num].duty_cycle = duty_cycle;
+
 }
 
 
@@ -202,8 +209,7 @@ void calibration_change_dc_buttons(int servo_num) {
     static int S1 = 0, S2 = 0, S3 = 0;
     static int step_val = 0; 
 
-    int step1 = 20, step2 = 40, step3 = 100;
-    int steps = {20, 40, 100};
+    int steps[] = {20, 40, 100};
     int duty_cycle = servoinfo[servo_num].duty_cycle;
 
     bool change_step_button = digitalRead(CHANGE_STEP_CHANGE_PIN);
