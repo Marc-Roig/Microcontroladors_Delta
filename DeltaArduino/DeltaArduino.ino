@@ -24,6 +24,9 @@ void setup() {
   //--SERVOS--//
   init_servos();
 
+  //--DELTA--//
+  init_delta();
+
   //--CALIBRATION--//
   calibration_start(true, true, true, false);
 
@@ -32,7 +35,7 @@ void setup() {
 void loop() {
 
   //--SERVOS--//
-  move_servos_from_angle(false, false, false); //Angle to duty cycle, only with three arm servos  
+  // move_servos_from_angle(false, false, false); //Angle to duty cycle, only with three arm servos  
 
   //--SERIAL--//
   // serial_com_with_simulator();
@@ -44,7 +47,9 @@ void loop() {
 
 void init_delta() {
 
-  // deltainfo.x = 
+  deltainfo.x = 0;
+  deltainfo.y = 0;
+  deltainfo.z = -300;
 
 }
 
