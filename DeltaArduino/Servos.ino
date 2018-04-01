@@ -26,12 +26,11 @@ void move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3
 
     new_duty_cycle = servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n;
 
-
     if (move_servos[i]) {
 
-      check_servo_change_direction(i, new_duty_cycle);
-      servoinfo[i].duty_cycle = new_duty_cycle;
-      servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
+        check_servo_change_direction(i, new_duty_cycle);
+        servoinfo[i].duty_cycle = new_duty_cycle;
+        servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
 
     }
 
@@ -63,8 +62,10 @@ void move_servos_from_dc(bool move_servo1, bool move_servo2, bool move_servo3, b
 
   for (int i = 0; i < 4; i++) {
 
-    if (move_servos[i]) servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
-    
+    if (move_servos[i]) {
+        servo_update_angle_from_dc(i);
+        servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
+    }
   }
 
 }
@@ -185,4 +186,8 @@ void init_servos() {
 
 }
 
+void servo_update_angle_from_dc(int servo_num) {
 
+    servoinfo[servo_num].angle = (servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
+
+}
