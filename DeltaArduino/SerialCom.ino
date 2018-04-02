@@ -165,9 +165,11 @@ void serial_recieve_ef_pos(char command[SERIAL_COMMAND_MAX_LEN]) {
   }
 
   if (!bad_request) {
-    end_effector_pos[0] = command[4];
-    end_effector_pos[1] = command[5];
-    end_effector_pos[2] = command[6];
+
+    // deltainfo.x = ...;
+    // deltainfo.y = ...;
+    // deltainfo.x = ...;
+
   }
 
 }
@@ -188,7 +190,7 @@ void serial_send_angles() {
 void serial_send_speed() {
 
   send_command_header(CHANGE_SPEED, false);
-  Serial.write(end_effector_speed + '0');
+  // Serial.write(end_effector_speed + '0');
   Serial.write('\n');
 
 }
@@ -196,9 +198,9 @@ void serial_send_speed() {
 void serial_send_ef_pos() {
 
   send_command_header(MOVE_EF, false);
-  Serial.write(end_effector_pos[0]+'0');
-  Serial.write(end_effector_pos[1]+'0');
-  Serial.write(end_effector_pos[1]+'0');
+  // Serial.write(end_effector_pos[0]+'0');
+  // Serial.write(end_effector_pos[1]+'0');
+  // Serial.write(end_effector_pos[1]+'0');
   Serial.write('\n');
 
 }

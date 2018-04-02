@@ -2,14 +2,10 @@
 
 //GLOBAL VARIABLES
 
-int end_effector_pos[] = {0, 0, 100};
-int end_effector_speed;
-
 //--SERIAL COMUNICATION--//
 
 bool command_recieved = false;
 int serial_mode = ASK_FOR_ANGLES;
-
 
 void setup() {
   
@@ -22,37 +18,34 @@ void setup() {
   init_buffer(); 
 
   //--SERVOS--//
-  init_servos();
+  init_servos(true, true, true, false);
 
   //--DELTA--//
   init_delta();
 
   //--CALIBRATION--//
-  calibration_start(true, true, true, false);
+  // calibration_start(true, true, true, false);
+
+  //--JOYSTICK--//
+  init_joystick();
 
 }
 
 void loop() {
 
   //--SERVOS--//
-  // move_servos_from_angle(false, false, false); //Angle to duty cycle, only with three arm servos  
+  move_servos_from_angle(true, true, true); //Angle to duty cycle, only with three arm servos  
 
   //--SERIAL--//
   // serial_com_with_simulator();
 
   //--CALIBRATION--//
-  servo_calibration(true, true, true, false);
+  // servo_calibration(true, true, true, false);
+
+  //--JOYSTICK--//
+  joystick_movement();
   
 }
-
-void init_delta() {
-
-  deltainfo.x = 0;
-  deltainfo.y = 0;
-  deltainfo.z = -300;
-
-}
-
 
 
 
