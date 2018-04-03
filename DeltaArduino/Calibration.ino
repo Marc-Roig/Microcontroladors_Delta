@@ -80,52 +80,6 @@ void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3, boo
     pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
     pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
 
-    calibration_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4);
-
-}
-
-
-/*********************************************************************
-* Function: void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3);
-*
-* Overview: To reduce the slack of the gears all servos are moved
-*           clockwise. To ensure they are left moved clockwise
-*           they are first moved counterclockwise just in case they
-*           coudln't move any more clockwise.
-*
-* PreCondition: none
-*
-* Input: bool - Will move the servo 1
-*        bool - Will move the servo 2
-*        bool - Will move the servo 3
-*
-* Output: none
-*
-********************************************************************/
-
-void calibration_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
-
-    bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
-
-    for (int i = 0; i < 3; i++) {
-        
-        if (move_servos[i]) {
-            servos[i].writeMicroseconds((45 * servoinfo[i].m + servoinfo[i].n));
-        }
-    }
-
-    delay(1000);
-
-    for (int i = 0; i < 3; i++) {
-        
-        if (move_servos[i]) {
-
-            servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
-            servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
-
-        }
-    }
-
 }
 
 

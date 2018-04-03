@@ -1,5 +1,11 @@
 #include "Config.h"
 
+void servo_update_angle_from_dc(int servo_num) {
+
+    servoinfo[servo_num].angle = (float)(servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
+
+}
+
 /*********************************************************************
 * Function: move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3);
 *
@@ -24,7 +30,7 @@ void move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3
 
   for (int i = 0; i < 3; i++) {
 
-    new_duty_cycle = servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n;
+    new_duty_cycle = (int) (servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n);
 
     if (move_servos[i]) {
 
@@ -141,7 +147,7 @@ void check_servo_change_direction(int num_servo, int new_duty_cycle) {
 
 void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_) {
 
-    servo_inf->angle = 90;
+    servo_inf->angle = 90.0;
     
     servo_inf->max_duty_cycle = max_duty_cycle_;
     servo_inf->min_duty_cycle = min_duty_cycle_;
@@ -158,6 +164,48 @@ void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_du
     servo_inf->n = n_;
 }
 
+/*********************************************************************
+* Function: void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3);
+*
+* Overview: To reduce the slack of the gears all servos are moved
+*           clockwise. To ensure they are left moved clockwise
+*           they are first moved counterclockwise just in case they
+*           coudln't move any more clockwise.
+*
+* PreCondition: none
+*
+* Input: bool - Will move the servo 1
+*        bool - Will move the servo 2
+*        bool - Will move the servo 3
+*
+* Output: none
+*
+********************************************************************/
+
+void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+
+    bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
+
+    for (int i = 0; i < 3; i++) {
+        
+        if (move_servos[i]) {
+            servos[i].writeMicroseconds((55 * servoinfo[i].m + servoinfo[i].n));
+        }
+    }
+
+    delay(1000);
+
+    for (int i = 0; i < 3; i++) {
+        
+        if (move_servos[i]) {
+
+            servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
+            servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
+
+        }
+    }
+
+}
 
 /*********************************************************************
 * Function: init_servos();
@@ -172,22 +220,32 @@ void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_du
 *
 ********************************************************************/
 
-void init_servos() {
+void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
   
-  servos[0].attach(SERVO1_PIN);
-  servos[1].attach(SERVO2_PIN);
-  servos[2].attach(SERVO3_PIN);
-  servos[3].attach(SERVO4_PIN);
+    if (move_servo1) {
+        servos[0].attach(SERVO1_PIN);
+        init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, SERVO1_M_ANGLE_TO_DC, SERVO1_N_ANGLE_TO_DC);
+    }
 
-  init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, SERVO1_M_ANGLE_TO_DC, SERVO1_N_ANGLE_TO_DC);
-  init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, SERVO2_M_ANGLE_TO_DC, SERVO2_N_ANGLE_TO_DC);
-  init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
-  init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
+    if (move_servo1) {
+        servos[1].attach(SERVO2_PIN);
+        init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, SERVO2_M_ANGLE_TO_DC, SERVO2_N_ANGLE_TO_DC);
+    }
+
+    if (move_servo1) {
+        servos[2].attach(SERVO3_PIN);
+        init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
+    }
+
+    if (move_servo1) {
+        servos[3].attach(SERVO4_PIN);
+        init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
+    }
+
+    servos_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4); //Move every servo to the initial position
 
 }
 
-void servo_update_angle_from_dc(int servo_num) {
 
-    servoinfo[servo_num].angle = (servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
 
-}
+
