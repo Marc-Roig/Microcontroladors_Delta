@@ -50,7 +50,7 @@ void joystick_change_angles() {
 
         float base_speed_increment = 0.5;
 
-        servoinfo[servo_num].angle += (int) (base_speed_increment * joys_x);
+        servoinfo[servo_num].angle += (base_speed_increment * joys_x);
 
         serial_write_angles();
         serial_write_xyz_from_anlges();
@@ -69,6 +69,21 @@ void joystick_change_angles() {
     } else if (change_axis_button) S0 = 0;
 
 }
+
+
+/*********************************************************************
+* Function: joysitck_change_mode(int* change_joystick_mode);
+*
+* Overview: Joystick can move angles or axis. Pressing the button
+*           will change from moving angles to axis or viceversa.
+*           
+* PreCondition: none
+*
+* Input: int* change_joystick_mode  - mode of movement
+*
+* Output: none
+*
+********************************************************************/
 
 void joysitck_change_mode(int* change_joystick_mode) {
 

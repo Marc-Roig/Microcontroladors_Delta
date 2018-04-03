@@ -151,12 +151,12 @@ bool convert_xyz_to_angles() {
 
      if (is_valid == 0) {
 
-          servoinfo[0].angle = theta1 + 90;
-          servoinfo[1].angle = theta2 + 90;
-          servoinfo[2].angle = theta3 + 90;
+          servoinfo[0].angle = theta1 + 90.0;
+          servoinfo[1].angle = theta2 + 90.0;
+          servoinfo[2].angle = theta3 + 90.0;
 
           return true;
-
+          
      }
      else Serial.write("Invalid pos\n");
 
