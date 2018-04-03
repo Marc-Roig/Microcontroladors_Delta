@@ -43,9 +43,8 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
     
     calibration_change_dc_mode(&change_dc_mode);
 
-    if (change_dc_mode == CHANGE_WITH_SERIAL) move_servos_from_angle(move_servo1, move_servo2, move_servo3);
-    else move_servos_from_dc(move_servo1, move_servo2, move_servo3, move_servo4);
-
+    move_servos(move_servo1, move_servo2, move_servo3, move_servo4);
+    
     serial_write_xyz_from_anlges();
     serial_write_dc_every_ms(0);
     serial_write_angles();
@@ -79,6 +78,11 @@ void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3, boo
     pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
     pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
     pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
+
+    servoinfo[0].move_servo_from = "DUTYCYCLE";
+    servoinfo[1].move_servo_from = "DUTYCYCLE";
+    servoinfo[2].move_servo_from = "DUTYCYCLE";
+    servoinfo[3].move_servo_from = "DUTYCYCLE";
 
 }
 
@@ -255,8 +259,13 @@ void calibration_change_dc_serial() {
             if (number < 160 && number > 10) {
 
                 servoinfo[0].angle = number;
+                servo_update_dc_from_angle(0); //Used to avoid changing move_servo_from
+
                 servoinfo[1].angle = number;
+                servo_update_dc_from_angle(1);
+
                 servoinfo[2].angle = number;
+                servo_update_dc_from_angle(2);
 
             }
 

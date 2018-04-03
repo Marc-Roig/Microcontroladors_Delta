@@ -17,7 +17,7 @@
 
 	typedef struct ServoInfo {
 
-		int angle;
+		float angle;
 
 		int duty_cycle;
 		int dc_offset;
@@ -33,6 +33,8 @@
 		//--ANGLE TO DUTY_CYCLE
 		float m;
 		float n;
+
+		int move_servo_from; //Change position with angles or Microseconds
 
 	}ServoInfo;
 

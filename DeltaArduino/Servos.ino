@@ -1,80 +1,59 @@
 #include "Config.h"
 
-void servo_update_angle_from_dc(int servo_num) {
+void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+
+    bool move_servos[] = {move_servo1, move_servo2, move_servo3, bool move_servo4};
+
+    for (int i = 0; i < 4; i ++) {
+
+        if (move_servos[i]) {
+
+            if (servoinfo[i].move_servo_from == "ANGLE") {
+
+                update_dc_from_angle(i);  //Update dc
+
+            }
+            else if (servoinfo[i].move_servo_from == "DUTYCYCLE") {
+
+                update_angle_from_dc(i);  //Update angles
+
+            }
+            else if (servoinfo[i].move_servo_from == "XYZ" && i == 0) { 
+                //All servo values are updated at once, there is no need
+                //to repeat this process every loop
+
+                update_dc_from_xyz();
+                update_angles_from_xyz();
+
+            }
+
+            servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
+        }
+
+    }
+
+    //To avoid doing the calculations 3 times each loop.
+    //Angles are already updated if the mode was duty_cycle
+    //Arms servos need to have the same "move_servo_from" so
+    //if the first isnt XYZ the others will not be either.
+    if (servoinfo[0].move_servo_from != "XYZ") update_xyz_from_angle();
+
+}
+
+void update_angle_from_dc(int servo_num) {
 
     servoinfo[servo_num].angle = (float)(servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
 
 }
 
-/*********************************************************************
-* Function: move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3);
-*
-* Overview: The duty cycle will be calculated from the angle
-*           value stored in servoinfo variable.
-*
-* PreCondition: none
-*
-* Input: bool - Will move the servo 1
-*        bool - Will move the servo 2
-*        bool - Will move the servo 3
-*
-* Output: none
-*
-********************************************************************/
+void update_dc_from_angle(int servo_num) {
 
-void move_servos_from_angle(bool move_servo1, bool move_servo2, bool move_servo3) {
+    int new_duty_cycle = (int) (servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n);
 
-  bool move_servos[] = {move_servo1, move_servo2, move_servo3};
+    check_servo_change_direction(i, new_duty_cycle);
+    servoinfo[i].duty_cycle = new_duty_cycle;
 
-  int new_duty_cycle;
-
-  for (int i = 0; i < 3; i++) {
-
-    new_duty_cycle = (int) (servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n);
-
-    if (move_servos[i]) {
-
-        check_servo_change_direction(i, new_duty_cycle);
-        servoinfo[i].duty_cycle = new_duty_cycle;
-        servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
-
-    }
-
-  }
-
-}
-
-
-/*********************************************************************
-* Function: move_servos_from_dc(bool move_servo1, bool move_servo2, bool move_servo3);
-*
-* Overview: move all servos from the duty cycle stored in
-*           the servoinfo variable
-*
-* PreCondition: none
-*
-* Input: bool - Will move the servo 1
-*        bool - Will move the servo 2
-*        bool - Will move the servo 3
-*        bool - Will move the servo 4
-*
-* Output: none
-*
-********************************************************************/
-
-void move_servos_from_dc(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
-
-  bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
-
-  for (int i = 0; i < 4; i++) {
-
-    if (move_servos[i]) {
-        servo_update_angle_from_dc(i);
-        servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
-    }
-  }
-
-}
+} 
 
 
 /*********************************************************************
@@ -227,20 +206,25 @@ void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
         init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, SERVO1_M_ANGLE_TO_DC, SERVO1_N_ANGLE_TO_DC);
     }
 
-    if (move_servo1) {
+    if (move_servo2) {
         servos[1].attach(SERVO2_PIN);
         init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, SERVO2_M_ANGLE_TO_DC, SERVO2_N_ANGLE_TO_DC);
     }
 
-    if (move_servo1) {
+    if (move_servo3) {
         servos[2].attach(SERVO3_PIN);
         init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
     }
 
-    if (move_servo1) {
+    if (move_servo4) {
         servos[3].attach(SERVO4_PIN);
         init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
     }
+
+    servoinfo[0].move_servo_from = MOVE_SERVO_1_FROM;
+    servoinfo[1].move_servo_from = MOVE_SERVO_2_FROM;
+    servoinfo[2].move_servo_from = MOVE_SERVO_3_FROM;
+    servoinfo[3].move_servo_from = MOVE_SERVO_4_FROM;
 
     servos_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4); //Move every servo to the initial position
 
