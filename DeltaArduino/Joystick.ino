@@ -16,12 +16,11 @@ void joystick_movement() {
 
     switch (move_axis_or_angles) {
 
-        case JOYSTICK_MOVE_ANGLES:      joystick_change_angles();
+        case JOYSTICK_MOVE_ANGLES:      joystick_move_angles();
                                         break;
 
-        case JOYSTICK_MOVE_AXIS:        joystick_change_xy();
-                                        buttons_change_xyz();
-                                        convert_xyz_to_angles();
+        case JOYSTICK_MOVE_AXIS:        joystick_move_xyz();
+                                        buttons_move_xyz();
                                         break;
 
         default:                        break;
@@ -32,7 +31,19 @@ void joystick_movement() {
 
 }
 
-void joystick_change_angles() {
+void joystick_debug_from_angles() {
+
+    serial_write_angles();
+    serial_write_xyz_from_anlges();
+    Serial.write("-----------------------\n");
+
+}
+
+void joystick_debug_from_xyz() {
+
+}
+
+void joystick_move_angles() {
 
     static unsigned long StartTime = millis();
     static int servo_num = 0;
@@ -48,13 +59,9 @@ void joystick_change_angles() {
 
         if (abs(joys_x) < 1) joys_x = 0;
 
-        float base_speed_increment = 0.5;
+        servoinfo[servo_num].angle += (0.5 * joys_x); //Multiply joys_x with a gain
 
-        servoinfo[servo_num].angle += (base_speed_increment * joys_x);
-
-        serial_write_angles();
-        serial_write_xyz_from_anlges();
-        Serial.write("-----------------------\n");
+        // joystick_debug_from_xyz();
 
         StartTime = millis();
 
@@ -89,12 +96,26 @@ void joysitck_change_mode(int* change_joystick_mode) {
 
     static int S0 = 0;
     bool joystick_change_mode_button = digitalRead(JOYSTICK_CHANGE_AXIS_ANGLES);
-    
+
     if (joystick_change_mode_button && !S0) {
-    
-      *change_joystick_mode = (*change_joystick_mode + 1) % 2;
-      S0 = 1;
-      
+
+        *change_joystick_mode = (*change_joystick_mode + 1) % 2;
+
+        switch (*change_joystick_mode) {
+
+            case JOYSTICK_MOVE_ANGLES:      servoinfo[0].move_servo_from = "ANGLE";
+                                            servoinfo[1].move_servo_from = "ANGLE";
+                                            servoinfo[2].move_servo_from = "ANGLE";
+                                            break;
+
+            case JOYSTICK_MOVE_AXIS:        servoinfo[0].move_servo_from = "XYZ";
+                                            servoinfo[1].move_servo_from = "XYZ";
+                                            servoinfo[2].move_servo_from = "XYZ";
+                                            break;
+        }
+
+        S0 = 1;
+
     }
     else if (!joystick_change_mode_button) S0 = 0;
 
@@ -113,7 +134,28 @@ void joysitck_change_mode(int* change_joystick_mode) {
 *
 ********************************************************************/
 
-void joystick_change_xy() {
+void joystick_move_xyz() {
+
+    static char move_xy_or_z = 0; //0 for XY , 1 for Z;
+    static char S0 = 0;
+
+    bool change_axis_button = digitalRead(JOYSTICK_BUTTON_PIN);
+
+    //--CHANGE XY Z--//
+    if (!change_axis_button && !S0) {
+
+        move_xy_or_z = (move_xy_or_z + 1) % 2;
+        S0 = 1; 
+
+    } else if (change_axis_button) S0 = 0;
+
+    //--MOVING Z OR XY WITH JOYSITCK--//
+    if (move_xy_or_z == 0) joystick_move_xy();
+    else joystick_move_z();
+
+}
+
+void joystick_move_xy() {
 
     static unsigned long StartTime = millis();
 
@@ -132,18 +174,37 @@ void joystick_change_xy() {
         deltainfo.x += joys_x * base_speed_increment;
         deltainfo.y += joys_y * base_speed_increment;
 
-        serial_write_xyz();
-        serial_write_angles();
-        Serial.write("---------------------\n");
+        // joystick_debug_from_xyz();
 
         StartTime = millis();
         
+    } 
+}
+
+void joystick_move_z() {
+
+    static unsigned long StartTime = millis();
+
+    int time_difference_ms = 400; // Every X ms program will read the joystick val 
+
+    if ((millis() - StartTime) > time_difference_ms ) {
+
+        float joys_z = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
+
+        if (abs(joys_z) < 1) joys_z = 0;
+
+        deltainfo.z += (1 * joys_z); //Multiply joys_z with a gain
+
+        // joystick_debug_from_xyz();
+
+        StartTime = millis();
+
     }
 
 }
 
 /*********************************************************************
-* Function: buttons_change_xyz();
+* Function: buttons_move_xyz();
 *
 * Overview: Move XYZ of end effector with the buttons.
 *           
@@ -155,7 +216,7 @@ void joystick_change_xy() {
 *
 ********************************************************************/
 
-void buttons_change_xyz() {
+void buttons_move_xyz() {
 
     static int S1 = 0, S2 = 0, S3 = 0, S4 = 0;//For flank detection
     static int step_val = 0; 
