@@ -259,13 +259,13 @@ void calibration_change_dc_serial() {
             if (number < 160 && number > 10) {
 
                 servoinfo[0].angle = number;
-                servo_update_dc_from_angle(0); //Used to avoid changing move_servo_from
+                update_dc_from_angle(0); //Used to avoid changing move_servo_from
 
                 servoinfo[1].angle = number;
-                servo_update_dc_from_angle(1);
+                update_dc_from_angle(1);
 
                 servoinfo[2].angle = number;
-                servo_update_dc_from_angle(2);
+                update_dc_from_angle(2);
 
             }
 

@@ -141,7 +141,7 @@ void serial_write_xyz() {
 
 }
 
-bool convert_xyz_to_angles() {
+bool update_angles_from_xyz() {
 
      float theta1 = 0;
      float theta2 = 0;
@@ -161,6 +161,28 @@ bool convert_xyz_to_angles() {
      else Serial.write("Invalid pos\n");
 
      return false; //Invalid position
+
+}
+
+bool update_xyz_from_angles() {
+
+     float x = 0;
+     float y = 0;
+     float z = 0;
+
+     int is_valid = delta_calcForward((float)servoinfo[0].angle - 90, (float)servoinfo[1].angle - 90, (float)servoinfo[2].angle - 90, &x, &y, &z);
+
+     if (is_valid != -1) {
+
+          deltainfo.x = x;
+          deltainfo.y = y;
+          deltainfo.z = z;
+
+          return true;
+
+     } else Serial.write("INVALID POSITION\n");
+
+     return false;
 
 }
 

@@ -4,7 +4,8 @@
 
 	#include "Defines.h"
 	#include "Structs.h"
-
+	
+	#include "Servos.h"
 	#include "Calibration.h"
 
 	#define CONFIG_H

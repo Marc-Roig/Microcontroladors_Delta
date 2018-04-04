@@ -34,7 +34,7 @@ void setup() {
 void loop() {
 
   //--SERVOS--//
-  move_servos_from_angle(true, true, true); //Angle to duty cycle, only with three arm servos  
+  move_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
 
   //--SERIAL--//
   // serial_com_with_simulator();
