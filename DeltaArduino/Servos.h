@@ -2,41 +2,6 @@
 	
 	#define SERVOS_H
 
-	//----------------//
-	//-----SERVOS-----//	
-	//----------------//
-
-	//MOVE SERVOS FROM
-
-	#define MOVE_SERVO_1_FROM "ANGLE"
-	#define MOVE_SERVO_2_FROM "ANGLE"
-	#define MOVE_SERVO_3_FROM "ANGLE"
-	#define MOVE_SERVO_4_FROM "DUTYCYCLE"
-
-	//ARMS
-	#define MAX_DC_SERVO1 2300
-	#define MAX_DC_SERVO2 2300
-	#define MAX_DC_SERVO3 2300
-
-	#define MIN_DC_SERVO1 500
-	#define MIN_DC_SERVO2 500
-	#define MIN_DC_SERVO3 600
-
-	#define SERVO1_COMPENSATION_VAL 70
-	#define SERVO2_COMPENSATION_VAL 60
-	#define SERVO3_COMPENSATION_VAL 30
-
-	#define SERVO1_M_ANGLE_TO_DC -10.478
-	#define SERVO2_M_ANGLE_TO_DC -11.041
-	#define SERVO3_M_ANGLE_TO_DC -9.0743
-
-	#define SERVO1_N_ANGLE_TO_DC 2542.5
-	#define SERVO2_N_ANGLE_TO_DC 2701.8
-	#define SERVO3_N_ANGLE_TO_DC 2692.1
-
-	//GRIPPER
-	#define MAX_DC_SERVO4 1900
-	#define MIN_DC_SERVO4 965
-	#define SERVO4_COMPENSATION_VAL 0
+	
 
 #endif

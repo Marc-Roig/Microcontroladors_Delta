@@ -4,7 +4,7 @@
 
 	#include "Defines.h"
 
-	typedef struct Buffer { //Circular buffer, FIFO
+	typedef struct Buffer { //Circular buffer for serial communication
 
 		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
 		int command_len[SERIAL_BUFFER_LEN];
@@ -12,6 +12,8 @@
 		bool full, empty;
 
 	}Buffer;
+
+
 
 	//---------------------//
 
@@ -34,7 +36,7 @@
 		float m;
 		float n;
 
-		int move_servo_from; //Change position with angles or Microseconds
+		char* move_servo_from; //Change position with angles/microseconds/xyz
 
 	}ServoInfo;
 

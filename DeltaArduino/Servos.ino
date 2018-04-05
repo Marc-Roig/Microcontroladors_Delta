@@ -2,7 +2,7 @@
 
 void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    bool move_servos[] = {move_servo1, move_servo2, move_servo3, bool move_servo4};
+    bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
 
     for (int i = 0; i < 4; i ++) {
 
@@ -18,16 +18,15 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
                 update_angle_from_dc(i);  //Update angles
 
             }
-            else if (servoinfo[i].move_servo_from == "XYZ" && i == 0) { 
-                //All servo values are updated at once, there is no need
-                //to repeat this process every loop
+            else if (servoinfo[i].move_servo_from == "XYZ") { 
 
-                update_dc_from_xyz();
-                update_angles_from_xyz();
+                if (i == 0) update_angles_from_xyz(); //All servo angles are updated at once
+                update_dc_from_angle(i);
 
             }
 
             servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
+
         }
 
     }
@@ -36,7 +35,7 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
     //Angles are already updated if the mode was duty_cycle
     //Arms servos need to have the same "move_servo_from" so
     //if the first isnt XYZ the others will not be either.
-    if (servoinfo[0].move_servo_from != "XYZ") update_xyz_from_angle();
+    if (servoinfo[0].move_servo_from != "XYZ") update_xyz_from_angles();
 
 }
 
@@ -48,10 +47,10 @@ void update_angle_from_dc(int servo_num) {
 
 void update_dc_from_angle(int servo_num) {
 
-    int new_duty_cycle = (int) (servoinfo[i].angle * servoinfo[i].m + servoinfo[i].n);
+    int new_duty_cycle = (int) (servoinfo[servo_num].angle * servoinfo[servo_num].m + servoinfo[servo_num].n);
 
-    check_servo_change_direction(i, new_duty_cycle);
-    servoinfo[i].duty_cycle = new_duty_cycle;
+    check_servo_change_direction(servo_num, new_duty_cycle);
+    servoinfo[servo_num].duty_cycle = new_duty_cycle;
 
 } 
 
@@ -76,7 +75,7 @@ void update_dc_from_angle(int servo_num) {
 
 void check_servo_change_direction(int num_servo, int new_duty_cycle) {
 
-  int min_step_to_change_dir = 30;
+  int min_step_to_change_dir = 20;
 
   if (new_duty_cycle > servoinfo[num_servo].duty_cycle + min_step_to_change_dir) {
 
@@ -230,6 +229,13 @@ void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
 }
 
+void set_servo_movement_with_dc(bool set_servo1, bool set_servo2, bool set_servo3, bool set_servo4) {
 
+    if (set_servo1) servoinfo[0].move_servo_from = "DUTYCYCLE";
+    if (set_servo2) servoinfo[1].move_servo_from = "DUTYCYCLE";
+    if (set_servo3) servoinfo[2].move_servo_from = "DUTYCYCLE";
+    if (set_servo4) servoinfo[3].move_servo_from = "DUTYCYCLE";
+    
+}
 
 
