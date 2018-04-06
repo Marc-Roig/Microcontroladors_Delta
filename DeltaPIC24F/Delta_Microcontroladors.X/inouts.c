@@ -13,38 +13,38 @@ volatile bool RB9_Analog_Active = false;
 //---PIN INITIALIZATION---//
 //------------------------//
 
-void pinMode(char* pin_name, char* mode) {
+void pinMode(int pin_name, int mode) {
 
     switch (pin_name) {
 
-        case "RB3":         if (mode == INPUT) _TRISB3 = 1;
+        case IO_RB3:         if (mode == INPUT) _TRISB3 = 1;
                             else if (mode == OUTPUT) _TRISB3 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case "RB8":         if (mode == INPUT) _TRISB8 = 1;
+        case IO_RB8:         if (mode == INPUT) _TRISB8 = 1;
                             else if (mode == OUTPUT) _TRISB8 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case "RB9":         if (mode == INPUT) _TRISB9 = 1;
+        case IO_RB9:         if (mode == INPUT) _TRISB9 = 1;
                             else if (mode == OUTPUT) _TRISB9 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case "RE8":         if (mode == INPUT) _TRISE8 = 1;
+        case IO_RE8:         if (mode == INPUT) _TRISE8 = 1;
                             else if (mode == OUTPUT) _TRISE8 = 0;
                             break;
 
-        case "RE9":         if (mode == INPUT) _TRISE9 = 1;
+        case IO_RE9:         if (mode == INPUT) _TRISE9 = 1;
                             else if (mode == OUTPUT) _TRISE9 = 0;
                             break;
 
-        case "RA14":        if (mode == INPUT) _TRISA14 = 1;
+        case IO_RA14:        if (mode == INPUT) _TRISA14 = 1;
                             else if (mode == OUTPUT) _TRISA14 = 0;
                             break;
 
-        case "RA15":        if (mode == INPUT) _TRISA15 = 1;
+        case IO_RA15:        if (mode == INPUT) _TRISA15 = 1;
                             else if (mode == OUTPUT) _TRISA15 = 0;
                             break;
 
@@ -96,38 +96,34 @@ void init_ADC() {
 
 }
 
-void init_analog_input(char* pin_name) {
+void init_analog_input(int pin_name) {
 
-    switch (pin_num) {
+    switch (pin_name) {
 
-        case "RB3":     RB3_Analog_Active = true;
-                        _PCFG3 = 0;
+        case IO_RB3:     RB3_Analog_Active = true;
                         break;
 
-        case "RB8":     RB8_Analog_Active = true;
-                        _PCFG8 = 0;
+        case IO_RB8:     RB8_Analog_Active = true;
                         break;
 
-        case "RB9":     RB9_Analog_Active = true;
-                        _PCFG9 = 0;
+        case IO_RB9:     RB9_Analog_Active = true;
                         break;
 
     }
+    
 
 }
 
 void _ISR _ADCInterrupt() {
 
-    int* ADC1BUF_Pointer = &ADC1BUF0;
-
     AD1CON1bits.ASAM = 0; // Stop sampling
 
-    if (RB3_Analog_Active) RB3_Analog_Value = *(ADC1BUF_Pointer + 3);
-    if (RB8_Analog_Active) RB8_Analog_Value = *(ADC1BUF_Pointer + 8);
-    if (RB9_Analog_Active) RB9_Analog_Value = *(ADC1BUF_Pointer + 9);
+    if (RB3_Analog_Active) RB3_Analog_Value = *(&ADC1BUF0 + 3);
+    if (RB8_Analog_Active) RB8_Analog_Value = *(&ADC1BUF0 + 8);
+    if (RB9_Analog_Active) RB9_Analog_Value = *(&ADC1BUF0 + 9);
 
     AD1CON1bits.ASAM = 1; // Continue sampling
-    _AD1IF = 0; // Baixar flanc al acabar la interrupicó
+    _AD1IF = 0; // 
 
 }
 
@@ -138,17 +134,20 @@ int analogRead(int pin_num) {
 
     switch (pin_num) {
 
-        case "RB3":     return RB3_Analog_Value;
+        case IO_RB3:     return RB3_Analog_Value;
                         break;
 
-        case "RB8":     return RB8_Analog_Value;
+        case IO_RB8:     return RB8_Analog_Value;
                         break;
 
-        case "RB9":     return RB9_Analog_Value;
+        case IO_RB9:     return RB9_Analog_Value;
+                        break;
+                        
+        default:      return 512;
                         break;
 
     }
-
+    
 }
 
 //--------------------//
@@ -161,25 +160,25 @@ void digitalWrite(int pin_num, unsigned int value) {
 
     switch (pin_num) {
 
-        case "RB3":         if (_TRISB3 == 0) _LATB3 = value;
+        case IO_RB3:         if (_TRISB3 == 0) _LATB3 = value;
                             break;
 
-        case "RB8":         if (_TRISB8 == 0) _LATB8 = value;
+        case IO_RB8:         if (_TRISB8 == 0) _LATB8 = value;
                             break;
 
-        case "RB9":         if (_TRISB9 == 0) _LATB9 = value;
+        case IO_RB9:         if (_TRISB9 == 0) _LATB9 = value;
                             break;
 
-        case "RE8":         if (_TRISE8 == 0) _LATE8 = value;
+        case IO_RE8:         if (_TRISE8 == 0) _LATE8 = value;
                             break;
 
-        case "RE9":         if (_TRISE9 == 0) _LATE9 = value;
+        case IO_RE9:         if (_TRISE9 == 0) _LATE9 = value;
                             break;
 
-        case "RA14":        if (_TRISA14 == 0) _LATA14 = value;
+        case IO_RA14:        if (_TRISA14 == 0) _LATA14 = value;
                             break;
 
-        case "RA15":        if (_TRISA15 == 0) _LATA15 = value;
+        case IO_RA15:        if (_TRISA15 == 0) _LATA15 = value;
                             break;
 
     }
@@ -187,33 +186,33 @@ void digitalWrite(int pin_num, unsigned int value) {
 }
 
 int digitalRead(int pin_num) {
-
+    
     switch (pin_num) {
 
-        case "RB3":         if (_TRISB3 == 1) return _RB3;
+        case IO_RB3:         if (_TRISB3 == 1) return _RB3;
                             break;
 
-        case "RB8":         if (_TRISB8 == 1) return _RB8;
+        case IO_RB8:         if (_TRISB8 == 1) return _RB8;
                             break;
 
-        case "RB9":         if (_TRISB9 == 1) return _RB9;
+        case IO_RB9:         if (_TRISB9 == 1) return _RB9;
                             break;
 
-        case "RE8":         if (_TRISE8 == 1) return _RE8;
+        case IO_RE8:         if (_TRISE8 == 1) return _RE8;
                             break;
 
-        case "RE9":         if (_TRISE9 == 1) return _RE9;
+        case IO_RE9:         if (_TRISE9 == 1) return _RE9;
                             break;
 
-        case "RA14":        if (_TRISA14 == 1) return _RA14;
+        case IO_RA14:        if (_TRISA14 == 1) return _RA14;
                             break;
 
-        case "RA15":        if (_TRISA15 == 1) return _RA15;
+        case IO_RA15:        if (_TRISA15 == 1) return _RA15;
                             break;
 
-        default:            return LOW;
-                            break;
     }
+    
+    return LOW;
 } 
 
 //----------------------//

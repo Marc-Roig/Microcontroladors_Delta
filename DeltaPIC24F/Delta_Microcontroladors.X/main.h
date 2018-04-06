@@ -4,10 +4,12 @@
     #include <p24fj128ga010.h>
 	#include <stdbool.h>
 
+	#include "inouts.h"
 	#include "defines.h"
 	
 	#include "serialcom.h"
 	#include "servos.h"
+
 
     
 	#define MAIN_H //Include guard
