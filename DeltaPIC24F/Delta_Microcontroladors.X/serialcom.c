@@ -3,7 +3,7 @@
 volatile bool command_recieved = false;
 
 volatile Buffer RX_buffer;
-volatile Buffer TX_buffer;
+volatile TXBuffer TX_buffer;
 
 volatile bool Serial_busy = false; //True if sending data through TX
 
@@ -11,106 +11,92 @@ volatile int serial_mode = 0;
 
 void init_UART() {
 
-	// U2MODEbits.UARTEN = 1; //Enable UART2
+    // U2MODEbits.UARTEN = 1; //Enable UART2
 
-	// U2STAbits.UTXISEL1 = 0; //Interrupt when any char is transfered
-	// U2STAbits.URXISEL1 = 0; //Interrupt flag bit is set when a character is recieved 
+    // U2STAbits.UTXISEL1 = 0; //Interrupt when any char is transfered
+    // U2STAbits.URXISEL1 = 0; //Interrupt flag bit is set when a character is recieved 
 
-	// U2STAbits.UTXEN = 1; //Enable UART2 transmiter
-	// U2STAbits.URXEN = 1; //Enable UART2 reciever 
+    // U2STAbits.UTXEN = 1; //Enable UART2 transmiter
+    // U2STAbits.URXEN = 1; //Enable UART2 reciever 
 
-	U2MODE = 0x8000;
+    U2MODE = 0x8000;
 
-	U2STA = 0x1400;
+    U2STA = 0x1400;
 
-	U2BRG = 25; //9600 BAUDRATE
+    U2BRG = 25; //9600 BAUDRATE
 
-	_U2TXIF = 0;
-	_U2TXIE = 1; //Enable TX interrupt
+    _U2TXIF = 0;
+    _U2TXIE = 1; //Enable TX interrupt
 
-	_U2RXIF = 0;
-	_U2RXIE = 1; //Enable RX interrupt
+    _U2RXIF = 0;
+    _U2RXIE = 1; //Enable RX interrupt
 
 }
 
 void _ISR _U2TXInterrupt() {
 
-  static int i = 1; //Pivot of the sentence, first character already sent.
+    if(!TX_buffer.empty)  {
 
-  char ByteToSend;
+        U2TXREG = TX_buffer.command[TX_buffer.start];
+        inc_TXbuffer_start_pointer();
 
-  if(!TX_buffer.empty)  {
+    } else Serial_busy = false;
 
-    ByteToSend = TX_buffer.command[TX_buffer.start][i];
-
-    U2TXREG = ByteToSend;
-
-    i++;
-
-    if (ByteToSend == '\n') {
-
-      i = 0; 
-      inc_buffer_start_pointer(&TX_buffer);
-
-    }
-
-  } else {
-
-    Serial_busy = false;
-    i = 1;
-
-  }
-
-	_U2TXIF = 0;
+    _U2TXIF = 0;
 
 }
 
 void _ISR _U2RXInterrupt() {
 
-	char incomingByte;
+    if (U2STAbits.URXDA) { //what if there are more bits in the buffer??
 
-	if (U2STAbits.URXDA) { //what if there are more bits in the buffer??
+        serial_push_character(U2RXREG);
 
-		incomingByte = U2RXREG;
-		serial_push_character(incomingByte);
+    }
 
-	}
-
-	_U2RXIF = 0;
+    _U2RXIF = 0;
 
 }
 
 void serial_write(char data_to_print[]) {
 
-  static int last_char_position = 0;
 
-  int data_size = sizeof(data_to_print) - 1;
+    int data_size = strlength(data_to_print);
 
-  //Prompt lcd error
-  if (data_size <= SERIAL_COMMAND_MAX_LEN) return;
-  if (TX_buffer.full) return;
-  
-  int i;
-  for (i = 0 ; i < data_size; i++) {
-    TX_buffer.command[TX_buffer.end_][i + last_char_position] = data_to_print[i];
-    last_char_position++;
-  }
+    if (TX_buffer.full) return;
 
-  if (data_to_print[data_size-1] == '\n') {
+    int i;
+    for (i = 0 ; i < data_size; i++) {
 
-    if (TX_buffer.command[TX_buffer.end_][2] == (END_OF_STREAM + '0') && !Serial_busy) {
-
-      Serial_busy = true;
-
-      U2TXREG = TX_buffer.command[TX_buffer.start][0];
+        TX_buffer.command[TX_buffer.end_] = data_to_print[i];
+        if (inc_TXbuffer_end_pointer()) break;
 
     }
 
-    inc_buffer_end_pointer(&TX_buffer);
+    if (!Serial_busy) {
 
-    last_char_position = 0;
-  }
+        Serial_busy = true;
+        U2TXREG = TX_buffer.command[TX_buffer.start];
+        inc_TXbuffer_start_pointer();
+
+    }
+
     
+}
+
+void serial_println(int value) {
+
+  char* value_to_string = int_to_char(value);
+  serial_write(value_to_string);
+  serial_write("\n");
+
+}
+
+void serial_print(int value) {
+
+  char* value_to_string = int_to_char(value);
+  serial_write(value_to_string);
+
 }
 
 //---COMMANDS--//
@@ -134,6 +120,7 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
 void serial_next_instruction() {
 
   switch (serial_mode) {
+
     case ASK_FOR_ANGLES:  send_command_header(SEND_ME_ANGLES, true);
                           send_command_header(END_OF_STREAM, true);
                           break;
@@ -143,6 +130,7 @@ void serial_next_instruction() {
                           break;
 
     default:              break;
+
   }
 
 }
@@ -162,7 +150,7 @@ void serial_send_angles() {
   send_command_header(MOVE_SERVOS, false);
   int i;
   for (i = 0; i < 3; i++) {
-//    serial_write(int_to_char_3digits(servos_angles[i]));
+  // serial_write(int_to_char_3digits(servos_angles[i]));
     
     if (i == 2) serial_write("\n");
     else serial_write(" "); 
@@ -215,16 +203,16 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
   }
 
   if (!bad_request) {
-//    servos_angles[0] = chars_to_int(command[4], command[5], command[6]);
-//    servos_angles[1] = chars_to_int(command[8], command[9], command[10]);
-//    servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
+    //servos_angles[0] = chars_to_int(command[4], command[5], command[6]);
+    //servos_angles[1] = chars_to_int(command[8], command[9], command[10]);
+    //servos_angles[2] = chars_to_int(command[12], command[13], command[14]);
   }
   else; //serial_write("BAD REQUEST\n");
 
 }
 
 //---SERIAL BUFFER---//
-void init_buffer(Buffer* buffer) {
+void init_buffer(struct Buffer* buffer) {
 
   buffer->start = 0;
   buffer->end_ = 0;
@@ -233,7 +221,16 @@ void init_buffer(Buffer* buffer) {
 
 }
 
-bool inc_buffer_end_pointer(Buffer* buffer) {
+void init_TXbuffer() {
+
+  TX_buffer.start = 0;
+  TX_buffer.end_ = 0;
+  TX_buffer.full = false;
+  TX_buffer.empty = true;
+
+}
+
+bool inc_buffer_end_pointer(struct Buffer* buffer) {
 
   buffer->end_ = (buffer->end_ + 1) % SERIAL_BUFFER_LEN;
   buffer->empty = false;
@@ -245,13 +242,38 @@ bool inc_buffer_end_pointer(Buffer* buffer) {
 
 }
 
-bool inc_buffer_start_pointer(Buffer* buffer) {
+bool inc_TXbuffer_end_pointer() {
+
+  TX_buffer.end_ = (TX_buffer.end_ + 1) % TX_SERIAL_BUFFER_LEN;
+  TX_buffer.empty = false;
+  if (TX_buffer.end_ == TX_buffer.start) {
+    TX_buffer.full = true;
+    return true;   
+  }
+  return false;
+
+}
+
+bool inc_buffer_start_pointer(struct Buffer* buffer) {
 
   buffer->start = (buffer->start + 1) % SERIAL_BUFFER_LEN;
   buffer->full = false;
 
   if (buffer->end_ == buffer->start) {
     buffer->empty = true;
+    return true;
+  }
+  return false;
+
+}
+
+bool inc_TXbuffer_start_pointer() {
+
+  TX_buffer.start = (TX_buffer.start + 1) % TX_SERIAL_BUFFER_LEN;
+  TX_buffer.full = false;
+
+  if (TX_buffer.end_ == TX_buffer.start) {
+    TX_buffer.empty = true;
     return true;
   }
   return false;
@@ -279,6 +301,38 @@ char* int_to_char_3digits(int numb) {
   sentence[0] = numb / 100 % 10 + '0';
 
   return sentence;
+
+}
+
+char* int_to_char(int number) {
+    
+    int number_len = 1;
+    int temp = number;
+
+    while(temp > 9) {
+        temp /= 10;
+        number_len++;
+    }
+
+    char val[number_len+1];
+
+    int i;
+    for (i = 0; i < number_len; i++) {
+
+        val[i] = number / (int)(pow(10, (number_len-i-1))) % 10 + '0';
+
+    }
+    val[number_len] = '\0';
+
+    return val;
+}
+
+int strlength(char *p) {
+
+        int len = 0;
+        while (*p++)
+                len++;
+        return len;
 
 }
 
