@@ -2,12 +2,6 @@
 //-----I/0-----//
 //-------------//
 
-#define OUTPUT 0
-#define INPUT 1
-#define ANALOG_INPUT 2
-
-#define HIGH 1;
-#define LOW 0;
 
 //---------------------------//
 //----------DEFINES----------//
@@ -34,5 +28,7 @@
 
 //SERIAL BUFFER
 
-#define SERIAL_BUFFER_LEN 5
-#define SERIAL_COMMAND_MAX_LEN 16
+#define SERIAL_BUFFER_LEN 10
+#define SERIAL_COMMAND_MAX_LEN 20
+
+#define TX_SERIAL_BUFFER_LEN 200

@@ -114,7 +114,7 @@ void init_analog_input(int pin_name) {
 
 }
 
-void _ISR _ADCInterrupt() {
+void _ISR _ADC1Interrupt() {
 
     AD1CON1bits.ASAM = 0; // Stop sampling
 

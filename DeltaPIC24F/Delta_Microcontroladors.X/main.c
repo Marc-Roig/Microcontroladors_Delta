@@ -86,24 +86,15 @@ void polsadors(int* duty_cycle) {
     int max_duty_cycle = 1100;
     int min_duty_cycle = 430;
 
+    int steps[] = {25, 50, 100};
     int step1 = 25, step2 = 50, step3 = 100;
 
     //--INCREMENT duty_cycle--//
     if ((PORTD & 0x0040) == 0 && S3 == 0) {
 
-     switch(mode) {
-        case 0:
-            *duty_cycle = *duty_cycle + step1;
-            break;
-        case 1:
-            *duty_cycle = *duty_cycle + step2;
-            break;
-        default:
-            *duty_cycle = *duty_cycle + step3;
-            break;
-     }
+        *duty_cycle += steps[mode];
 
-     if (*duty_cycle >= max_duty_cycle) *duty_cycle = 150;
+     if (*duty_cycle >= max_duty_cycle) *duty_cycle = max_duty_cycle;
 
      S3 = 1;
     }
@@ -112,41 +103,20 @@ void polsadors(int* duty_cycle) {
     //--DECREMENT duty_cycle--//
     if ((PORTD & 0x0080) == 0 && S6 == 0) {
      
-     switch(mode) {
-        case 0:
-            *duty_cycle = *duty_cycle - step1;
-            break;
-        case 1:
-            *duty_cycle = *duty_cycle - step2;
-            break;
-        default:
-            *duty_cycle = *duty_cycle - step3;
-            break;
-     }
+        *duty_cycle -= steps[mode];
 
-     if (*duty_cycle <= min_duty_cycle) *duty_cycle = 20;
-     S6 = 1;
+        if (*duty_cycle <= min_duty_cycle) *duty_cycle = min_duty_cycle;
+        S6 = 1;
+
     }
     else if (PORTD & 0x0080) S6 = 0;
 
     //--CHANGE STEP--//
     if ((PORTD & 0x2000) == 0 && S4 == 0) {
+
      mode = (mode + 1) % 3; 
      S4 = 1;
+     
     }
     else if (PORTD & 0x2000) S4 = 0;
 }
-
-
-//JOYSTICK
- // set new angles 
- // Set modes of movement
-    // Simulation
-    // Move with joystick
-    // Move preset values
-
-//
-
- //Implement delays
- //Implement Serial.write
-    
