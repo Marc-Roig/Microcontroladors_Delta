@@ -16,3 +16,11 @@ DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/main.o
 DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o
 *.o
 DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/main.o.d.tmp
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/main.o.d.tmp
+*.o
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o
+*.tmp
+DeltaPIC24F/Delta_Microcontroladors.X/build/default/production/serialcom.o

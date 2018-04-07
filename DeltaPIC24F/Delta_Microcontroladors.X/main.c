@@ -36,8 +36,27 @@ void setup() {
 
     engage_servos();
 
-    // init_buffer(&RX_buffer);
-    // init_buffer(&TX_buffer);
+    init_UART();
+    init_buffer();
+    init_TXbuffer();
+
+    pinMode(IO_RE8, OUTPUT);
+    pinMode(IO_RE9, INPUT);
+
+    // pinMode(IO_RB3, ANALOG_INPUT);
+    // init_ADC();
+    // serial_println(analogRead(IO_RB3));
+
+    digitalWrite( IO_RE8, 1 );
+    delay(1000);
+    digitalWrite(IO_RE8, 0);
+    serial_println(digitalRead(IO_RE9));
+
+}
+
+void loop() {
+
+
 
 }
 
@@ -45,27 +64,29 @@ int main(void) {
     
     setup();
 
-    int duty_cycle = 0;
+    // int duty_cycle = 0;
 
     while (1) {
+
+        loop();
         
-        polsadors(&duty_cycle);
+        // polsadors(&duty_cycle);
 
-        servo1_write_duty_cycle(duty_cycle);
-//        servo2_write(duty_cycle);
-//        servo3_write(duty_cycle);        
+        // servo1_write_duty_cycle(duty_cycle);      
 
-        show_dutycycle_leds(duty_cycle);
+        // show_dutycycle_leds(duty_cycle);
     }
     
     return 0;
 
 }
 
-void delay(int valor_retard) {
 
+void delay(int valor_retard) { //in ms
+
+    int delay_cycles = valor_retard * 1000 / 32;
     TMR4 = 0;
-    while (TMR4 < valor_retard);
+    while (TMR4 < delay_cycles);
 
 }
 
@@ -87,7 +108,6 @@ void polsadors(int* duty_cycle) {
     int min_duty_cycle = 430;
 
     int steps[] = {25, 50, 100};
-    int step1 = 25, step2 = 50, step3 = 100;
 
     //--INCREMENT duty_cycle--//
     if ((PORTD & 0x0040) == 0 && S3 == 0) {

@@ -11,7 +11,7 @@ int scale_angle(int angle){
 void servo1_write(int angle) {
 
     OC1RS = scale_angle(angle);
-    _RA1;
+
 }
 
 
