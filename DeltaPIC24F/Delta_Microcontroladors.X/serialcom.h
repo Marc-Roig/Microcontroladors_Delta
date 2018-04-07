@@ -33,17 +33,19 @@
 
 	void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]);
 
-	void init_buffer(Buffer* buffer);
+	void init_buffer();
 	void init_TXbuffer();
 
-	bool inc_buffer_end_pointer(struct Buffer* buffer);
+	bool inc_buffer_end_pointer();
 	bool inc_TXbuffer_end_pointer();
-	bool inc_buffer_start_pointer(struct Buffer* buffer);
+	bool inc_buffer_start_pointer();
 	bool inc_TXbuffer_start_pointer();
 
+    double power(double base, double expon);
+    
 	char* int_to_char_2digits(int numb);
 	char* int_to_char_3digits(int numb);
-	char* int_to_char(int number);
+	void int_to_char(int number, char* converted_string);
 	int strlength(char *p);
 	int chars_to_int(char a, char b, char c);
 	bool is_alphanumeric(char a);

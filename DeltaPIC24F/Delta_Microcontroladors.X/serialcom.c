@@ -76,8 +76,11 @@ void serial_write(char data_to_print[]) {
     if (!Serial_busy) {
 
         Serial_busy = true;
-        U2TXREG = TX_buffer.command[TX_buffer.start];
-        inc_TXbuffer_start_pointer();
+        // U2TXREG = TX_buffer.command[TX_buffer.start];
+        // inc_TXbuffer_start_pointer();
+        U2TXREG = '\0'; //Send a dummy character to start the serial write
+                        //Still dont know why if sent here the first char
+                        //of the TXbuffer it will be printed out twice.
 
     }
 
@@ -86,15 +89,17 @@ void serial_write(char data_to_print[]) {
 
 void serial_println(int value) {
 
-  char* value_to_string = int_to_char(value);
+  char value_to_string[7];
+  int_to_char(value, value_to_string);
   serial_write(value_to_string);
-  serial_write("\n");
+  serial_write("\r\n");
 
 }
 
 void serial_print(int value) {
 
-  char* value_to_string = int_to_char(value);
+  char value_to_string[7];
+  int_to_char(value, value_to_string);
   serial_write(value_to_string);
 
 }
@@ -212,12 +217,12 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
 }
 
 //---SERIAL BUFFER---//
-void init_buffer(struct Buffer* buffer) {
+void init_buffer() {
 
-  buffer->start = 0;
-  buffer->end_ = 0;
-  buffer->full = false;
-  buffer->empty = true;
+  RX_buffer.start = 0;
+  RX_buffer.end_ = 0;
+  RX_buffer.full = false;
+  RX_buffer.empty = true;
 
 }
 
@@ -230,12 +235,12 @@ void init_TXbuffer() {
 
 }
 
-bool inc_buffer_end_pointer(struct Buffer* buffer) {
+bool inc_buffer_end_pointer() {
 
-  buffer->end_ = (buffer->end_ + 1) % SERIAL_BUFFER_LEN;
-  buffer->empty = false;
-  if (buffer->end_ == buffer->start) {
-    buffer->full = true;
+  RX_buffer.end_ = (RX_buffer.end_ + 1) % SERIAL_BUFFER_LEN;
+  RX_buffer.empty = false;
+  if (RX_buffer.end_ == RX_buffer.start) {
+    RX_buffer.full = true;
     return true;   
   }
   return false;
@@ -254,13 +259,13 @@ bool inc_TXbuffer_end_pointer() {
 
 }
 
-bool inc_buffer_start_pointer(struct Buffer* buffer) {
+bool inc_buffer_start_pointer() {
 
-  buffer->start = (buffer->start + 1) % SERIAL_BUFFER_LEN;
-  buffer->full = false;
+  RX_buffer.start = (RX_buffer.start + 1) % SERIAL_BUFFER_LEN;
+  RX_buffer.full = false;
 
-  if (buffer->end_ == buffer->start) {
-    buffer->empty = true;
+  if (RX_buffer.end_ == RX_buffer.start) {
+    RX_buffer.empty = true;
     return true;
   }
   return false;
@@ -304,7 +309,21 @@ char* int_to_char_3digits(int numb) {
 
 }
 
-char* int_to_char(int number) {
+double power(double base, double expon) {
+    
+    double result = base;
+    
+    if (expon == 0) return 1;
+    
+    int i;
+    for (i = 0; i < expon-1; i++) {
+        result *= base;
+    }
+    
+    return result;
+}
+
+void int_to_char(int number, char* converted_char) {
     
     int number_len = 1;
     int temp = number;
@@ -314,18 +333,17 @@ char* int_to_char(int number) {
         number_len++;
     }
 
-    char val[number_len+1];
-
     int i;
     for (i = 0; i < number_len; i++) {
 
-        val[i] = number / (int)(pow(10, (number_len-i-1))) % 10 + '0';
-
+        converted_char[i] = number / ((int)power(10, (number_len-i-1))) % 10 + '0';
+        
     }
-    val[number_len] = '\0';
+    
+    converted_char[number_len] = '\0';
 
-    return val;
 }
+
 
 int strlength(char *p) {
 
