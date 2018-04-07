@@ -17,13 +17,15 @@
 	#define IO_RA14 5
 	#define IO_RA15 6
 
+	#define MS_BETWEEN_ADC_CONVERSION 50
+
 	void pinMode(int pin_name, int mode);
 
 	void init_ADC();
 	void init_analog_input(int pin_name);
 	int analogRead(int pin_name);
 
-	void digitalWrite(int pin_name, unsigned int value);
+	void digitalWrite(int pin_name, int value);
 	int digitalRead(int pin_name);
 
 	long map(long x, long in_min, long in_max, long out_min, long out_max);

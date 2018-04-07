@@ -17,34 +17,34 @@ void pinMode(int pin_name, int mode) {
 
     switch (pin_name) {
 
-        case IO_RB3:         if (mode == INPUT) _TRISB3 = 1;
+        case IO_RB3:        if (mode == INPUT) _TRISB3 = 1;
                             else if (mode == OUTPUT) _TRISB3 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case IO_RB8:         if (mode == INPUT) _TRISB8 = 1;
+        case IO_RB8:        if (mode == INPUT) _TRISB8 = 1;
                             else if (mode == OUTPUT) _TRISB8 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case IO_RB9:         if (mode == INPUT) _TRISB9 = 1;
+        case IO_RB9:        if (mode == INPUT) _TRISB9 = 1;
                             else if (mode == OUTPUT) _TRISB9 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
 
-        case IO_RE8:         if (mode == INPUT) _TRISE8 = 1;
+        case IO_RE8:        if (mode == INPUT) _TRISE8 = 1;
                             else if (mode == OUTPUT) _TRISE8 = 0;
                             break;
 
-        case IO_RE9:         if (mode == INPUT) _TRISE9 = 1;
+        case IO_RE9:        if (mode == INPUT) _TRISE9 = 1;
                             else if (mode == OUTPUT) _TRISE9 = 0;
                             break;
 
-        case IO_RA14:        if (mode == INPUT) _TRISA14 = 1;
+        case IO_RA14:       if (mode == INPUT) _TRISA14 = 1;
                             else if (mode == OUTPUT) _TRISA14 = 0;
                             break;
 
-        case IO_RA15:        if (mode == INPUT) _TRISA15 = 1;
+        case IO_RA15:       if (mode == INPUT) _TRISA15 = 1;
                             else if (mode == OUTPUT) _TRISA15 = 0;
                             break;
 
@@ -85,14 +85,18 @@ void init_ADC() {
     if (num_of_active_pins == 0) return; //No need to read any value
 
     AD1CON1 = 0x00E0; // Internal counter triggers conversion
-    AD1CON3 = 0x1F10; // Sample time = 31Tad, Tad = Tcy, A/D Conversion Clock Period = 256 Tcy
-    // AD1CON3 = 0x1f10; // Sample time = 15Tad
+    // AD1CON3 = 0x1F10; // Sample time = 31Tad, Tad = Tcy, A/D Conversion Clock Period = 256 Tcy
+    AD1CON3 = 0x0F00; // Sample time = 15Tad
     AD1CON2 = 0x0400 + ((num_of_active_pins) << 2); // Enable Scaning, set AD1IF after every (num_of_active_pins) samples
 
     _AD1IF = 0; //turn off interrupt flag before enabling interrupt
     _AD1IE = 1; //enable analog interrupt
 
+    AD1CON1bits.ASAM = 1;
+    
     AD1CON1bits.ADON = 1; // turn ADC ON
+
+    AD1CHS = 0;
 
 }
 
@@ -100,13 +104,13 @@ void init_analog_input(int pin_name) {
 
     switch (pin_name) {
 
-        case IO_RB3:     RB3_Analog_Active = true;
+        case IO_RB3:    RB3_Analog_Active = true;
                         break;
 
-        case IO_RB8:     RB8_Analog_Active = true;
+        case IO_RB8:    RB8_Analog_Active = true;
                         break;
 
-        case IO_RB9:     RB9_Analog_Active = true;
+        case IO_RB9:    RB9_Analog_Active = true;
                         break;
 
     }
@@ -124,6 +128,34 @@ void _ISR _ADC1Interrupt() {
 
     AD1CON1bits.ASAM = 1; // Continue sampling
     _AD1IF = 0; // 
+
+}
+
+
+void ADC_update_values() {
+
+    static unsigned int ADC_timer = 0;
+
+    ADC_timer++;
+
+        if (ADC_timer >= MS_BETWEEN_ADC_CONVERSION) {
+
+            int *ADC16Ptr;
+            ADC16Ptr = &ADC1BUF0;
+
+            if (IFS0bits.AD1IF) {
+                //read as many of active analog inputs
+                if (RB3_Analog_Active) RB3_Analog_Value = *ADC_timer++;
+                if (RB8_Analog_Active) RB8_Analog_Value = *ADC_timer++;
+                if (RB9_Analog_Active) RB9_Analog_Value = *ADC_timer++;
+
+            }
+            
+            IFS0bits.AD1IF = 0;
+            ADC_timer = 0;
+
+        }
+
 
 }
 
@@ -154,7 +186,7 @@ int analogRead(int pin_num) {
 //----DIGITAL PINS----//
 //--------------------//
 
-void digitalWrite(int pin_num, unsigned int value) {
+void digitalWrite(int pin_num, int value) {
 
     if (value > 1) return; //Valid values: 0, 1
 

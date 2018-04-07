@@ -1,6 +1,0 @@
-build/default/production/main.o:  \
-main.c  \
-main.h  \
-defines.h  \
-serialcom.h  \
- servos.h 
