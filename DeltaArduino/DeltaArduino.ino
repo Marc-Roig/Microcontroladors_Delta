@@ -7,6 +7,8 @@
 bool command_recieved = false;
 int serial_mode = ASK_FOR_ANGLES;
 
+
+
 int servoFrameMillis = 20;  // minimum time between servo updates
 
 void setup() {
@@ -34,6 +36,9 @@ void setup() {
   //--SERVO EASER--//
   start_servoeaser();
 
+  //--SEQUENCE--//
+  // init_sequence();
+
 }
 
 void loop() {
@@ -52,6 +57,10 @@ void loop() {
 
   //--SERVO EASER--//
   servoeaser.update();
+
+  //--SEQUENCE--//
+  play_sequence();
+
   
 }
 

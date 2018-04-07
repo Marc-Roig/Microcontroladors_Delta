@@ -115,7 +115,7 @@ bool ServoEaser::inc_start_pointer() {
         buffer_empty = true;
         return true;
     }
-    return false;
+    return false;   
 
 }
 

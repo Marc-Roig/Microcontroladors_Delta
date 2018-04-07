@@ -7,6 +7,7 @@
 	
 	#include "Servos.h"
 	#include "Calibration.h"
+	#include "EaseServos.h"
 
 	#define CONFIG_H
 
@@ -19,5 +20,7 @@
 
 	Servo servos[4];
 	ServoInfo servoinfo[4];
+
+	ServoEaser servoeaser;
 	
 #endif

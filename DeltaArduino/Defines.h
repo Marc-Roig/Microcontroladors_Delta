@@ -23,10 +23,26 @@
 	//JOYSTICK
 	#define JOYSTICK_X_PIN A1
 	#define JOYSTICK_Y_PIN A2
+	#define JOYSTICK_BUTTON_PIN 2
+	
+	#define JOYSTICK_CHANGE_AXIS_ANGLES 4
+	#define BUTTONS_STEP_XYZ_PIN 7
+	#define INCREASE_XYZ_BUTTON_PIN 8
+	#define DECREASE_XYZ_BUTTON_PIN 12
+
+	//SEQUENCE
+	#define SEQUENCE_SAVE_POS_BUTTON_PIN 4
 
 	//----------------//
-	//-----SERVOS-----//
+	//-----SERVOS-----//	
 	//----------------//
+
+	//MOVE SERVOS FROM
+
+	#define MOVE_SERVO_1_FROM "ANGLE"
+	#define MOVE_SERVO_2_FROM "ANGLE"
+	#define MOVE_SERVO_3_FROM "ANGLE"
+	#define MOVE_SERVO_4_FROM "DUTYCYCLE"
 
 	//ARMS
 	#define MAX_DC_SERVO1 2300
@@ -35,11 +51,11 @@
 
 	#define MIN_DC_SERVO1 500
 	#define MIN_DC_SERVO2 500
-	#define MIN_DC_SERVO3 500
+	#define MIN_DC_SERVO3 600
 
-	#define SERVO1_COMPENSATION_VAL 50
-	#define SERVO2_COMPENSATION_VAL 50
-	#define SERVO3_COMPENSATION_VAL 0
+	#define SERVO1_COMPENSATION_VAL 70
+	#define SERVO2_COMPENSATION_VAL 60
+	#define SERVO3_COMPENSATION_VAL 30
 
 	#define SERVO1_M_ANGLE_TO_DC -10.478
 	#define SERVO2_M_ANGLE_TO_DC -11.041
@@ -50,20 +66,31 @@
 	#define SERVO3_N_ANGLE_TO_DC 2692.1
 
 	//GRIPPER
-	#define MAX_DC_SERVO4 1900 
-	#define MIN_DC_SERVO4 965 
+	#define MAX_DC_SERVO4 1900
+	#define MIN_DC_SERVO4 965
 	#define SERVO4_COMPENSATION_VAL 0
+
+	//--------------------//
+	//----EASED SERVOS----//
+	//--------------------//
+	#define MOVES_BUFFER_LEN 10
+
+	//--------------------//
+	//------SEQUENCE------//
+	//--------------------//
+	#define SEQUENCE_MAX_MOVES 10
+
 
 	//--------------------//
 	//----DELTA PARAMS----//
 	//--------------------//
 
-	#define DELTA_MAX_Z 100
-	#define DELTA_MIN_Z 200
+	#define DELTA_MAX_Z -100
+	#define DELTA_MIN_Z -200
 
 	#define DELTA_START_X 0
 	#define DELTA_START_Y 0
-	#define DELTA_START_Z 0
+	#define DELTA_START_Z -166
 
 	//-------------------//
 	//----CALIBRATION----//
@@ -82,7 +109,10 @@
 	//-----JOYSTICK-----//
 	//------------------//
 
-	#define JOYSTICK_NUMBER_OF_SPEEDS 10
+	#define JOYSTICK_NUMBER_OF_SPEEDS 20
+	
+	#define JOYSTICK_MOVE_ANGLES 0
+	#define JOYSTICK_MOVE_AXIS 1
 
 	//------------------//	
 	//------SERIAL------//
