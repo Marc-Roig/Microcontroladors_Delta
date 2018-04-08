@@ -40,7 +40,8 @@ inline float ServoEaser_QuinteaseInOut(float t,float b , float c, float d) {
 
 inline void ServoEaser_stop_until_confirmation() {
 
-    servoeaser.stop_ease();
+    delay(1000);
+    // servoeaser.stop_ease();
     return;
 
 }
@@ -81,7 +82,7 @@ void ServoEaser::getNextPos() {
     changePos = moves[buffer_start] - startPos;
     durMillis = moves_dur[buffer_start];
 
-    inc_buffer_start_pointer();
+    inc_moves_start_pointer();
 
     tickCount = durMillis / frameMillis;
     tick = 0;
@@ -90,7 +91,7 @@ void ServoEaser::getNextPos() {
 
 }
 
-bool ServoEaser::inc_end_pointer() {
+bool ServoEaser::inc_moves_end_pointer() {
 
     buffer_end = (buffer_end + 1) % MOVES_BUFFER_LEN;
     buffer_empty = false;
@@ -106,7 +107,7 @@ bool ServoEaser::inc_end_pointer() {
 
 }
 
-bool ServoEaser::inc_start_pointer() {
+bool ServoEaser::inc_moves_start_pointer() {
 
     buffer_start = (buffer_start + 1) % MOVES_BUFFER_LEN;
     buffer_full = false;
@@ -140,7 +141,7 @@ void ServoEaser::init(Servo s, int servo_num_, int frameTime) {
 
     frameMillis = frameTime;
 
-    easingFunc = ServoEaser_QuinteaseInOut;
+    easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = ServoEaser_stop_until_confirmation;
     bufferemptiedFunc = NULL;
     
@@ -158,7 +159,7 @@ void ServoEaser::reset() {
         durMillis = moves_dur[buffer_start];
     }
 
-    inc_start_pointer();
+    inc_moves_start_pointer();
 
     tickCount = (durMillis / frameMillis);
     tick = 0;
@@ -174,7 +175,8 @@ void ServoEaser::addMoves(int inp_moves[], int durations[], int moves_len) {
             moves[buffer_end] = inp_moves[i];
             moves_dur[buffer_end] = durations[i];
 
-            if (inc_end_pointer()) return;
+
+            if (inc_moves_end_pointer()) return;
 
         } 
     }

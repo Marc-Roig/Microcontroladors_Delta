@@ -49,8 +49,8 @@
 
             void getNextPos();
 
-            bool inc_end_pointer();
-            bool inc_start_pointer();
+            bool inc_moves_end_pointer();
+            bool inc_moves_start_pointer();
             void init_moves_buffer();
 
             void init(Servo s, int servo_num_, int frameTime);
