@@ -45,14 +45,12 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
 
     move_servos(move_servo1, move_servo2, move_servo3, move_servo4);
     
-    serial_write_xyz_from_anlges();
-    serial_write_dc_every_ms(0);
-    serial_write_angles();
-    Serial.write("-----------------------\n");
+    // serial_write_xyz_from_anlges();
+    serial_write_dc_every_ms(500);
+    // serial_write_angles();
+    // Serial.write("-----------------------\n");
 
-    delay(1500);
-
-    // delay(500);
+    // delay(1500);
 
 }
 

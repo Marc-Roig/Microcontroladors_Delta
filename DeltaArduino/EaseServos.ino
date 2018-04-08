@@ -142,7 +142,7 @@ void ServoEaser::init(Servo s, int servo_num_, int frameTime) {
     frameMillis = frameTime;
 
     easingFunc = ServoEaser_easeInOutCubic;
-    arrivedFunc = ServoEaser_stop_until_confirmation;
+    arrivedFunc = NULL;
     bufferemptiedFunc = NULL;
     
 }
@@ -174,7 +174,6 @@ void ServoEaser::addMoves(int inp_moves[], int durations[], int moves_len) {
 
             moves[buffer_end] = inp_moves[i];
             moves_dur[buffer_end] = durations[i];
-
 
             if (inc_moves_end_pointer()) return;
 
@@ -214,5 +213,23 @@ void ServoEaser::stop_ease() {
 void ServoEaser::proceed() {
 
     if (!arrived || !buffer_empty) running = true;
+
+}
+
+bool ServoEaser::isRuning() {
+
+    return running;
+
+}
+
+void ServoEaser::setEasingFunc( EasingFunc func ) {
+
+    easingFunc = func;
+
+}
+
+void ServoEaser::setArrivedFunc( ArrivedFunc func ) {
+
+    arrivedFunc = func;
 
 }

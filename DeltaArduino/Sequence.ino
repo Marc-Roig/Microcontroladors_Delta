@@ -1,17 +1,9 @@
-typedef struct Sequence {
-
-	int moves[4][SEQUENCE_MAX_MOVES]; //{ {dc1_1, dc2_1, dc3_1}, {dc1_2, dc2_2, dc3_2} ...}
-	int last_move;
-
-	bool moves_full;
-	bool playing;
-	bool arrived;
-
-} Sequence;
-
-Sequence sequence;
+#include "Config.h"
 
 void init_sequence() {
+
+	pinMode(SEQUENCE_SAVE_POS_BUTTON_PIN, INPUT);
+	pinMode(SEQUENCE_PLAY_BUTTON_PIN, INPUT);
 
 	sequence.last_move = 0;
 
@@ -29,6 +21,7 @@ void sequence_update() {
 	if (sequence.playing) return;
 
     bool save_pos_button = digitalRead(SEQUENCE_SAVE_POS_BUTTON_PIN);
+    bool play_sequence_button = digitalRead(SEQUENCE_PLAY_BUTTON_PIN);
     
     if (save_pos_button && !S0) {
     
@@ -37,11 +30,16 @@ void sequence_update() {
       
     } else if (!save_pos_button) S0 = 0;
 
+    if (play_sequence_button) play_sequence(servoseased);
+
+
 }
 
 void new_move() {
 
 	if (sequence.moves_full) return;
+	Serial.write("ADDED NEW MOVE\n");
+
 
 	sequence.moves[0][sequence.last_move] = servoinfo[0].duty_cycle;
 	sequence.moves[1][sequence.last_move] = servoinfo[1].duty_cycle;
@@ -61,7 +59,7 @@ void play_sequence(ServoEaser servo_easers[4]) {
 	if (sequence.playing) return;
 
 	for (int i = 0; i < sequence.last_move+1; i++) {
-		durations[i] = 1000;
+		durations[i] = SEQUENCE_DEFAULT_MOVEMENT_TIME;
 	}
 
 	servo_easers[0].addMoves(sequence.moves[0], durations, sequence.last_move + 1);
@@ -92,10 +90,14 @@ void sequence_remove_last_move() {
 	if (sequence.last_move > 0) sequence.last_move--;
 }
 
-void sequence_finalized() {
+inline void sequence_finalized() {
 
 	//Choose if it has to repeat the movement or create a new one
 	sequence.playing = false;
 	reset_sequence();
+
+}
+
+inline void sequence_confirm_next_move() {
 
 }

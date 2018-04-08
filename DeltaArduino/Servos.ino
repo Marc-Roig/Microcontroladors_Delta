@@ -4,6 +4,9 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
 
+    //TODO: If servo arrived at destination (need to read potentiometer)
+    //      turn off servo. Turn on again when dc changes
+    
     for (int i = 0; i < 4; i ++) {
 
         if (move_servos[i]) {

@@ -12,7 +12,7 @@
 	#define SERVO3_PIN 3
 	#define SERVO4_PIN 5 //GRIPPER
 
-	//CALIBRATION
+	//MANUAL MOVEMENT
 	#define CHANGE_MODE_BUTTON_PIN 4
 	#define INCREASE_DC_BUTTON_PIN 7
 	#define DECREASE_DC_BUTTON_PIN 8
@@ -31,7 +31,9 @@
 	#define DECREASE_XYZ_BUTTON_PIN 12
 
 	//SEQUENCE
-	#define SEQUENCE_SAVE_POS_BUTTON_PIN 4
+	#define SEQUENCE_SAVE_POS_BUTTON_PIN 2
+	#define SEQUENCE_PLAY_BUTTON_PIN 6
+	
 
 	//----------------//
 	//-----SERVOS-----//	
@@ -45,11 +47,12 @@
 	#define MOVE_SERVO_4_FROM "DUTYCYCLE"
 
 	//ARMS
-	#define MAX_DC_SERVO1 2300
+	// #define MAX_DC_SERVO1 2300
+	#define MAX_DC_SERVO1 2100
 	#define MAX_DC_SERVO2 2300
 	#define MAX_DC_SERVO3 2300
 
-	#define MIN_DC_SERVO1 500
+	#define MIN_DC_SERVO1 300
 	#define MIN_DC_SERVO2 500
 	#define MIN_DC_SERVO3 600
 
@@ -79,6 +82,8 @@
 	//------SEQUENCE------//
 	//--------------------//
 	#define SEQUENCE_MAX_MOVES 10
+
+	#define SEQUENCE_DEFAULT_MOVEMENT_TIME 2000
 
 
 	//--------------------//

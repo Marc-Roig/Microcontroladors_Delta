@@ -65,6 +65,11 @@
             void stop_ease();
             void proceed();
 
+            bool isRunning();
+
+            void setEasingFunc(EasingFunc func);
+            void setArrivedFunc(ArrivedFunc func);
+
     };
 
 #endif
