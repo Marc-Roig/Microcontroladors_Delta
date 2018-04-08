@@ -7,7 +7,7 @@
 bool command_recieved = false;
 int serial_mode = ASK_FOR_ANGLES;
 
-
+ServoEaser servoseased[4];
 
 int servoFrameMillis = 20;  // minimum time between servo updates
 
@@ -37,7 +37,9 @@ void setup() {
   start_servoeaser();
 
   //--SEQUENCE--//
-  // init_sequence();
+  for (int i = 0; i < 4; i++) {
+    servoseased[i].init(servos[i], i, servoFrameMillis);
+  }
 
 }
 
@@ -58,10 +60,15 @@ void loop() {
   //--SERVO EASER--//
   servoeaser.update();
 
-  //--SEQUENCE--//
-  play_sequence();
+  for (int i = 0; i < 4; i ++) {
 
-  
+    servoseased[i].update();
+
+  }
+
+  //--SEQUENCE--//
+  play_sequence(servoseased);
+
 }
 
 void start_servoeaser() {
