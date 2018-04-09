@@ -14,18 +14,15 @@ the PIC24. Some features have to be tweeked a little bit, but overall it works.
 
 The current features of the code:
 
-=========    ====================================================
-Feature      Description
----------    ----------------------------------------------------
-Joystick	 Delta angles and XYZ axis moved by a joystick
-Calibration	 Calibrate duty cycles with potentiometer and buttons
-SerialCom	 Communicate with a simulator through serial commands
-EaseServos	 Eased servos and syncronized servo movement
-Sequence	 Store a sequence and make it repeat
-=========    ====================================================
+
+:Joystick:	  Delta angles and XYZ axis moved by a joystick
+:Calibration: Calibrate duty cycles with potentiometer and buttons
+:SerialCom:	  Communicate with a simulator through serial commands
+:EaseServos:  Eased servos and syncronized servo movement
+:Sequence:	  Store a sequence and make it repeat
 
 
-Calibration
+CALIBRATION
 ==================
 
-.. image:: Relation_DC_Angle.PNG
+.. image:: DeltaArduinoTests/Relation_DC_Angle.PNG
