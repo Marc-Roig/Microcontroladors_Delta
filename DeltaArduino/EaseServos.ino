@@ -48,8 +48,9 @@ inline void ServoEaser_stop_until_confirmation() {
 
 void ServoEaser::update() {
 
-    if( ((millis() - lastMillis) < frameMillis) || !running ) return;
+    if( ((millis() - lastMillis) < frameMillis + delay_after_move) || !running ) return;
     lastMillis = millis();
+    delay_after_move = 0;
 
     currPos = easingFunc( tick, startPos, changePos, tickCount );
 
@@ -72,7 +73,7 @@ void ServoEaser::getNextPos() {
     if (buffer_empty) {
 
         if (bufferemptiedFunc != NULL) bufferemptiedFunc();
-        running = false;
+        // running = false; //System will continue when added another move
         return;
     
     }
@@ -130,9 +131,8 @@ void ServoEaser::init_moves_buffer() {
 }
 
 // set up an easer with just a servo and a starting position
-void ServoEaser::init(Servo s, int servo_num_, int frameTime) {
+void ServoEaser::init(int servo_num_, int frameTime) {
 
-    servo = s;
     servo_num = servo_num_;
 
     init_moves_buffer();
@@ -140,6 +140,7 @@ void ServoEaser::init(Servo s, int servo_num_, int frameTime) {
     arrived = true;
 
     frameMillis = frameTime;
+    delay_after_move = 0;
 
     easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = NULL;
@@ -211,6 +212,14 @@ void ServoEaser::stop_ease() {
 }
 
 void ServoEaser::proceed() {
+
+    if (!arrived || !buffer_empty) running = true;
+
+}
+
+void ServoEaser::proceed(int delayaftermove) {
+
+    delay_after_move = delayaftermove;
 
     if (!arrived || !buffer_empty) running = true;
 

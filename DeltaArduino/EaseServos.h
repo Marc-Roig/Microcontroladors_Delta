@@ -6,18 +6,18 @@
 
     // define "ArrivedFunc" to be called when servo arrives at position
     // arguments provided are: currPos of servo & movesIndex of move list (if appl)
-    typedef void (*ArrivedFunc)();
+    typedef void (*ArrivedFunc)(int servo_num);
 
-    typedef void (*BufferEmptiedFunc)();
+    typedef void (*BufferEmptiedFunc)(int servo_num);
 
     class ServoEaser {
 
         private:
 
-            Servo servo;      // what servo we're operating on
             int servo_num;
 
             int frameMillis;  // minimum update time between servo moves
+            int delay_after_move;
             int startPos;   // where servo started its tween
             int currPos;    // current servo position, best of our knowledge
 
@@ -63,6 +63,7 @@
             void play();
 
             void stop_ease();
+            void proceed(int delayaftermove);
             void proceed();
 
             bool isRunning();

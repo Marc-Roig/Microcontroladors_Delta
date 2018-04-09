@@ -188,8 +188,11 @@ bool update_xyz_from_angles() {
 
 void init_delta() {
 
-  deltainfo.x = 0;
-  deltainfo.y = 0;
-  deltainfo.z = -162.5;
+     deltainfo.x = 0;
+     deltainfo.y = 0;
+     deltainfo.z = -162.5;
+
+     deltainfo.mode = INITIAL_DELTA_MODE;
+     set_servo_movement_with_dc(true, true, true, true);
 
 }

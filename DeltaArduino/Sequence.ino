@@ -12,6 +12,8 @@ void init_sequence() {
 	sequence.playing = false;
 	sequence.arrived = false;
 
+	// ServoEaser servo_easers[4];
+
 }
 
 void sequence_update() {
@@ -51,7 +53,7 @@ void new_move() {
 
 }
 
-void play_sequence(ServoEaser servo_easers[4]) {
+void play_sequence() {
 
 	//dump into ease servos
 	int durations[sequence.last_move+1]; 
@@ -62,17 +64,17 @@ void play_sequence(ServoEaser servo_easers[4]) {
 		durations[i] = SEQUENCE_DEFAULT_MOVEMENT_TIME;
 	}
 
-	servo_easers[0].addMoves(sequence.moves[0], durations, sequence.last_move + 1);
-	servo_easers[0].play();
+	servoseased[0].addMoves(sequence.moves[0], durations, sequence.last_move + 1);
+	servoseased[0].play();
 
-	servo_easers[1].addMoves(sequence.moves[1], durations, sequence.last_move + 1);
-	servo_easers[1].play();
+	servoseased[1].addMoves(sequence.moves[1], durations, sequence.last_move + 1);
+	servoseased[1].play();
 
-	servo_easers[2].addMoves(sequence.moves[2], durations, sequence.last_move + 1);
-	servo_easers[2].play();
+	servoseased[2].addMoves(sequence.moves[2], durations, sequence.last_move + 1);
+	servoseased[2].play();
 
-	servo_easers[3].addMoves(sequence.moves[3], durations, sequence.last_move + 1);
-	servo_easers[3].play();
+	servoseased[3].addMoves(sequence.moves[3], durations, sequence.last_move + 1);
+	servoseased[3].play();
 
 	sequence.playing = true;
 
@@ -98,6 +100,25 @@ inline void sequence_finalized() {
 
 }
 
-inline void sequence_confirm_next_move() {
+
+inline void sequence_confirm_next_move(int servo_num) {
+
+	static bool finished_servos[] = {false, false, false, false};
+
+	finished_servos[servo_num - 1] = true;
+
+	servoseased[servo_num].stop_ease();
+
+	if (finished_servos[0] && finished_servos[1] && finished_servos[2] && finished_servos[3]) {
+
+		for (int i = 0; i < 4; ++i) {
+
+			finished_servos[i] = false;
+			servoseased[i].proceed(1000);
+
+		}
+		
+	}
 
 }
+

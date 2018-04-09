@@ -52,6 +52,8 @@
 
 		bool move_delta;
 
+		int mode;
+
 	}DeltaInfo;
 
 #endif
