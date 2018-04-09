@@ -7,46 +7,66 @@
 bool command_recieved = false;
 int serial_mode = ASK_FOR_ANGLES;
 
-ServoEaser servoseased[4];
 
 int servoFrameMillis = 20;  // minimum time between servo updates
 
 void setup() {
-  
-  //--SERIAL COM--//
-  Serial.begin(9600);
-  
-  // Serial.write("G20\n"); //Processing is waiting to arduino
-  // Serial.write("G06\n");
 
-  init_buffer(); 
+    //--SERIAL COM--//
+    Serial.begin(9600);
 
-  //--SERVOS--//
-  init_servos(true, false, false, false);
+    // Serial.write("G20\n"); //Processing is waiting to arduino
+    // Serial.write("G06\n");
 
-  //--DELTA--//
-  init_delta();
+    init_buffer(); 
 
-  //--CALIBRATION--//
-  calibration_start(true, true, true, false);
+    //--SERVOS--//
+    init_servos(true, true, true, true);
 
-  //--JOYSTICK--//
-  // init_joystick();
-  
-  //--SERVO EASER--//
-  for (int i = 0; i < 4; i++) {
-    servoseased[i].init(servos[i], i, servoFrameMillis);
-  }
+    //--DELTA--//
+    init_delta();
 
-  // start_servoeaser();
 
-  //--SEQUENCE--//
-  init_sequence();
+    switch (delta_info.mode) {
+
+        case SEQUENCE_MODE:     //--JOYSTICK--//
+                                init_joystick();
+
+                                //--SERVO EASER--//
+                                for (int i = 0; i < 4; i++) {
+                                    servoseased[i].init(i, servoFrameMillis);
+                                }
+
+                                //--SEQUENCE--//
+                                init_sequence();
+
+                                break;
+
+        case CALIBRATION_MODE:  calibration_start(true, true, true, false);
+                                break;
+
+        case JOYSTICK_MODE;     init_joystick();
+                                break;
+                                
+    }
   
 
 }
 
 void loop() {
+
+    switch (delta_info.mode){
+
+        case SEQUENCE_MODE:     sequence();
+                                break;
+
+        case CALIBRATION_MODE:  servo_calibration(true, true, true, false);
+                                break;
+
+        case JOYSTICK_MODE;     joystick_movement();
+                                break;
+
+    }
 
     //--SERVOS--//
     move_servos(true, false, false, false); //Angle to duty cycle, only with three arm servos  
@@ -54,25 +74,21 @@ void loop() {
     //--SERIAL--//
     // serial_com_with_simulator();
 
-    //--CALIBRATION--//
-    // servo_calibration(true, true, true, false);
 
-    //--JOYSTICK--//
-    // joystick_movement();
+}
 
-    //--SERVO EASER--//
-    // servoeaser.update();
+void sequence() {
 
+     //--SERVO EASER--//
     for (int i = 0; i < 4; i ++) {
         servoseased[i].update();
     }
 
     //--SEQUENCE--//
     if (!sequence.playing) {
-        servo_calibration(true, true, true, false);
+        joystick_movement();
         sequence_update();
     }
-
 
 }
 

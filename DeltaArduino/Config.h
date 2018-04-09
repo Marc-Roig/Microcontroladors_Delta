@@ -22,7 +22,8 @@
 	Servo servos[4];
 	ServoInfo servoinfo[4];
 
-	ServoEaser servoeaser;
+	// ServoEaser servoeaser;
+	ServoEaser servoseased[4];
 
 	Sequence sequence;
 

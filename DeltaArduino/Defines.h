@@ -34,7 +34,6 @@
 	#define SEQUENCE_SAVE_POS_BUTTON_PIN 2
 	#define SEQUENCE_PLAY_BUTTON_PIN 6
 	
-
 	//----------------//
 	//-----SERVOS-----//	
 	//----------------//
@@ -85,7 +84,6 @@
 
 	#define SEQUENCE_DEFAULT_MOVEMENT_TIME 2000
 
-
 	//--------------------//
 	//----DELTA PARAMS----//
 	//--------------------//
@@ -96,6 +94,12 @@
 	#define DELTA_START_X 0
 	#define DELTA_START_Y 0
 	#define DELTA_START_Z -166
+
+	#define SEQUENCE_MODE 0
+	#define CALIBRATION_MODE 1
+	#define JOYSTICK_MODE 2
+
+	#define INITIAL_DELTA_MODE
 
 	//-------------------//
 	//----CALIBRATION----//
