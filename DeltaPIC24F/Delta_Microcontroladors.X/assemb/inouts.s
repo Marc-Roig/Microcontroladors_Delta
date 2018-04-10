@@ -1,6 +1,10 @@
 .include "p24fj128ga010.inc"
 .global _pinMode
 
+.extern _RB8_Analog_Active
+.extern _RB9_Analog_Active
+.extern _RB3_Analog_Active
+
 
 _pinMode:
 	; int pin_name at W0
@@ -30,66 +34,77 @@ _pinMode:
 	BRA Z, RA15_PIN
 
 	; CP W0, #7
-	BRA END
+	BRA END //not a valid number
 
 	RB3_PIN:
 
 		CP W1, #1
 		BRA NZ, RB3_OUTPUT
 		BSET TRISB, #3	
+		BRA END
 		
 		RB3_OUTPUT:
 		CP W1, #0
 		BRA NZ, RB3_ANALOG_INP
 		BCLR TRISB, #3
+		BRA END
 
 		RB3_ANALOG_INP:
 		CP W1, #2
 		BRA NZ, END
-		CALL _InitAnalogInput ;int pin_name remains in W0
+		BSET _RB3_Analog_Active, 0
+		BRA END
 
 	RB8_PIN:
 
 		CP W1, #1
 		BRA NZ, RB8_OUTPUT
 		BSET TRISB, #8	
+		BRA END
 		
 		RB8_OUTPUT:
 		CP W1, #0
 		BRA NZ, RB8_ANALOG_INP
 		BCLR TRISB, #8
+		BRA END
 
 		RB8_ANALOG_INP:
 		CP W1, #2
 		BRA NZ, END
-		CALL _InitAnalogInput ;int pin_name remains in W0
+		BSET _RB8_Analog_Active, 0
+		BRA END
 	
 	RB9_PIN:
 
 		CP W1, #1
 		BRA NZ, RB9_OUTPUT
-		BSET TRISB, #9	
+		BSET TRISB, #9
+		BRA END	
 		
 		RB9_OUTPUT:
 		CP W1, #0
 		BRA NZ, RB9_ANALOG_INP
 		BCLR TRISB, #9
+		BRA END
 
 		RB9_ANALOG_INP:
 		CP W1, #2
 		BRA NZ, END
-		CALL _InitAnalogInput ;int pin_name remains in W0
+		BSET _RB9_Analog_Active, 0
+		BRA END
 	
 	RE8_PIN:
 
 		CP W1, #1
 		BRA NZ, RE8_OUTPUT
 		BSET TRISE, #8	
+		BRA END
 		
 		RE8_OUTPUT:
 		CP W1, #0
 		BRA NZ, END
 		BCLR TRISE, #8
+		BRA END
 
 	RE9_PIN:
 
@@ -107,23 +122,28 @@ _pinMode:
 		CP W1, #1
 		BRA NZ, RA14_OUTPUT
 		BSET TRISA, #14	
+		BRA END
 		
 		RA14_OUTPUT:
 		CP W1, #0
 		BRA NZ, END
 		BCLR TRISA, #14
+		BRA END
 
 	RA15_PIN:
 
 		CP W1, #1
 		BRA NZ, RA15_OUTPUT
 		BSET TRISA, #15	
+		BRA END
 		
 		RA15_OUTPUT:
 		CP W1, #0
 		BRA NZ, END
 		BCLR TRISA, #15
+		BRA END
 
 	END:
 
 	RETURN
+
