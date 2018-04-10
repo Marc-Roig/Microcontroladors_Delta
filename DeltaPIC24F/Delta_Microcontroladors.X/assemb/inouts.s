@@ -29,7 +29,7 @@ _pinMode:
 	CP W0, #6
 	BRA Z, RA15_PIN
 
-	CP W0, #7
+	; CP W0, #7
 	BRA END
 
 	RB3_PIN:
@@ -52,17 +52,78 @@ _pinMode:
 
 		CP W1, #1
 		BRA NZ, RB8_OUTPUT
-		BSET TRISB, #3	
+		BSET TRISB, #8	
 		
 		RB8_OUTPUT:
 		CP W1, #0
 		BRA NZ, RB8_ANALOG_INP
-		BCLR TRISB, #3
+		BCLR TRISB, #8
 
 		RB8_ANALOG_INP:
 		CP W1, #2
 		BRA NZ, END
-		_InitAnalogInput ;int pin_name remains in W0
+		CALL _InitAnalogInput ;int pin_name remains in W0
+	
+	RB9_PIN:
+
+		CP W1, #1
+		BRA NZ, RB9_OUTPUT
+		BSET TRISB, #9	
+		
+		RB9_OUTPUT:
+		CP W1, #0
+		BRA NZ, RB9_ANALOG_INP
+		BCLR TRISB, #9
+
+		RB9_ANALOG_INP:
+		CP W1, #2
+		BRA NZ, END
+		CALL _InitAnalogInput ;int pin_name remains in W0
+	
+	RE8_PIN:
+
+		CP W1, #1
+		BRA NZ, RE8_OUTPUT
+		BSET TRISE, #8	
+		
+		RE8_OUTPUT:
+		CP W1, #0
+		BRA NZ, END
+		BCLR TRISE, #8
+
+	RE9_PIN:
+
+		CP W1, #1
+		BRA NZ, RE9_OUTPUT
+		BSET TRISE, #9	
+		
+		RE9_OUTPUT:
+		CP W1, #0
+		BRA NZ, END
+		BCLR TRISE, #9
+
+	RA14_PIN:
+
+		CP W1, #1
+		BRA NZ, RA14_OUTPUT
+		BSET TRISA, #14	
+		
+		RA14_OUTPUT:
+		CP W1, #0
+		BRA NZ, END
+		BCLR TRISA, #14
+
+	RA15_PIN:
+
+		CP W1, #1
+		BRA NZ, RA15_OUTPUT
+		BSET TRISA, #15	
+		
+		RA15_OUTPUT:
+		CP W1, #0
+		BRA NZ, END
+		BCLR TRISA, #15
 
 	END:
 
+	RETURN
