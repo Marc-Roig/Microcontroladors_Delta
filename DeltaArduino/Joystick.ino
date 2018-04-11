@@ -114,10 +114,32 @@ void joysitck_change_mode(int* change_joystick_mode) {
                                             break;
         }
 
+        servoinfo[3].move_servo_from = "DUTYCYCLE"
+
         S0 = 1;
 
     }
     else if (!joystick_change_mode_button) S0 = 0;
+
+}
+
+void joystick2_move_gripper() {
+
+    static unsigned long StartTime = millis();
+
+    int time_difference_ms = 400; // Every X ms program will read the joystick val 
+
+    if ((millis() - StartTime) > time_difference_ms ) {
+
+        float joys_grip = map(analogRead(JOYSTICK_X_GRIPPER_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
+
+        if (abs(joys_grip) < 1) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
+
+        servoinfo[3].duty_cycle += (15 * joys_grip); //Multiply joys_grip with a gain
+
+        StartTime = millis();
+
+    }
 
 }
 
