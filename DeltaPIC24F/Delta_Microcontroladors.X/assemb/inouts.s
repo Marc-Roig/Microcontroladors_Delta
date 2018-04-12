@@ -12,138 +12,62 @@ _pinMode:
 	; int pin_name at W0
 	; int mode at W1
 
-	PIN_SELECTION:
+	CP W1, #3 ;check if modes are valid
+	BRA GE, END
 
-	CP W0, #0
-	BRA Z, RB3_PIN
+	; ANALOG:
+	CP W1, #2
+	BRA NZ, DIGITAL
 
-	CP W0, #1
-	BRA Z, RB8_PIN
+	CP W0, #3	;only RB3, RB8 and RB9 can be analog
+	BRA GE, END
 
-	CP W0, #2
-	BRA Z, RB9_PIN
+	ADD ANALOG_INPUT, W0, W0
+	CALL W0
 
-	CP W0, #3
-	BRA Z, RE8_PIN
+	DIGITAL:
+	CP W0, #7 ;Check if input is valid
+	BRA GE, END
 
-	CP W0, #4
-	BRA Z, RE9_PIN 
+	CP W1, #1
+	BRA NZ, IS_OUTPUT
 
-	CP W0, #5
-	BRA Z, RA14_PIN 
+	ADD DIGITAL_INPUT, W0, W0
+	CALL W0
 
-	CP W0, #6
-	BRA Z, RA15_PIN
+	IS_OUTPUT:
+	ADD DIGITAL_OUTPUT, W0, W0
+	CALL W0
 
-	; CP W0, #7
-	BRA END ;not a valid number
 
-	RB3_PIN:
+	DIGITAL_INPUT:
 
-		CP W1, #1
-		BRA NZ, RB3_OUTPUT
-		BSET TRISB, #3	
-		BRA END
-		
-		RB3_OUTPUT:
-		CP W1, #0
-		BRA NZ, RB3_ANALOG_INP
-		BCLR TRISB, #3
-		BRA END
+	BSET TRISB, #3
+	BSET TRISB, #8
+	BSET TRISB, #9
+	BSET TRISE, #8
+	BSET TRISE, #9
+	BSET TRISA, #14
+	BSET TRISA, #15
+	BRA END
 
-		RB3_ANALOG_INP:
-		CP W1, #2
-		BRA NZ, END
-		BSET _RB3_Analog_Active, 0
-		BRA END
+	DIGITAL_OUTPUT:
 
-	RB8_PIN:
+	BCLR TRISB, #3
+	BCLR TRISB, #8
+	BCLR TRISB, #9
+	BCLR TRISE, #8
+	BCLR TRISE, #9
+	BCLR TRISA, #14
+	BCLR TRISA, #15
+	BRA END
 
-		CP W1, #1
-		BRA NZ, RB8_OUTPUT
-		BSET TRISB, #8	
-		BRA END
-		
-		RB8_OUTPUT:
-		CP W1, #0
-		BRA NZ, RB8_ANALOG_INP
-		BCLR TRISB, #8
-		BRA END
+	ANALOG_INPUT:
 
-		RB8_ANALOG_INP:
-		CP W1, #2
-		BRA NZ, END
-		BSET _RB8_Analog_Active, 0
-		BRA END
-	
-	RB9_PIN:
-
-		CP W1, #1
-		BRA NZ, RB9_OUTPUT
-		BSET TRISB, #9
-		BRA END	
-		
-		RB9_OUTPUT:
-		CP W1, #0
-		BRA NZ, RB9_ANALOG_INP
-		BCLR TRISB, #9
-		BRA END
-
-		RB9_ANALOG_INP:
-		CP W1, #2
-		BRA NZ, END
-		BSET _RB9_Analog_Active, 0
-		BRA END
-	
-	RE8_PIN:
-
-		CP W1, #1
-		BRA NZ, RE8_OUTPUT
-		BSET TRISE, #8	
-		BRA END
-		
-		RE8_OUTPUT:
-		CP W1, #0
-		BRA NZ, END
-		BCLR TRISE, #8
-		BRA END
-
-	RE9_PIN:
-
-		CP W1, #1
-		BRA NZ, RE9_OUTPUT
-		BSET TRISE, #9	
-		
-		RE9_OUTPUT:
-		CP W1, #0
-		BRA NZ, END
-		BCLR TRISE, #9
-
-	RA14_PIN:
-
-		CP W1, #1
-		BRA NZ, RA14_OUTPUT
-		BSET TRISA, #14	
-		BRA END
-		
-		RA14_OUTPUT:
-		CP W1, #0
-		BRA NZ, END
-		BCLR TRISA, #14
-		BRA END
-
-	RA15_PIN:
-
-		CP W1, #1
-		BRA NZ, RA15_OUTPUT
-		BSET TRISA, #15	
-		BRA END
-		
-		RA15_OUTPUT:
-		CP W1, #0
-		BRA NZ, END
-		BCLR TRISA, #15
-		BRA END
+	BSET _RB3_Analog_Active, 0
+	BSET _RB8_Analog_Active, 0
+	BSET _RB9_Analog_Active, 0
+	BRA END
 
 	END:
 
