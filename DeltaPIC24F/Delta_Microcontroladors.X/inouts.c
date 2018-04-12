@@ -18,6 +18,8 @@ void pinMode(int pin_name, int mode) {
     switch (pin_name) {
 
         case IO_RB3:        if (mode == INPUT) _TRISB3 = 1;
+                            else if(mode == INPUT_PULLUP);
+                            else if(mode == INUT_PULLDOWN);
                             else if (mode == OUTPUT) _TRISB3 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
@@ -65,18 +67,21 @@ void init_ADC() {
     AD1CSSL = 0x0000; // Include none of the channels in scan
 
     if (RB3_Analog_Active) {
+        _TRISB3 = 1; // Set RB3 as input
         _PCFG3 = 0; //Set RB3 as analog input
         _CSSL3 = 1; //Include RB3 in scan
         num_of_active_pins++;
     }
 
     if (RB8_Analog_Active) {
+        _TRISB8 = 1; // Set RB3 as input
         _PCFG8 = 0; //Set RB8 as analog input
         _CSSL8 = 1; //Include RB8 in scan
         num_of_active_pins++;
     }
 
     if (RB9_Analog_Active) {
+        _TRISB9 = 1; // Set RB3 as input
         _PCFG9 = 0; //Set RB9 as analog input
         _CSSL9 = 1; //Include RB9 in scan
         num_of_active_pins++;
@@ -87,7 +92,7 @@ void init_ADC() {
     AD1CON1 = 0x00E0; // Internal counter triggers conversion
     // AD1CON3 = 0x1F10; // Sample time = 31Tad, Tad = Tcy, A/D Conversion Clock Period = 256 Tcy
     AD1CON3 = 0x0F00; // Sample time = 15Tad
-    AD1CON2 = 0x0400 + ((num_of_active_pins) << 2); // Enable Scaning, set AD1IF after every (num_of_active_pins) samples
+    AD1CON2 = 0x0400 + ((num_of_active_pins - 1) << 2); // Enable Scaning, set AD1IF after every (num_of_active_pins) samples
 
     _AD1IF = 0; //turn off interrupt flag before enabling interrupt
     _AD1IE = 1; //enable analog interrupt
@@ -120,14 +125,15 @@ void init_analog_input(int pin_name) {
 
 void _ISR _ADC1Interrupt() {
 
+    int* AD_BUF_POINTER = &ADC1BUF0;
     AD1CON1bits.ASAM = 0; // Stop sampling
 
-    if (RB3_Analog_Active) RB3_Analog_Value = *(&ADC1BUF0 + 3);
-    if (RB8_Analog_Active) RB8_Analog_Value = *(&ADC1BUF0 + 8);
-    if (RB9_Analog_Active) RB9_Analog_Value = *(&ADC1BUF0 + 9);
+    if (RB3_Analog_Active) RB3_Analog_Value = *(AD_BUF_POINTER++);
+    if (RB8_Analog_Active) RB8_Analog_Value = *(AD_BUF_POINTER++);
+    if (RB9_Analog_Active) RB9_Analog_Value = *(AD_BUF_POINTER++);
 
     AD1CON1bits.ASAM = 1; // Continue sampling
-    _AD1IF = 0; // 
+    _AD1IF = 0;
 
 }
 
