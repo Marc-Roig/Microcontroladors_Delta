@@ -1,31 +1,47 @@
 #ifndef CONFIG_H
   
 	#include <Servo.h>
-
+	
+	//ESENTIAL
 	#include "Defines.h"
 	#include "Structs.h"
-	
+
+	#include "SerialCom.h"
+	#include "Kinematics.h"
 	#include "Servos.h"
+	
+	//NON ESENTIAL
 	#include "Calibration.h"
 	#include "EaseServos.h"
 	#include "Sequence.h"
+
+	//ONLY IN ARDUINO
+	#include "PIC24_Compatibility.h"
 
 	#define CONFIG_H
 
 	//------------------------//
 	//----GLOBAL VARIABLES----//
 	//------------------------//
-	Buffer buffer;
 
-	DeltaInfo deltainfo;
+	#ifdef SERIALCOM_H
+		CommandsBuffer buffer;
+	#endif
 
-	Servo servos[4];
-	ServoInfo servoinfo[4];
+	#ifdef KINEMATICS_H
+		DeltaInfo deltainfo;
+	#endif
 
-	// ServoEaser servoeaser;
-	ServoEaser servoseased[4];
+	#ifdef SERVOS_H
+		ServoInfo servoinfo[4];
+	#endif
 
-	Sequence sequence;
+	#ifdef EASESERVOS_H
+		ServoEaser servoseased[4];
+	#endif
 
+	#ifdef SEQUENCE_H
+		Sequence sequence;
+	#endif
 	
 #endif

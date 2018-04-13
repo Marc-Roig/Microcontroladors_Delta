@@ -41,18 +41,21 @@
 
 	//MOVE SERVOS FROM
 
-	#define MOVE_SERVO_1_FROM "ANGLE"
-	#define MOVE_SERVO_2_FROM "ANGLE"
-	#define MOVE_SERVO_3_FROM "ANGLE"
-	#define MOVE_SERVO_4_FROM "DUTYCYCLE"
+	#define MOVE_SERVO_1_FROM 0
+	#define MOVE_SERVO_2_FROM 0
+	#define MOVE_SERVO_3_FROM 0
+	#define MOVE_SERVO_4_FROM 1
+
+	#define MOVE_SERVO_FROM_ANGLE 0
+	#define MOVE_SERVO_FROM_DC 1
+	#define MOVE_SERVO_FROM_XYZ 2
 
 	//ARMS
-	// #define MAX_DC_SERVO1 2300
-	#define MAX_DC_SERVO1 2100
+	#define MAX_DC_SERVO1 2300
 	#define MAX_DC_SERVO2 2300
 	#define MAX_DC_SERVO3 2300
 
-	#define MIN_DC_SERVO1 300
+	#define MIN_DC_SERVO1 500
 	#define MIN_DC_SERVO2 500
 	#define MIN_DC_SERVO3 600
 
@@ -100,7 +103,7 @@
 	#define CALIBRATION_MODE 1
 	#define JOYSTICK_MODE 2
 
-	#define INITIAL_DELTA_MODE
+	#define INITIAL_DELTA_MODE 2
 
 	//-------------------//
 	//----CALIBRATION----//
