@@ -25,38 +25,31 @@
 
 #include "main.h"
 
-//int angles[] = {0, 25, 45, 70, 90};
 
 void setup() {
 
     T4CON = 0X8030;
 
-    TRISD = 0xFFFF; //POLSADORS
-    TRISA = 0xFF00; //LEDS
-
     engage_servos();
 
-    init_UART();
-    init_buffer();
-    init_TXbuffer();
+    Serial_begin(9600);
 
-    pinMode(IO_RE8, OUTPUT);
-    pinMode(IO_RE9, INPUT);
-
-    // pinMode(IO_RB3, ANALOG_INPUT);
-    // init_ADC();
-    // serial_println(analogRead(IO_RB3));
-
-    digitalWrite( IO_RE8, 1 );
-    delay(1000);
-    digitalWrite(IO_RE8, 0);
-    serial_println(digitalRead(IO_RE9));
-
+    //--SERVOS--//
+    //init_servos(true, true, true, true);
+    
+    pinMode(IO_RB3, ANALOG_INPUT);
+    
 }
+
+int analog_value = 512;
 
 void loop() {
 
-
+    analog_value = analogRead(IO_RB3);
+    
+    serial_println(analog_value);
+    
+    delay(1000);
 
 }
 
@@ -84,7 +77,7 @@ int main(void) {
 
 void delay(int valor_retard) { //in ms
 
-    int delay_cycles = valor_retard * 1000 / 32;
+    long delay_cycles = (long)valor_retard * 1000 / 16;
     TMR4 = 0;
     while (TMR4 < delay_cycles);
 
@@ -93,8 +86,10 @@ void delay(int valor_retard) { //in ms
 void show_dutycycle_leds(int duty_cycle) {
 
     if (duty_cycle <= 0xff ) {
+        
         LATA = LATA | duty_cycle;
         LATA = LATA & (0xFF00 + duty_cycle);
+        
     }
     
 }

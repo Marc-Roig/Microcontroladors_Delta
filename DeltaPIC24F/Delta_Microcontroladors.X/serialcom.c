@@ -9,15 +9,7 @@ volatile bool Serial_busy = false; //True if sending data through TX
 
 volatile int serial_mode = 0;
 
-void init_UART() {
-
-    // U2MODEbits.UARTEN = 1; //Enable UART2
-
-    // U2STAbits.UTXISEL1 = 0; //Interrupt when any char is transfered
-    // U2STAbits.URXISEL1 = 0; //Interrupt flag bit is set when a character is recieved 
-
-    // U2STAbits.UTXEN = 1; //Enable UART2 transmiter
-    // U2STAbits.URXEN = 1; //Enable UART2 reciever 
+void Serial_begin(int baudrate_) { 
 
     U2MODE = 0x8000;
 
@@ -30,6 +22,9 @@ void init_UART() {
 
     _U2RXIF = 0;
     _U2RXIE = 1; //Enable RX interrupt
+
+    init_buffer();
+    init_TXbuffer();
 
 }
 

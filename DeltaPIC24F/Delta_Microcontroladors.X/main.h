@@ -9,7 +9,8 @@
 	
 	#include "serialcom.h"
 	#include "servos.h"
-
+	
+	#include "servo_movement.h"
 
     
 	#define MAIN_H //Include guard
@@ -22,5 +23,6 @@
     void show_dutycycle_leds(int duty_cycle);
     void delay(int cicles);
 
+//    ServoInfo servoinfo;
 
 #endif //MAIN_H

@@ -17,7 +17,7 @@
 	}TXBuffer;
 
 
-	void init_UART();
+	void Serial_begin(int baudrate);
 
 	void serial_write(char data_to_print[]);
 	void serial_println(int value);
