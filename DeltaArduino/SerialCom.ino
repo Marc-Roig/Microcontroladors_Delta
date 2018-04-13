@@ -10,8 +10,6 @@
 
 // G20 - Send me Angles
 
-
-
 void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
   if(command_recieved) {
@@ -41,7 +39,7 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
     case MOVE_EF:       serial_recieve_ef_pos(command);
                         break;
 
-    default:            Serial.write("BAD REQUEST");
+    default:            Serial_write("BAD REQUEST");
                         break;
   }
   
@@ -74,8 +72,8 @@ void check_serial() {
     //Get the first one, introduce the G06
     //Wait some time to start again the communication
   }
-  else if (Serial.available() > 0 ) {
-    incomingByte = Serial.read();
+  else if (Serial_available() > 0 ) {
+    incomingByte = Serial_read();
 
     buffer.command[buffer.end_][i] = incomingByte;
     i++;
@@ -145,12 +143,12 @@ void serial_recieve_angles(char command[SERIAL_COMMAND_MAX_LEN]) {
   }
 
   if (!bad_request) {
-  //    Serial.write("GOOD REQUEST\n");
+  //    Serial_write("GOOD REQUEST\n");
     servoinfo[0].angle = chars_to_int(command[4], command[5], command[6]);
     servoinfo[1].angle  = chars_to_int(command[8], command[9], command[10]);
     servoinfo[2].angle  = chars_to_int(command[12], command[13], command[14]);
   }
-  else Serial.write("BAD REQUEST\n");
+  else Serial_write("BAD REQUEST\n");
 
 }
 
@@ -164,9 +162,11 @@ void serial_recieve_ef_pos(char command[SERIAL_COMMAND_MAX_LEN]) {
 
   if (!bad_request) {
 
+    #ifdef KINEMATICS_H
     // deltainfo.x = ...;
     // deltainfo.y = ...;
     // deltainfo.x = ...;
+    #endif
 
   }
 
@@ -177,10 +177,10 @@ void serial_send_angles() {
 
   send_command_header(MOVE_SERVOS, false);
   for (int i = 0; i < 3; i++) {
-    Serial.write(int_to_char_3digits(servoinfo[i].angle));
+    Serial_write(int_to_char_3digits(servoinfo[i].angle));
     
-    if (i == 2) Serial.write("\n");
-    else Serial.write(' '); 
+    if (i == 2) Serial_write("\n");
+    else Serial_write(' '); 
   }
 
 }
@@ -188,27 +188,27 @@ void serial_send_angles() {
 void serial_send_speed() {
 
   send_command_header(CHANGE_SPEED, false);
-  // Serial.write(end_effector_speed + '0');
-  Serial.write('\n');
+  // Serial_write(end_effector_speed + '0');
+  Serial_write('\n');
 
 }
 
 void serial_send_ef_pos() {
 
   send_command_header(MOVE_EF, false);
-  // Serial.write(end_effector_pos[0]+'0');
-  // Serial.write(end_effector_pos[1]+'0');
-  // Serial.write(end_effector_pos[1]+'0');
-  Serial.write('\n');
+  // Serial_write(end_effector_pos[0]+'0');
+  // Serial_write(end_effector_pos[1]+'0');
+  // Serial_write(end_effector_pos[1]+'0');
+  Serial_write('\n');
 
 }
 
 void send_command_header(int command_num, bool end_with_new_line) {
 
-  Serial.write("G");
-  Serial.write(int_to_char_2digits(command_num));
-  if (end_with_new_line) Serial.write('\n');
-  else Serial.write(" ");
+  Serial_write("G");
+  Serial_write(int_to_char_2digits(command_num));
+  if (end_with_new_line) Serial_write('\n');
+  else Serial_write(" ");
 
 }
 
@@ -220,12 +220,12 @@ void serial_write_dc_every_ms(int wait_time) {
 
         startMilis = millis();
 
-        Serial.write("Duty cycle: ");
-        Serial.print(servoinfo[0].duty_cycle);
-        Serial.write(" - ");
-        Serial.print(servoinfo[1].duty_cycle);
-        Serial.write(" - ");
-        Serial.println(servoinfo[2].duty_cycle);
+        Serial_write("Duty cycle: ");
+        Serial_print(servoinfo[0].duty_cycle);
+        Serial_write(" - ");
+        Serial_print(servoinfo[1].duty_cycle);
+        Serial_write(" - ");
+        Serial_println(servoinfo[2].duty_cycle);
 
     }
 
@@ -234,12 +234,12 @@ void serial_write_dc_every_ms(int wait_time) {
 
 void serial_write_angles() {
 
-    Serial.write("Angles: ");
-    Serial.print(servoinfo[0].angle);
-    Serial.print(" - ");
-    Serial.print(servoinfo[1].angle);
-    Serial.print(" - ");
-    Serial.println(servoinfo[2].angle);
+    Serial_write("Angles: ");
+    Serial_print(servoinfo[0].angle);
+    Serial_print(" - ");
+    Serial_print(servoinfo[1].angle);
+    Serial_print(" - ");
+    Serial_println(servoinfo[2].angle);
 
 }
 

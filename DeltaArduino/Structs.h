@@ -4,15 +4,14 @@
 
 	#include "Defines.h"
 
-	typedef struct Buffer { //Circular buffer for serial communication
+	typedef struct CommandsBuffer { //Circular buffer for serial communication
 
 		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
 		int command_len[SERIAL_BUFFER_LEN];
 		int start, end_;
 		bool full, empty;
 
-	}Buffer;
-
+	}CommandsBuffer;
 
 
 	//---------------------//

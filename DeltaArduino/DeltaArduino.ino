@@ -13,7 +13,7 @@ int servoFrameMillis = 20;  // minimum time between servo updates
 void setup() {
 
     //--SERIAL COM--//
-    Serial.begin(9600);
+    Serial_begin(9600);
 
     // Serial.write("G20\n"); //Processing is waiting to arduino
     // Serial.write("G06\n");
