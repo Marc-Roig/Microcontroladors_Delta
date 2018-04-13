@@ -18,8 +18,8 @@ void pinMode(int pin_name, int mode) {
     switch (pin_name) {
 
         case IO_RB3:        if (mode == INPUT) _TRISB3 = 1;
-                            else if(mode == INPUT_PULLUP);
-                            else if(mode == INUT_PULLDOWN);
+//                            else if(mode == INPUT_PULLUP);
+//                            else if(mode == INUT_PULLDOWN);
                             else if (mode == OUTPUT) _TRISB3 = 0;
                             else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
                             break;
@@ -87,7 +87,14 @@ void init_ADC() {
         num_of_active_pins++;
     }
 
-    if (num_of_active_pins == 0) return; //No need to read any value
+    if (num_of_active_pins == 0) {
+
+        AD1CON1bits.ADON = 0;
+        AD1CON1bits.ASAM = 0;
+        _AD1IE = 0;
+        return; //No need to read any value
+
+    }
 
     AD1CON1 = 0x00E0; // Internal counter triggers conversion
     // AD1CON3 = 0x1F10; // Sample time = 31Tad, Tad = Tcy, A/D Conversion Clock Period = 256 Tcy
@@ -100,8 +107,6 @@ void init_ADC() {
     AD1CON1bits.ASAM = 1;
     
     AD1CON1bits.ADON = 1; // turn ADC ON
-
-    AD1CHS = 0;
 
 }
 
@@ -119,18 +124,19 @@ void init_analog_input(int pin_name) {
                         break;
 
     }
-    
 
 }
 
 void _ISR _ADC1Interrupt() {
 
-    int* AD_BUF_POINTER = &ADC1BUF0;
+    int *ADC16Ptr;
+    
+    ADC16Ptr = &ADC1BUF0;
     AD1CON1bits.ASAM = 0; // Stop sampling
 
-    if (RB3_Analog_Active) RB3_Analog_Value = *(AD_BUF_POINTER++);
-    if (RB8_Analog_Active) RB8_Analog_Value = *(AD_BUF_POINTER++);
-    if (RB9_Analog_Active) RB9_Analog_Value = *(AD_BUF_POINTER++);
+    if (RB3_Analog_Active) RB3_Analog_Value = *ADC16Ptr++;
+    if (RB8_Analog_Active) RB8_Analog_Value = *ADC16Ptr++;
+    if (RB9_Analog_Active) RB9_Analog_Value = *ADC16Ptr++;
 
     AD1CON1bits.ASAM = 1; // Continue sampling
     _AD1IF = 0;
@@ -146,18 +152,18 @@ void ADC_update_values() {
 
         if (ADC_timer >= MS_BETWEEN_ADC_CONVERSION) {
 
-            int *ADC16Ptr;
+            unsigned int *ADC16Ptr;
             ADC16Ptr = &ADC1BUF0;
 
             if (IFS0bits.AD1IF) {
                 //read as many of active analog inputs
-                if (RB3_Analog_Active) RB3_Analog_Value = *ADC_timer++;
-                if (RB8_Analog_Active) RB8_Analog_Value = *ADC_timer++;
-                if (RB9_Analog_Active) RB9_Analog_Value = *ADC_timer++;
+                if (RB3_Analog_Active) RB3_Analog_Value = *ADC16Ptr++;
+                if (RB8_Analog_Active) RB8_Analog_Value = *ADC16Ptr++;
+                if (RB9_Analog_Active) RB9_Analog_Value = *ADC16Ptr++;
 
+                IFS0bits.AD1IF = 0;
             }
             
-            IFS0bits.AD1IF = 0;
             ADC_timer = 0;
 
         }

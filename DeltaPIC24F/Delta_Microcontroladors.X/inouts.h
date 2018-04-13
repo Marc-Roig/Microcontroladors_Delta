@@ -6,8 +6,8 @@
 	#define INPUT 1
 	#define ANALOG_INPUT 2
 
-	#define HIGH 1;
-	#define LOW 0;
+	#define HIGH 1
+	#define LOW 0
 
 	#define IO_RB3 0
 	#define IO_RB8 1

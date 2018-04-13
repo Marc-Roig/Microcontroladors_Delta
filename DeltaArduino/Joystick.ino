@@ -8,6 +8,9 @@ void init_joystick()  {
     pinMode(INCREASE_XYZ_BUTTON_PIN, INPUT);
     pinMode(DECREASE_XYZ_BUTTON_PIN, INPUT);
 
+    servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+    servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+    servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
 }
 
 void joystick_movement() {
@@ -20,21 +23,39 @@ void joystick_movement() {
                                         break;
 
         case JOYSTICK_MOVE_AXIS:        joystick_move_xyz();
-                                        buttons_move_xyz();
+                                        // buttons_move_xyz();
                                         break;
 
         default:                        break;
 
     }
 
+    joystick_debug();
+
     joysitck_change_mode(&move_axis_or_angles);
+
+}
+
+void joystick_debug() {
+
+    static unsigned long StartTime = millis();
+
+    int time_difference_ms = 500; // Every 400 ms the program will read the joystick val 
+
+    if ((millis() - StartTime) > time_difference_ms ) {
+
+        joystick_debug_from_angles();
+
+        StartTime = millis();
+
+    }
 
 }
 
 void joystick_debug_from_angles() {
 
     serial_write_angles();
-    serial_write_xyz_from_anlges();
+    serial_write_xyz_from_angles();
     Serial.write("-----------------------\n");
 
 }
@@ -56,12 +77,10 @@ void joystick_move_angles() {
     if ((millis() - StartTime) > time_difference_ms ) {
 
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
-
-        if (abs(joys_x) < 1) joys_x = 0;
+        if (abs(joys_x) < 1.5) joys_x = 0;
 
         servoinfo[servo_num].angle += (0.5 * joys_x); //Multiply joys_x with a gain
-
-        // joystick_debug_from_xyz();
+        // Serial.println(joys_x);
 
         StartTime = millis();
 
@@ -103,18 +122,18 @@ void joysitck_change_mode(int* change_joystick_mode) {
 
         switch (*change_joystick_mode) {
 
-            case JOYSTICK_MOVE_ANGLES:      servoinfo[0].move_servo_from = "ANGLE";
-                                            servoinfo[1].move_servo_from = "ANGLE";
-                                            servoinfo[2].move_servo_from = "ANGLE";
+            case JOYSTICK_MOVE_ANGLES:      servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+                                            servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+                                            servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
                                             break;
 
-            case JOYSTICK_MOVE_AXIS:        servoinfo[0].move_servo_from = "XYZ";
-                                            servoinfo[1].move_servo_from = "XYZ";
-                                            servoinfo[2].move_servo_from = "XYZ";
+            case JOYSTICK_MOVE_AXIS:        servoinfo[0].move_servo_from = MOVE_SERVO_FROM_XYZ;
+                                            servoinfo[1].move_servo_from = MOVE_SERVO_FROM_XYZ;
+                                            servoinfo[2].move_servo_from = MOVE_SERVO_FROM_XYZ;
                                             break;
         }
 
-        servoinfo[3].move_servo_from = "DUTYCYCLE"
+        servoinfo[3].move_servo_from = MOVE_SERVO_FROM_DC;
 
         S0 = 1;
 
@@ -188,15 +207,14 @@ void joystick_move_xy() {
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
         float joys_y = map(analogRead(JOYSTICK_Y_PIN), 0, 1023, JOYSTICK_NUMBER_OF_SPEEDS/2, -JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs(joys_x) < 1) joys_x = 0;
-        if (abs(joys_y) < 1) joys_y = 0;
+        if (abs(joys_x) < 1.2) joys_x = 0;
+        if (abs(joys_y) < 1.2) joys_y = 0;
 
-        float base_speed_increment = 1;
+        float base_speed_increment = 0.5;
 
         deltainfo.x += joys_x * base_speed_increment;
         deltainfo.y += joys_y * base_speed_increment;
 
-        // joystick_debug_from_xyz();
 
         StartTime = millis();
         
@@ -217,7 +235,6 @@ void joystick_move_z() {
 
         deltainfo.z += (1 * joys_z); //Multiply joys_z with a gain
 
-        // joystick_debug_from_xyz();
 
         StartTime = millis();
 
