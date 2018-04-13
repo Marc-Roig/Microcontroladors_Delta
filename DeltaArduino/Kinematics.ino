@@ -109,7 +109,7 @@ int delta_calcInverse(float x0, float y0, float z0, float* theta1, float* theta2
 
 }
 
-void serial_write_xyz_from_anlges() {
+void serial_write_xyz_from_angles() {
 
      float x = 0;
      float y = 0;
@@ -126,7 +126,8 @@ void serial_write_xyz_from_anlges() {
           Serial.write("   Z - ");
           Serial.println(z);
 
-     } else Serial.write("INVALID POSITION\n");
+     } 
+     // else Serial.write("INVALID POSITION\n");
 
 }
 
@@ -180,7 +181,7 @@ bool update_xyz_from_angles() {
 
           return true;
 
-     } else Serial.write("INVALID POSITION\n");
+     } //else Serial.write("INVALID POSITION\n");
 
      return false;
 

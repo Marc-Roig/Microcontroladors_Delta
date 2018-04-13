@@ -11,17 +11,17 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
         if (move_servos[i]) {
 
-            if (servoinfo[i].move_servo_from == "ANGLE") {
+            if (servoinfo[i].move_servo_from == MOVE_SERVO_FROM_ANGLE) {
 
                 update_dc_from_angle(i);  //Update dc
 
             }
-            else if (servoinfo[i].move_servo_from == "DUTYCYCLE") {
+            else if (servoinfo[i].move_servo_from == MOVE_SERVO_FROM_DC) {
 
                 update_angle_from_dc(i);  //Update angles
 
             }
-            else if (servoinfo[i].move_servo_from == "XYZ") { 
+            else if (servoinfo[i].move_servo_from == MOVE_SERVO_FROM_XYZ) { 
 
                 if (i == 0) update_angles_from_xyz(); //All servo angles are updated at once
                 update_dc_from_angle(i);
@@ -38,7 +38,7 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
     //Angles are already updated if the mode was duty_cycle
     //Arms servos need to have the same "move_servo_from" so
     //if the first isnt XYZ the others will not be either.
-    if (servoinfo[0].move_servo_from != "XYZ") update_xyz_from_angles();
+    if (servoinfo[0].move_servo_from != MOVE_SERVO_FROM_XYZ) update_xyz_from_angles();
 
 }
 
@@ -234,10 +234,10 @@ void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
 void set_servo_movement_with_dc(bool set_servo1, bool set_servo2, bool set_servo3, bool set_servo4) {
 
-    if (set_servo1) servoinfo[0].move_servo_from = "DUTYCYCLE";
-    if (set_servo2) servoinfo[1].move_servo_from = "DUTYCYCLE";
-    if (set_servo3) servoinfo[2].move_servo_from = "DUTYCYCLE";
-    if (set_servo4) servoinfo[3].move_servo_from = "DUTYCYCLE";
+    if (set_servo1) servoinfo[0].move_servo_from = MOVE_SERVO_FROM_DC;
+    if (set_servo2) servoinfo[1].move_servo_from = MOVE_SERVO_FROM_DC;
+    if (set_servo3) servoinfo[2].move_servo_from = MOVE_SERVO_FROM_DC;
+    if (set_servo4) servoinfo[3].move_servo_from = MOVE_SERVO_FROM_DC;
     
 }
 

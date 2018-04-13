@@ -32,7 +32,7 @@ void sequence_update() {
       
     } else if (!save_pos_button) S0 = 0;
 
-    if (play_sequence_button) play_sequence(servoseased);
+    if (play_sequence_button) play_sequence();
 
 
 }

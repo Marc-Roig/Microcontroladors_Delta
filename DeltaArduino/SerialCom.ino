@@ -24,8 +24,6 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
   
   else check_serial();
 
-    // delay(30);
-
 }
 
 //--COMMAND--//

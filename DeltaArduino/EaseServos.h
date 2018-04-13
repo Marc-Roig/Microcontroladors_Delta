@@ -53,7 +53,7 @@
             bool inc_moves_start_pointer();
             void init_moves_buffer();
 
-            void init(Servo s, int servo_num_, int frameTime);
+            void init(int servo_num_, int frameTime);
 
             void reset();
 
@@ -66,7 +66,7 @@
             void proceed(int delayaftermove);
             void proceed();
 
-            bool isRunning();
+            bool isRuning();
 
             void setEasingFunc(EasingFunc func);
             void setArrivedFunc(ArrivedFunc func);

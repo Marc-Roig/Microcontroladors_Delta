@@ -66,13 +66,13 @@ void ServoEaser::update() {
 
 void ServoEaser::getNextPos() {
 
-    if (arrivedFunc != NULL) arrivedFunc();
+    if (arrivedFunc != NULL) arrivedFunc(servo_num);
 
     arrived = true;
 
     if (buffer_empty) {
 
-        if (bufferemptiedFunc != NULL) bufferemptiedFunc();
+        if (bufferemptiedFunc != NULL) bufferemptiedFunc(servo_num);
         // running = false; //System will continue when added another move
         return;
     
