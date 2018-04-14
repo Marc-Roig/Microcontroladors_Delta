@@ -1,4 +1,4 @@
- #include "main.h"
+#include "Config.h"
 //Time interruptions
 
 volatile unsigned int RB3_Analog_Value = 512;

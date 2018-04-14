@@ -1,3 +1,5 @@
+#include "Config.h"
+
 void init_T4_Interrupt() {
 
 	T4CON = 0X8000;
@@ -8,7 +10,13 @@ void init_T4_Interrupt() {
 
 }
 
+void delay(int valor_retard) { //in ms
 
+    long delay_cycles = (long)valor_retard * 1000 / 16;
+    TMR4 = 0;
+    while (TMR4 < delay_cycles);
+
+}
 
 void _ISR _T4Interrupt() {
 
@@ -17,4 +25,5 @@ void _ISR _T4Interrupt() {
 		// ADC_update_values();
 
 	#endif
+
 }

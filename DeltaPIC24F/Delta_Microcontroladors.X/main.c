@@ -23,8 +23,7 @@
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG port is disabled)
 
 
-#include "main.h"
-
+#include "Config.h"
 
 void setup() {
 
@@ -74,14 +73,6 @@ int main(void) {
 
 }
 
-
-void delay(int valor_retard) { //in ms
-
-    long delay_cycles = (long)valor_retard * 1000 / 16;
-    TMR4 = 0;
-    while (TMR4 < delay_cycles);
-
-}
 
 void show_dutycycle_leds(int duty_cycle) {
 

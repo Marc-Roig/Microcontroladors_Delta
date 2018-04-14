@@ -9,65 +9,84 @@
 
 
 _pinMode:
-	; int pin_name at W0
+	; int pin_num at W0
 	; int mode at W1
 
-	CP W1, #3 ;check if modes are valid
+	CP W1, #3 ; check if modes are valid
 	BRA GE, END
 
-	; ANALOG:
-	CP W1, #2
-	BRA NZ, DIGITAL
+	ANALOG:
 
-	CP W0, #3	;only RB3, RB8 and RB9 can be analog
-	BRA GE, END
+		CP W1, #2
+		BRA NZ, DIGITAL
 
-	ADD ANALOG_INPUT, W0, W0
-	CALL W0
+		CP W0, #3	; only RB3, RB8 and RB9 can be analog
+		BRA GE, END
+
+		ADD ANALOG_INPUT, W0, W0
+		RCALL W0
 
 	DIGITAL:
-	CP W0, #7 ;Check if input is valid
-	BRA GE, END
 
-	CP W1, #1
-	BRA NZ, IS_OUTPUT
+		CP W0, #7 ; Check if input is valid
+		BRA GE, END
 
-	ADD DIGITAL_INPUT, W0, W0
-	CALL W0
+		CP W1, #1
+		BRA NZ, IS_OUTPUT
+
+		SL W0, W0 ; pin_num * 2 -> num of lines to jump
+		ADD DIGITAL_INPUT, W0, W0
+		RCALL W0
 
 	IS_OUTPUT:
-	ADD DIGITAL_OUTPUT, W0, W0
-	CALL W0
+
+		SL W0, W0 ; pin_num * 2 -> num of lines to jump
+		ADD DIGITAL_OUTPUT, W0, W0
+		RCALL W0
 
 
 	DIGITAL_INPUT:
 
-	BSET TRISB, #3
-	BSET TRISB, #8
-	BSET TRISB, #9
-	BSET TRISE, #8
-	BSET TRISE, #9
-	BSET TRISA, #14
-	BSET TRISA, #15
-	BRA END
+		BSET TRISB, #3
+		BRA END
+		BSET TRISB, #8
+		BRA END
+		BSET TRISB, #9
+		BRA END
+		BSET TRISE, #8
+		BRA END
+		BSET TRISE, #9
+		BRA END
+		BSET TRISA, #14
+		BRA END
+		BSET TRISA, #15
+		BRA END
 
 	DIGITAL_OUTPUT:
 
-	BCLR TRISB, #3
-	BCLR TRISB, #8
-	BCLR TRISB, #9
-	BCLR TRISE, #8
-	BCLR TRISE, #9
-	BCLR TRISA, #14
-	BCLR TRISA, #15
-	BRA END
+		BCLR TRISB, #3
+		BRA END
+		BCLR TRISB, #8
+		BRA END
+		BCLR TRISB, #9
+		BRA END
+		BCLR TRISE, #8
+		BRA END
+		BCLR TRISE, #9
+		BRA END
+		BCLR TRISA, #14
+		BRA END
+		BCLR TRISA, #15
+		BRA END
 
 	ANALOG_INPUT:
 
-	BSET _RB3_Analog_Active, 0
-	BSET _RB8_Analog_Active, 0
-	BSET _RB9_Analog_Active, 0
-	BRA END
+		BSET _RB3_Analog_Active, 0
+		BRA END
+		BSET _RB8_Analog_Active, 0
+		BRA END
+		BSET _RB9_Analog_Active, 0
+		BRA END
 
 	END:
 
