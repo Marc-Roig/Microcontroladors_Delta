@@ -73,7 +73,7 @@ void ServoEaser::getNextPos() {
     if (buffer_empty) {
 
         if (bufferemptiedFunc != NULL) bufferemptiedFunc(servo_num);
-        // running = false; //System will continue when added another move
+        running = false;
         return;
     
     }
@@ -138,6 +138,7 @@ void ServoEaser::init(int servo_num_, int frameTime) {
     init_moves_buffer();
 
     arrived = true;
+    running = false;
 
     frameMillis = frameTime;
     delay_after_move = 0;
@@ -179,6 +180,41 @@ void ServoEaser::addMoves(int inp_moves[], int durations[], int moves_len) {
             if (inc_moves_end_pointer()) return;
 
         } 
+    }
+
+}
+
+void ServoEaser::addMovesAndPlay(int inp_moves[], int durations[], int moves_len) {
+
+    for (int i = 0; i < moves_len; i++) {
+
+        if (!buffer_full) {
+
+            moves[buffer_end] = inp_moves[i];
+            moves_dur[buffer_end] = durations[i];
+
+            if (inc_moves_end_pointer()) return;
+
+        } 
+    }
+
+    if (!running && arrived) play();
+    else if (!running && !arrived) proceed();
+
+}
+
+void ServoEaser::addMoveAndPlay(int inp_move, int duration) {
+
+    if (!buffer_full) {
+
+        moves[buffer_end] = inp_move;
+        moves_dur[buffer_end] = duration;
+
+        inc_moves_end_pointer();
+
+        if (!running && arrived) play();
+        else if (!running && !arrived) proceed();
+
     }
 
 }

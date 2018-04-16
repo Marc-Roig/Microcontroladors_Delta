@@ -58,6 +58,8 @@
             void reset();
 
             void addMoves(int inp_moves[], int durations[], int moves_len);
+            void addMovesAndPlay(int inp_moves[], int durations[], int moves_len);
+            void addMoveAndPlay(int inp_move, int duration);
             bool buffer_has_space(int positions_to_add);
 
             void play();

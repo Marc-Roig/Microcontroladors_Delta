@@ -20,11 +20,20 @@ void setup() {
 
     init_buffer(); 
 
+    //--SERVO EASER--//
+    for (int i = 0; i < 4; i++) {
+        servoseased[i].init(i, servoFrameMillis);
+    }
+    
     //--SERVOS--//
     init_servos(true, true, true, true);
 
     //--DELTA--//
-    init_delta();
+        //SEQUENCE_MODE 0
+        //CALIBRATION_MODE 1
+        //JOYSTICK_MODE 2
+    init_delta(CALIBRATION_MODE);
+
 
 
     switch (deltainfo.mode) {
@@ -32,11 +41,7 @@ void setup() {
         case SEQUENCE_MODE:     //--JOYSTICK--//
                                 init_joystick();
 
-                                //--SERVO EASER--//
-                                for (int i = 0; i < 4; i++) {
-                                    servoseased[i].init(i, servoFrameMillis);
-                                }
-
+                                
                                 //--SEQUENCE--//
                                 init_sequence();
 
@@ -68,7 +73,7 @@ void loop() {
     }
 
     //--SERVOS--//
-    move_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
+    move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
 
     //--SERIAL--//
     // serial_com_with_simulator();
