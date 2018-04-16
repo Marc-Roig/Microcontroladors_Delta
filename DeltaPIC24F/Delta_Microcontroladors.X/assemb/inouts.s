@@ -136,9 +136,12 @@ _digitalRead:
 
 	CHECK_RA15:
 		CP W0, #6
-		BRA NZ, END:
+		BRA NZ, INVALID_PIN:
 		MOV _RA15, W0
 		BRA END
+
+	INVALID_PIN:
+		MOV #0, W0
 
 	END:
 
