@@ -58,7 +58,7 @@ void ServoEaser::update() {
 
     servoinfo[servo_num].duty_cycle = currPos;
 
-    Serial.println(currPos);
+    if(servo_num == 0) Serial.println(currPos);
 
     if( tick == tickCount + 1) getNextPos(); 
 

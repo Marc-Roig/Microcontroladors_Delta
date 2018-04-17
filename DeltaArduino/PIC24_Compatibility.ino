@@ -1,6 +1,8 @@
 //All functions to make code compatible both with arduino and PIC24FJ
 #include "Config.h"
 
+Servo servos[4];
+
 void Serial_begin(int baudrate) {
 
 	Serial.begin(9600);
@@ -49,7 +51,7 @@ void servo_write(int angle, int servo_num) {
 
 }
 
-void servo_attach(int servo_num, int pin) {
+void servo_attach(int pin, int servo_num) {
 
 	servos[servo_num].attach(pin);
 

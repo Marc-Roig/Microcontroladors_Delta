@@ -37,11 +37,11 @@ _servo_writeMicroseconds:
 
 	Func_calls:
 
-	RCALL _servo1_writeMicroseconds //microsec left at W0
+	RCALL _servo1_writeMicroseconds ;microsec left at W0
 	BRA End
-	RCALL _servo2_writeMicroseconds //microsec left at W0
+	RCALL _servo2_writeMicroseconds ;microsec left at W0
 	BRA End
-	RCALL _servo3_writeMicroseconds //microsec left at W0
+	RCALL _servo3_writeMicroseconds ;microsec left at W0
 
 	End:
 
@@ -63,39 +63,41 @@ _disengage_servos:
 
 _servo_attach:
 	
-	; W0 - int pin -> left for compatibility with arduino
-	; W1 - int servo_num
+	; W0 - unsigned int pin -> left for compatibility with arduino
+	; W1 - unsigned int servo_num
 
-	//Check if servo_num is valid
+	;Check if servo_num is valid
 	CP W1, #3
 	BRA GE, End
 
-	//Branch to the servo_num config bits
-	MUL.UU W1, 5, W1
+	;Branch to the servo_num config bits
+	MUL.UU W1, 6, W1
 	ADD Set_bits, W1, W1
 	BRA W1
 
 	Set_bits:
-	//OUTPUT COMPARE 1
+	;OUTPUT COMPARE 1
 	MOV #9999, PR1
 	MOV #750, OC1RS
 	MOV #750, OC1R
-	MOV 0x0006, OC1CON
-	MOV 0x8010, T1CON
+	MOV #0x0006, OC1CON
+	MOV #0x8010, T1CON
+	BRA End
 
-	//OUTPUT COMPARE 2
+	;OUTPUT COMPARE 2
 	MOV #9999, PR2
 	MOV #750, OC2RS
 	MOV #750, OC2R
-	MOV 0x0006, OC2CON
-	MOV 0x8010, T2CON
+	MOV #0x0006, OC2CON
+	MOV #0x8010, T2CON
+	BRA End
 
-	//OUTPUT COMPARE 3
+	;OUTPUT COMPARE 3
 	MOV #9999, PR3
 	MOV #750, OC3RS
 	MOV #750, OC3R
-	MOV 0x0006, OC3CON
-	MOV 0x8010, T3CON
+	MOV #0x0006, OC3CON
+	MOV #0x8010, T3CON
 
 	End:
 
@@ -104,26 +106,26 @@ _servo_attach:
 
 _attach_servos:
 
-	//OUTPUT COMPARE 1
+	;OUTPUT COMPARE 1
 	MOV #9999, PR1
 	MOV #750, OC1RS
 	MOV #750, OC1R
-	MOV 0x0006, OC1CON
-	MOV 0x8010, T1CON
+	MOV #0x0006, OC1CON
+	MOV #0x8010, T1CON
 
-	//OUTPUT COMPARE 2
+	;OUTPUT COMPARE 2
 	MOV #9999, PR2
 	MOV #750, OC2RS
 	MOV #750, OC2R
-	MOV 0x0006, OC2CON
-	MOV 0x8010, T2CON
+	MOV #0x0006, OC2CON
+	MOV #0x8010, T2CON
 
-	//OUTPUT COMPARE 3
+	;OUTPUT COMPARE 3
 	MOV #9999, PR3
 	MOV #750, OC3RS
 	MOV #750, OC3R
-	MOV 0x0006, OC3CON
-	MOV 0x8010, T3CON
+	MOV #0x0006, OC3CON
+	MOV #0x8010, T3CON
 
 	RETURN
 

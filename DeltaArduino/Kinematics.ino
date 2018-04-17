@@ -8,7 +8,7 @@
  const float rf = 100.0;
  
  // trigonometric constants
- const float sqrt3 = sqrt(3.0);
+ const float sqrt3 = 1.7320508;
  const float pi = 3.141592653;    // PI
  const float sin120 = sqrt3/2.0;   
  const float cos120 = -0.5;        
@@ -119,26 +119,26 @@ void serial_write_xyz_from_angles() {
 
      if (is_valid != -1) {
 
-          Serial.write("X - ");
-          Serial.print(x);
-          Serial.write("   Y - ");
-          Serial.print(y);
-          Serial.write("   Z - ");
-          Serial.println(z);
+          Serial_write("X - ");
+          Serial_print(x);
+          Serial_write("   Y - ");
+          Serial_print(y);
+          Serial_write("   Z - ");
+          Serial_println(z);
 
      } 
-     // else Serial.write("INVALID POSITION\n");
+     // else Serial_write("INVALID POSITION\n");
 
 }
 
 void serial_write_xyz() {
 
-     Serial.write("X - ");
-     Serial.print(deltainfo.x);
-     Serial.write("   Y - ");
-     Serial.print(deltainfo.y);
-     Serial.write("   Z - ");
-     Serial.println(deltainfo.z);
+     Serial_write("X - ");
+     Serial_print(deltainfo.x);
+     Serial_write("   Y - ");
+     Serial_print(deltainfo.y);
+     Serial_write("   Z - ");
+     Serial_println(deltainfo.z);
 
 }
 
@@ -159,7 +159,7 @@ bool update_angles_from_xyz() {
           return true;
           
      }
-     else Serial.write("Invalid pos\n");
+     else Serial_write("Invalid pos\n");
 
      return false; //Invalid position
 
@@ -181,19 +181,19 @@ bool update_xyz_from_angles() {
 
           return true;
 
-     } //else Serial.write("INVALID POSITION\n");
+     } //else Serial_write("INVALID POSITION\n");
 
      return false;
 
 }
 
-void init_delta() {
+void init_delta(int mode) {
 
      deltainfo.x = 0;
      deltainfo.y = 0;
      deltainfo.z = -162.5;
 
-     deltainfo.mode = INITIAL_DELTA_MODE;
+     deltainfo.mode = mode;
      set_servo_movement_with_dc(true, true, true, true);
 
 }

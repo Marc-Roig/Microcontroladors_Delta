@@ -180,7 +180,7 @@ void serial_send_angles() {
     Serial_write(int_to_char_3digits(servoinfo[i].angle));
     
     if (i == 2) Serial_write("\n");
-    else Serial_write(' '); 
+    else Serial_write(" "); 
   }
 
 }
@@ -189,7 +189,7 @@ void serial_send_speed() {
 
   send_command_header(CHANGE_SPEED, false);
   // Serial_write(end_effector_speed + '0');
-  Serial_write('\n');
+  Serial_write("\n");
 
 }
 
@@ -199,7 +199,7 @@ void serial_send_ef_pos() {
   // Serial_write(end_effector_pos[0]+'0');
   // Serial_write(end_effector_pos[1]+'0');
   // Serial_write(end_effector_pos[1]+'0');
-  Serial_write('\n');
+  Serial_write("\n");
 
 }
 
@@ -207,7 +207,7 @@ void send_command_header(int command_num, bool end_with_new_line) {
 
   Serial_write("G");
   Serial_write(int_to_char_2digits(command_num));
-  if (end_with_new_line) Serial_write('\n');
+  if (end_with_new_line) Serial_write("\n");
   else Serial_write(" ");
 
 }
@@ -221,9 +221,9 @@ void serial_write_dc_every_ms(int wait_time) {
         startMilis = millis();
 
         Serial_write("Duty cycle: ");
-        Serial_print(servoinfo[0].duty_cycle);
+        Serial_print((int)servoinfo[0].duty_cycle);
         Serial_write(" - ");
-        Serial_print(servoinfo[1].duty_cycle);
+        Serial_print((int)servoinfo[1].duty_cycle);
         Serial_write(" - ");
         Serial_println(servoinfo[2].duty_cycle);
 
@@ -235,10 +235,10 @@ void serial_write_dc_every_ms(int wait_time) {
 void serial_write_angles() {
 
     Serial_write("Angles: ");
-    Serial_print(servoinfo[0].angle);
-    Serial_print(" - ");
-    Serial_print(servoinfo[1].angle);
-    Serial_print(" - ");
+    Serial_print((int)servoinfo[0].angle);
+    Serial_write(" - ");
+    Serial_print((int)servoinfo[1].angle);
+    Serial_write(" - ");
     Serial_println(servoinfo[2].angle);
 
 }

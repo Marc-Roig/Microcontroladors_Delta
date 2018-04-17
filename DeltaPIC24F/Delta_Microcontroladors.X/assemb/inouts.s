@@ -23,6 +23,7 @@ _pinMode:
 		CP W0, #3	; only RB3, RB8 and RB9 can be analog
 		BRA GE, END
 
+		SL W0, W0 ; pin_num * 2 -> num of lines to jump
 		ADD ANALOG_INPUT, W0, W0
 		RCALL W0
 

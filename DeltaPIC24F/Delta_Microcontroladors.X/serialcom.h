@@ -4,16 +4,16 @@
 
 	//STRUCTS
 	typedef struct Buffer { //Circular buffer, FIFO
-		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
 		int command_len[SERIAL_BUFFER_LEN];
 		int start, end_;
 		bool full, empty;
+		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
 	}Buffer;
 
 	typedef struct SerialBuffer { //Circular buffer, FIFO
-		char command[SERIAL_BUFFER_LEN];
 		int start, end_;
 		bool full, empty;
+		char command[SERIAL_BUFFER_LEN];
 	}SerialBuffer;
 
 

@@ -13,46 +13,46 @@ volatile bool RB9_Analog_Active = false;
 //---PIN INITIALIZATION---//
 //------------------------//
 
-void pinMode(int pin_name, int mode) {
+    void pinMode(int pin_name, int mode) {
 
-    switch (pin_name) {
+        switch (pin_name) {
 
-        case IO_RB3:        if (mode == INPUT) _TRISB3 = 1;
-//                            else if(mode == INPUT_PULLUP);
-//                            else if(mode == INUT_PULLDOWN);
-                            else if (mode == OUTPUT) _TRISB3 = 0;
-                            else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
-                            break;
+            case IO_RB3:        if (mode == INPUT) _TRISB3 = 1;
+    //                            else if(mode == INPUT_PULLUP);
+    //                            else if(mode == INUT_PULLDOWN);
+                                else if (mode == OUTPUT) _TRISB3 = 0;
+                                else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
+                                break;
 
-        case IO_RB8:        if (mode == INPUT) _TRISB8 = 1;
-                            else if (mode == OUTPUT) _TRISB8 = 0;
-                            else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
-                            break;
+            case IO_RB8:        if (mode == INPUT) _TRISB8 = 1;
+                                else if (mode == OUTPUT) _TRISB8 = 0;
+                                else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
+                                break;
 
-        case IO_RB9:        if (mode == INPUT) _TRISB9 = 1;
-                            else if (mode == OUTPUT) _TRISB9 = 0;
-                            else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
-                            break;
+            case IO_RB9:        if (mode == INPUT) _TRISB9 = 1;
+                                else if (mode == OUTPUT) _TRISB9 = 0;
+                                else if (mode == ANALOG_INPUT) init_analog_input(pin_name);
+                                break;
 
-        case IO_RE8:        if (mode == INPUT) _TRISE8 = 1;
-                            else if (mode == OUTPUT) _TRISE8 = 0;
-                            break;
+            case IO_RE8:        if (mode == INPUT) _TRISE8 = 1;
+                                else if (mode == OUTPUT) _TRISE8 = 0;
+                                break;
 
-        case IO_RE9:        if (mode == INPUT) _TRISE9 = 1;
-                            else if (mode == OUTPUT) _TRISE9 = 0;
-                            break;
+            case IO_RE9:        if (mode == INPUT) _TRISE9 = 1;
+                                else if (mode == OUTPUT) _TRISE9 = 0;
+                                break;
 
-        case IO_RA14:       if (mode == INPUT) _TRISA14 = 1;
-                            else if (mode == OUTPUT) _TRISA14 = 0;
-                            break;
+            case IO_RA14:       if (mode == INPUT) _TRISA14 = 1;
+                                else if (mode == OUTPUT) _TRISA14 = 0;
+                                break;
 
-        case IO_RA15:       if (mode == INPUT) _TRISA15 = 1;
-                            else if (mode == OUTPUT) _TRISA15 = 0;
-                            break;
+            case IO_RA15:       if (mode == INPUT) _TRISA15 = 1;
+                                else if (mode == OUTPUT) _TRISA15 = 0;
+                                break;
+
+        }
 
     }
-
-}
 
 //-------------------//
 //----ANALOG PINS----//

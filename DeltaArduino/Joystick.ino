@@ -79,7 +79,7 @@ void joystick_move_angles() {
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
         if (abs(joys_x) < 1.5) joys_x = 0;
 
-        servoinfo[servo_num].angle += (0.5 * joys_x); //Multiply joys_x with a gain
+        servoinfo[servo_num].angle += (int)(0.5 * joys_x); //Multiply joys_x with a gain
         // Serial.println(joys_x);
 
         StartTime = millis();
