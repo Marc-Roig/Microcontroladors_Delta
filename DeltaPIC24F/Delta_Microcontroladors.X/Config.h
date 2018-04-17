@@ -13,6 +13,8 @@
 	#include "servos.h"
 	#include "servo_movement.h"
 	
+	#include "kinematics.h"
+
 	#include "time_events.h"
     
 	#define CONFIG_H //Include guard

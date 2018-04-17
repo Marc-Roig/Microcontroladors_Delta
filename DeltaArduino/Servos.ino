@@ -1,6 +1,6 @@
 #include "Config.h"
 
-void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
 
@@ -28,7 +28,7 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
             }
 
-            servos[i].writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset);
+            servo_writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset, i);
 
         }
 
@@ -44,13 +44,16 @@ void move_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
 
 void update_angle_from_dc(int servo_num) {
 
-    servoinfo[servo_num].angle = (float)(servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
+    // servoinfo[servo_num].angle = (servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
+    servoinfo[servo_num].angle = (int)((servoinfo[servo_num].duty_cycle*10 - servoinfo[servo_num].n) / servoinfo[servo_num].m);
+    //(duty_cycle*10 - n*10)/m*10 = (duty_cycle - n)/m (m and n are multiplied by 10 to work with decimals without floats)
 
 }
 
 void update_dc_from_angle(int servo_num) {
 
-    int new_duty_cycle = (int) (servoinfo[servo_num].angle * servoinfo[servo_num].m + servoinfo[servo_num].n);
+    // int new_duty_cycle = (int)(servoinfo[servo_num].angle * servoinfo[servo_num].m + servoinfo[servo_num].n);
+    int new_duty_cycle = (int)(servoinfo[servo_num].angle * servoinfo[servo_num].m + servoinfo[servo_num].n)/10;
 
     check_servo_change_direction(servo_num, new_duty_cycle);
     servoinfo[servo_num].duty_cycle = new_duty_cycle;
@@ -126,9 +129,9 @@ void check_servo_change_direction(int num_servo, int new_duty_cycle) {
 *
 ********************************************************************/
 
-void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_) {
+void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, long m_, long n_) {
 
-    servo_inf->angle = 90.0;
+    servo_inf->angle = 90;
     
     servo_inf->max_duty_cycle = max_duty_cycle_;
     servo_inf->min_duty_cycle = min_duty_cycle_;
@@ -141,7 +144,9 @@ void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_du
     servo_inf->last_direction = CLOCKWISE;
     servo_inf->slack_compensation_val = slack_compensation_val_;
 
-    servo_inf->m = m_;
+    // servo_inf->m = m_;
+    servo_inf->m = m_; //Multiplied by 10 to opperate with decimals and avoiding floats
+    // servo_inf->n = n_;
     servo_inf->n = n_;
 }
 
@@ -167,26 +172,71 @@ void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_serv
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
 
-    for (int i = 0; i < 3; i++) {
-        
-        if (move_servos[i]) {
-            // servos[i].writeMicroseconds((55 * servoinfo[i].m + servoinfo[i].n));
-            servo_writeMicroseconds((55 * servoinfo[i].m + servoinfo[i].n), i);
-        }
-    }
+    #ifdef EASESERVOS_H
 
-    delay(1000);
-
-    for (int i = 0; i < 3; i++) {
-        
-        if (move_servos[i]) {
-
-            servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
-            // servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
-            servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
+        for (int i = 0; i < 3; i++) {
+            
+            if (move_servos[i]) {
+                servoseased[i].addMoveAndPlay((int)(55 * servoinfo[i].m + servoinfo[i].n) / 10 , 2000);
+            }
 
         }
-    }
+
+
+        while (servoseased[0].isRuning() || servoseased[1].isRuning() || servoseased[2].isRuning()) {
+
+            servoseased[0].update();
+            servoseased[1].update();
+            servoseased[2].update();
+
+            move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
+
+
+        }
+
+        for (int i = 0; i < 3; i++) {
+            
+            if (move_servos[i]) {
+                servoseased[i].addMoveAndPlay((int)(90 * servoinfo[i].m + servoinfo[i].n) / 10, 2000);
+            }
+
+        }
+
+
+        while (servoseased[0].isRuning() || servoseased[1].isRuning() || servoseased[2].isRuning()) {
+
+            servoseased[0].update();
+            servoseased[1].update();
+            servoseased[2].update();
+
+            move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
+            
+        }
+
+    #else
+        for (int i = 0; i < 3; i++) {
+            
+            if (move_servos[i]) {
+                // servoinfo[i].duty_cycle = 55 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
+                servoinfo[i].duty_cycle = (55 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
+                servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
+            }
+        }
+
+        delay(1000);
+
+        for (int i = 0; i < 3; i++) {
+            
+            if (move_servos[i]) {
+
+                // servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
+                servoinfo[i].duty_cycle = (90 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
+                // servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
+                servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
+
+            }
+        }
+    #endif
 
 }
 
@@ -208,30 +258,27 @@ void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move
     if (move_servo1) {
         // servos[0].attach(SERVO1_PIN);
         servo_attach(SERVO1_PIN, 0);
-        init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, SERVO1_M_ANGLE_TO_DC, SERVO1_N_ANGLE_TO_DC);
+        init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, (long)(SERVO1_M_ANGLE_TO_DC * 10), (long)(SERVO1_N_ANGLE_TO_DC * 10));
     }
 
     if (move_servo2) {
         // servos[1].attach(SERVO2_PIN);
         servo_attach(SERVO2_PIN, 1);
-        init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, SERVO2_M_ANGLE_TO_DC, SERVO2_N_ANGLE_TO_DC);
+        init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, (long)(SERVO2_M_ANGLE_TO_DC * 10), (long)(SERVO2_N_ANGLE_TO_DC * 10));
     }
 
     if (move_servo3) {
         // servos[2].attach(SERVO3_PIN);
         servo_attach(SERVO3_PIN, 2);
-        init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
+        init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, (long)(SERVO3_M_ANGLE_TO_DC * 10), (long)(SERVO3_N_ANGLE_TO_DC * 10));
     }
 
     if (move_servo4) {
-        servos[3].attach(SERVO4_PIN);
-        init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, SERVO3_M_ANGLE_TO_DC, SERVO3_N_ANGLE_TO_DC);
+        servo_attach(SERVO4_PIN, 3);
+        init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, (long)(SERVO3_M_ANGLE_TO_DC * 10), (long)(SERVO3_N_ANGLE_TO_DC * 10));
     }
 
-    servoinfo[0].move_servo_from = MOVE_SERVO_1_FROM;
-    servoinfo[1].move_servo_from = MOVE_SERVO_2_FROM;
-    servoinfo[2].move_servo_from = MOVE_SERVO_3_FROM;
-    servoinfo[3].move_servo_from = MOVE_SERVO_4_FROM;
+    set_servo_movement_with_dc(true, true, true, true);
 
     servos_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4); //Move every servo to the initial position
 

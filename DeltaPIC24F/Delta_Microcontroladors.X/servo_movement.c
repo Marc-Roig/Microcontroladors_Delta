@@ -79,7 +79,7 @@ void update_dc_from_angle(int servo_num) {
 *
 ********************************************************************/
 
-void check_servo_change_direction(int num_servo, int new_duty_cycle) {
+void check_servo_change_direction(unsigned int num_servo, unsigned int new_duty_cycle) {
 
   int min_step_to_change_dir = 20;
 

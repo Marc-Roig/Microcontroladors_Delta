@@ -18,7 +18,6 @@
 
 	typedef struct ServoInfo {
 
-		float angle;
 
 		int duty_cycle;
 		int dc_offset;
@@ -31,11 +30,16 @@
 		int last_direction;
 		int slack_compensation_val;
 
-		//--ANGLE TO DUTY_CYCLE
-		float m;
-		float n;
+		char move_servo_from; //Change position with angles/microseconds/xyz
 
-		char* move_servo_from; //Change position with angles/microseconds/xyz
+		int angle;
+		
+		//--ANGLE TO DUTY_CYCLE
+		long m;
+		long n;
+		// float m;
+		// float n;
+
 
 	}ServoInfo;
 

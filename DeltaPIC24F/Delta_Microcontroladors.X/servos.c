@@ -1,4 +1,3 @@
-// #include "servos.h"
 #include "Config.h"
 
 int scale_angle(unsigned int angle, unsigned int servo_num){
