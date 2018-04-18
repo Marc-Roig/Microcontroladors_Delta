@@ -150,12 +150,6 @@ _check_servo_change_direction: ;CHECKED
     RETURN
 
 _servos_initial_positions:
-    
-    LNK #0X08
-    MOV W0, [W14]
-    MOV W1, [W14+2]
-    MOV W2, [W14+4]
-    MOV W3, [W14+6]
 
     ;W4 and W5 will be modified in this routine
     PUSH W4
@@ -163,32 +157,41 @@ _servos_initial_positions:
     PUSH W6
     PUSH W7
 
-    ; PUSH W3 ;UNCOMMENT IF NEEDS TO USE GRIPPER
-    PUSH W2 ;will be used in the following loop
+    ;In every loop the boolean condition of servo movement
+    ;will be poped to know if it has to move it.
+
+    ; PUSH W3 ;UNCOMMENT IF NEED TO USE GRIPPER
+              ;and change cp #3 to #4 in end_or_repeat_loop
+    PUSH W2 
     PUSH W1
     PUSH W0
-
+    ; PUSH W3
+    PUSH W2 
+    PUSH W1
+    PUSH W0
+    
+    
     MOV #0, W4 ;pivot to loop 3 times
     MOV #_servoinfo, W7
-
+    
     first_move_loop:
 
         POP W5
-        BTST W5, #0
-        BRA NZ, end_or_repeat_loop ; move_servos[i] = false
+        BTST.Z W5, #0
+        BRA Z, end_or_repeat_loop ; move_servos[i] = false
 
         MOV [W7+18], W0
         MOV [W7+20], W1
         MOV #55, W2
         RCALL _mul_long_int
-
+    
         MOV [W7+22], W2
         MOV [W7+24], W3
         RCALL _add_longs
 
         MOV #10, W2
         RCALL _div_long_int
-
+    
         ;long -> int
 
         MOV [W7+12], W1
@@ -204,6 +207,51 @@ _servos_initial_positions:
             ADD W7, #26, W7; @servoinfo + 26 <--> servoinfo[++i] 
             CP W4, #3 ;Check if loop has to end
             BRA LT, first_move_loop ;if (W4 < 3) repeat loop
+
+    end_first_loop:
+
+    MOV #1000, W0
+    MOV #0, W1
+    RCALL _delay
+    
+    MOV #0, W4 ;pivot to loop 3 times
+    MOV #_servoinfo, W7
+
+    second_move_loop:
+
+        POP W5
+        BTST.Z W5, #0
+        BRA Z, end_or_repeat_loop2 ; move_servos[i] = false
+
+        MOV [W7+18], W0
+        MOV [W7+20], W1
+        MOV #90, W2
+        RCALL _mul_long_int
+    
+        MOV [W7+22], W2
+        MOV [W7+24], W3
+        RCALL _add_longs
+
+        MOV #10, W2
+        RCALL _div_long_int
+    
+        ;long -> int
+
+        MOV [W7+12], W1
+        SUB W0, W1, W0
+
+        MOV W0, [W7] ;[w7] = duty_cycle
+        MOV W4, W1; W1 = servo_to_move
+        RCALL _servo_writeMicroseconds
+
+        end_or_repeat_loop2:
+
+            INC W4, W4 ;increment pivot
+            ADD W7, #26, W7; @servoinfo + 26 <--> servoinfo[++i] 
+            CP W4, #3 ;Check if loop has to end
+            BRA LT, second_move_loop ;if (W4 < 3) repeat loop
+
+    end_second_loop:
 
     POP W7
     POP W6

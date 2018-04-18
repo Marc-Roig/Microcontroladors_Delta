@@ -43,9 +43,16 @@ _div_longs: ;CHECKED
     ;W1 a2 
     ;W2 b1	long b
     ;W3 b2
-	RCALL ___divsi3
-
-	RETURN
+	PUSH W4
+    PUSH W5
+    PUSH W6
+    
+    RCALL ___divsi3
+    
+    POP W6
+    POP W5
+    POP W4
+    RETURN
 	;returned long at W0 and W1
 
 _div_long_int:
