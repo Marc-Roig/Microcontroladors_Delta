@@ -1,5 +1,16 @@
 #include "Config.h"
 
+const long servo1_m =  (long)(SERVO1_M_ANGLE_TO_DC * 10);
+const long servo2_m =  (long)(SERVO2_M_ANGLE_TO_DC * 10);
+const long servo3_m =  (long)(SERVO3_M_ANGLE_TO_DC * 10);
+const long servo4_m =  (long)(SERVO3_M_ANGLE_TO_DC * 10);
+
+const long servo1_n =  (long)(SERVO1_N_ANGLE_TO_DC * 10);
+const long servo2_n =  (long)(SERVO2_N_ANGLE_TO_DC * 10);
+const long servo3_n =  (long)(SERVO3_N_ANGLE_TO_DC * 10);
+const long servo4_n =  (long)(SERVO4_N_ANGLE_TO_DC * 10);
+
+
 void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
@@ -79,7 +90,7 @@ void update_dc_from_angle(int servo_num) {
 *
 ********************************************************************/
 
-void check_servo_change_direction(int num_servo, int new_duty_cycle) {
+void check_servo_change_direction(unsigned int num_servo, unsigned int new_duty_cycle) {
 
   int min_step_to_change_dir = 20;
 
@@ -139,7 +150,9 @@ void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycl
     servo_inf->dc_offset = 0;
 
     servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servo_inf->duty_cycle = servo_inf->mean_dc - 500;
+    servo_inf->duty_cycle = servo_inf->mean_dc;
+
+    servo_inf->move_servo_from = MOVE_SERVO_FROM_DC;
 
     servo_inf->last_direction = CLOCKWISE;
     servo_inf->slack_compensation_val = slack_compensation_val_;
@@ -252,33 +265,32 @@ void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_serv
 * Output: none
 *
 ********************************************************************/
-
 void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
   
     if (move_servo1) {
         // servos[0].attach(SERVO1_PIN);
         servo_attach(SERVO1_PIN, 0);
-        init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, (long)(SERVO1_M_ANGLE_TO_DC * 10), (long)(SERVO1_N_ANGLE_TO_DC * 10));
+        init_ServoInfo(&servoinfo[0], MAX_DC_SERVO1, MIN_DC_SERVO1, SERVO1_COMPENSATION_VAL, servo1_m, servo1_n);
     }
 
     if (move_servo2) {
         // servos[1].attach(SERVO2_PIN);
         servo_attach(SERVO2_PIN, 1);
-        init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, (long)(SERVO2_M_ANGLE_TO_DC * 10), (long)(SERVO2_N_ANGLE_TO_DC * 10));
+        init_ServoInfo(&servoinfo[1], MAX_DC_SERVO2, MIN_DC_SERVO2, SERVO2_COMPENSATION_VAL, servo2_m, servo2_n);
     }
 
     if (move_servo3) {
         // servos[2].attach(SERVO3_PIN);
         servo_attach(SERVO3_PIN, 2);
-        init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, (long)(SERVO3_M_ANGLE_TO_DC * 10), (long)(SERVO3_N_ANGLE_TO_DC * 10));
+        init_ServoInfo(&servoinfo[2], MAX_DC_SERVO3, MIN_DC_SERVO3, SERVO3_COMPENSATION_VAL, servo3_m, servo3_n);
     }
 
     if (move_servo4) {
         servo_attach(SERVO4_PIN, 3);
-        init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, (long)(SERVO3_M_ANGLE_TO_DC * 10), (long)(SERVO3_N_ANGLE_TO_DC * 10));
+        init_ServoInfo(&servoinfo[3], MAX_DC_SERVO4, MIN_DC_SERVO4, SERVO4_COMPENSATION_VAL, servo4_m, servo4_n);
     }
 
-    set_servo_movement_with_dc(true, true, true, true);
+    // set_servo_movement_with_dc(true, true, true, true);
 
     servos_initial_positions(move_servo1, move_servo2, move_servo3, move_servo4); //Move every servo to the initial position
 
