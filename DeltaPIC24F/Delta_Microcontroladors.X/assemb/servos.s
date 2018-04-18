@@ -8,124 +8,184 @@
 .global _attach_servos
 
 
-_servo1_writeMicroseconds:
+_servo1_writeMicroseconds: ;CHECKED
 
 	;W0 int microsec
 	MOV W0, OC1RS
 	RETURN
 
-_servo2_writeMicroseconds:
+_servo2_writeMicroseconds: ;CHECKED
 
 	;W0 int microsec
 	MOV W0, OC2RS
 	RETURN
 
-_servo3_writeMicroseconds:
+_servo3_writeMicroseconds: ;CHECKED
 
 	;W0 int microsec
 	MOV W0, OC3RS
 	RETURN
 
-_servo_writeMicroseconds:
+_servo_writeMicroseconds: ;CHECKED
 	
 	;W0 int microsec
 	;W1 int servo_num
 
-	SL W1, W1 ;Servo_num * 2 = num of lines to jump
-	ADD Func_calls, W1, W1
-	RCALL W1
+	CP W1, #0
+	BRA Z, Servo1_write
+	CP W1, #1
+	BRA Z, Servo2_write
+	CP W1, #2
+	BRA Z, Servo3_write
+	BRA End_WriteM
 
-	Func_calls:
+	Servo1_write:
+		RCALL _servo1_writeMicroseconds ;microsec left at W0
+		BRA End_WriteM
 
-	RCALL _servo1_writeMicroseconds ;microsec left at W0
-	BRA End
-	RCALL _servo2_writeMicroseconds ;microsec left at W0
-	BRA End
-	RCALL _servo3_writeMicroseconds ;microsec left at W0
+	Servo2_write:
+		RCALL _servo2_writeMicroseconds ;microsec left at W0
+		BRA End_WriteM
 
-	End:
+	Servo3_write:
+		RCALL _servo3_writeMicroseconds ;microsec left at W0
+
+	End_WriteM:
 
 	RETURN
 
-_disengage_servos:
+_disengage_servos: ;CHECKED
 	
-	PUSH W0 ;Save whatever was in W0
+	PUSH.S
+	MOV #OC1CON, W0 ;@OC1CON
+	MOV #OC2CON, W1 ;@OC2CON
+	MOV #OC3CON, W2 ;@OC3CON
+	
+	MOV #0xFFF8, W3
+	AND W3, [W0], [W0] ; OC1CON = 0XFFF8 & OC1CON
+	AND W3, [W1], [W1] ; OC2CON = 0XFFF8 & OC2CON
+	AND W3, [W2], [W2] ; OC3CON = 0XFFF8 & OC3CON
 
-	MOV #0xFFF8, W0
-
-	AND W0, OC1CON, OC1CON ;Output Compare 1 channel is disabled
-	AND W0, OC2CON, OC2CON ;Output Compare 2 channel is disabled
-	AND W0, OC3CON, OC3CON ;Output Compare 3 channel is disabled
-
-	POP W0
-
+	POP.S
 	RETURN
 
-_servo_attach:
+_servo_attach: ;CHECKED
 	
 	; W0 - unsigned int pin -> left for compatibility with arduino
 	; W1 - unsigned int servo_num
 
 	;Check if servo_num is valid
-	CP W1, #3
-	BRA GE, End
+	CP W1, #0
+	BRA Z,Set_bits_1
 
-	;Branch to the servo_num config bits
-	MUL.UU W1, 6, W1
-	ADD Set_bits, W1, W1
-	BRA W1
+	CP W1, #1
+	BRA Z,Set_bits_2
 
-	Set_bits:
-	;OUTPUT COMPARE 1
-	MOV #9999, PR1
-	MOV #750, OC1RS
-	MOV #750, OC1R
-	MOV #0x0006, OC1CON
-	MOV #0x8010, T1CON
-	BRA End
+	CP W1, #2
+	BRA Z,Set_bits_3
 
-	;OUTPUT COMPARE 2
-	MOV #9999, PR2
-	MOV #750, OC2RS
-	MOV #750, OC2R
-	MOV #0x0006, OC2CON
-	MOV #0x8010, T2CON
-	BRA End
+	BRA End_Attach
 
-	;OUTPUT COMPARE 3
-	MOV #9999, PR3
-	MOV #750, OC3RS
-	MOV #750, OC3R
-	MOV #0x0006, OC3CON
-	MOV #0x8010, T3CON
+	Set_bits_1:
+		;OUTPUT COMPARE 1
+		MOV #9999, W1
+		MOV W1, PR1
 
-	End:
+		MOV #750, W1
+		MOV W1, OC1RS
+
+		MOV #750, W1
+		MOV W1, OC1R
+
+		MOV #0x0006, W1
+		MOV W1, OC1CON
+
+		MOV #0x8010, W1
+		MOV W1, T1CON
+
+		BRA End_Attach
+
+	Set_bits_2:
+		;OUTPUT COMPARE 2
+		MOV #9999, W1
+		MOV W1, PR2
+
+		MOV #750, W1
+		MOV W1, OC2RS
+
+		MOV #750, W1
+		MOV W1, OC2R
+
+		MOV #0x0006, W1
+		MOV W1, OC2CON
+
+		MOV #0x8010, W1
+		MOV W1, T2CON
+
+		BRA End_Attach
+
+	Set_bits_3:
+		;OUTPUT COMPARE 3
+		MOV #9999, W1
+		MOV W1, PR3
+
+		MOV #750, W1
+		MOV W1, OC3RS
+
+		MOV #750, W1
+		MOV W1, OC3R
+
+		MOV #0x0006, W1
+		MOV W1, OC3CON
+
+		MOV #0x8010, W1
+		MOV W1, T3CON
+
+	End_Attach:
 
 	RETURN
 
 
-_attach_servos:
-
+_attach_servos: ;CHECKED
+	
+	PUSH W1
 	;OUTPUT COMPARE 1
-	MOV #9999, PR1
-	MOV #750, OC1RS
-	MOV #750, OC1R
-	MOV #0x0006, OC1CON
-	MOV #0x8010, T1CON
+	MOV #9999, W1
+	MOV W1, PR1
+	MOV #750, W1
+	MOV W1, OC1RS
+	MOV #750, W1
+	MOV W1, OC1R
+	MOV #0x0006, W1
+	MOV W1, OC1CON
+	MOV #0x8010, W1
+	MOV W1, T1CON
 
 	;OUTPUT COMPARE 2
-	MOV #9999, PR2
-	MOV #750, OC2RS
-	MOV #750, OC2R
-	MOV #0x0006, OC2CON
-	MOV #0x8010, T2CON
+	MOV #9999, W1
+	MOV W1, PR2
+	MOV #750, W1
+	MOV W1, OC2RS
+	MOV #750, W1
+	MOV W1, OC2R
+	MOV #0x0006, W1
+	MOV W1, OC2CON
+	MOV #0x8010, W1
+	MOV W1, T2CON
 
 	;OUTPUT COMPARE 3
-	MOV #9999, PR3
-	MOV #750, OC3RS
-	MOV #750, OC3R
-	MOV #0x0006, OC3CON
-	MOV #0x8010, T3CON
+	MOV #9999, W1
+	MOV W1, PR3
+	MOV #750, W1
+	MOV W1, OC3RS
+	MOV #750, W1
+	MOV W1, OC3R
+	MOV #0x0006, W1
+	MOV W1, OC3CON
+	MOV #0x8010, W1
+	MOV W1, T3CON
+
+	POP W1
 
 	RETURN
 

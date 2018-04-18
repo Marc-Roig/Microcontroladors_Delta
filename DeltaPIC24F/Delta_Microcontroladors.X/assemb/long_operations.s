@@ -1,8 +1,9 @@
 .include "p24fj128ga010.inc"
 
 .global _mul_longs
-.global _div_longs
 .global _mul_long_int
+.global _div_longs
+.global _div_long_int
 .global _add_longs
 .global _add_long_int_ret_long
 .global _add_long_int_ret_int
@@ -10,7 +11,7 @@
 .global _SL_long
 .global _float_to_long
 
-_mul_longs:   
+_mul_longs:  ;CHECKED
 
 	;W0 a1	long a
     ;W1 a2 
@@ -35,7 +36,7 @@ _mul_longs:
 
     RETURN
 
-_div_longs:
+_div_longs: ;CHECKED
 
 	;a / b
 	;W0 a1	long a
@@ -47,11 +48,27 @@ _div_longs:
 	RETURN
 	;returned long at W0 and W1
 
-_mul_long_int:
-	
+_div_long_int:
+
     ;W0 a1 long a
     ;W1 a2
-    ;W2 b  long b
+    ;W2 b  int b
+
+    PUSH W3
+
+    MOV #0, W3
+
+    RCALL _div_longs
+
+    POP W3
+
+    RETURN
+
+_mul_long_int: ;CHECKED
+
+    ;W0 a1 long a
+    ;W1 a2
+    ;W2 b  int b
 
     PUSH W3
 
@@ -63,7 +80,7 @@ _mul_long_int:
 
     RETURN
     
-_add_longs:
+_add_longs: ;CHECKED
 
     ;W0 a1
     ;W1 a2
@@ -76,7 +93,7 @@ _add_longs:
     RETURN
 
 
-_add_long_int_ret_long:
+_add_long_int_ret_long: ;CHECKED
     
     ;W0 a1
     ;W1 a2
@@ -86,7 +103,7 @@ _add_long_int_ret_long:
     ADDC W1, #0, W1
     RETURN
     
-_add_long_int_ret_int:
+_add_long_int_ret_int: ;CHECKED
     
     ;W0 a1
     ;W1 a2
@@ -95,7 +112,7 @@ _add_long_int_ret_int:
     ADD W0, W2, W0
     RETURN
 
-_ASR_long:
+_ASR_long: ;CHECKED
 	
 	;W0 a1 , long a
 	;W1 a2
@@ -112,7 +129,7 @@ _ASR_long:
 	
 	RETURN
 	
-_SL_long:
+_SL_long: ;CHECKED
 
 	;W0 a1 , long a
 	;W1 a2
@@ -129,7 +146,7 @@ _SL_long:
 		
 	RETURN
 
-_float_to_long:
+_float_to_long: ;CHECKED
 
 	;W0	a1 -float a
 	;W1 a2
