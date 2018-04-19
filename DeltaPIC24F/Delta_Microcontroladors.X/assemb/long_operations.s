@@ -17,22 +17,26 @@ _mul_longs:  ;CHECKED
     ;W1 a2 
     ;W2 b1	long b
     ;W3 b2
+    LNK #0X08
 
-    PUSH W4
-    PUSH W5
-    PUSH W6
-    PUSH W7
+    MOV W0, [W14]
+    MOV W1, [W14+2]
+    MOV W2, [W14+4]
+    MOV W3, [W14+6]
 
-    MUL.SS W1, W2, W4
-    MUL.SS W0, W3, W6
-    ADD W4, W6, W4
-    ADD W4, W0, W1
-    MUL.UU W0, W2, W0
+    MOV [W14+2], W1
+    MOV [W14+4], W0
+    MUL.SS W1, W0, W2
+    MOV [W14+6], W1
+    MOV [W14], W0
+    MUL.SS W1, W0, W0
+    ADD W2, W0, W2
+    MOV [W14], W1
+    MOV [W14+4], W0
+    MUL.UU W1, W0, W0
+    ADD W2, W1, W1
 
-    POP W7
-    POP W6
-    POP W5
-    POP W4
+    ULNK
 
     RETURN
 
