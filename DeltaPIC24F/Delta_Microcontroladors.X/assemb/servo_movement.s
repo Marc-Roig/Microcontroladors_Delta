@@ -149,7 +149,7 @@ _check_servo_change_direction: ;CHECKED
 
     RETURN
 
-_servos_initial_positions:
+_servos_initial_positions: ;CHECKED
 
     ;W4 and W5 will be modified in this routine
     PUSH W4
@@ -260,102 +260,102 @@ _servos_initial_positions:
     
     RETURN
 
-_init_servos:
-    
-    ;W0 - Bool move_servo_1
-    ;W1 - Bool move_servo_2
-    ;W2 - Bool move_servo_3
-    ;W3 - Bool move_servo_4
+    _init_servos:
+        
+        ;W0 - Bool move_servo_1
+        ;W1 - Bool move_servo_2
+        ;W2 - Bool move_servo_3
+        ;W3 - Bool move_servo_4
 
-    LNK #0X08
-    MOV W0, [W14]
-    MOV W1, [W14+2]
-    MOV W2, [W14+4]
-    MOV W3, [W14+6]
+        LNK #0X08
+        MOV W0, [W14]
+        MOV W1, [W14+2]
+        MOV W2, [W14+4]
+        MOV W3, [W14+6]
 
-    PUSH W4
-    PUSH W5
-    PUSH W6
-    PUSH W7
+        PUSH W4
+        PUSH W5
+        PUSH W6
+        PUSH W7
 
-    check_move_servo_1:
+        check_move_servo_1:
 
-        BTST.Z [W14], #0   ;Check if move_servo_1 == true
-        BRA NZ, check_move_servo_2 ;If not jump to check_move_servo_2
+            BTST.Z [W14], #0   ;Check if move_servo_1 == true
+            BRA Z, check_move_servo_2 ;If not jump to check_move_servo_2
 
-    init_servo_1:
+        init_servo_1:
 
-        MOV #0, W0
-        MOV #0, W1
-        RCALL _servo_attach
+            MOV #0, W0
+            MOV #0, W1
+            RCALL _servo_attach
 
-        MOV #_servoinfo, W0 ; W0 = @servoinfo[0]
-        MOV #MAX_DC_SERVO1, W1
-        MOV #MIN_DC_SERVO1, W2
-        MOV #SERVO1_COMPENSATION_VAL, W3
-        MOV.D _servo1_m, W4
-        MOV.D _servo1_n, W6
-        RCALL _init_ServoInfo
+            MOV #_servoinfo, W0 ; W0 = @servoinfo[0]
+            MOV #MAX_DC_SERVO1, W1
+            MOV #MIN_DC_SERVO1, W2
+            MOV #SERVO1_COMPENSATION_VAL, W3
+            MOV.D _servo1_m, W4
+            MOV.D _servo1_n, W6
+            RCALL _init_ServoInfo
 
-    check_move_servo_2:
+        check_move_servo_2:
 
-        MOV [W14+2], W1
-        BTST.Z W1, #0
-        BRA NZ check_move_servo_3
+            MOV [W14+2], W1
+            BTST.Z W1, #0
+            BRA Z check_move_servo_3
 
-    init_servo_2:
+        init_servo_2:
 
-        MOV #0, W0
-        MOV #1, W1 
-        RCALL _servo_attach
+            MOV #0, W0
+            MOV #1, W1 
+            RCALL _servo_attach
 
-        MOV #_servoinfo, W0
-        ADD W0, #26, W0 ; W0 = @servoinfo[1]
-        MOV #MAX_DC_SERVO2, W1
-        MOV #MIN_DC_SERVO2, W2
-        MOV #SERVO2_COMPENSATION_VAL, W3
-        MOV.D _servo2_m, W4
-        MOV.D _servo2_n, W6
-        RCALL _init_ServoInfo
-    
-    check_move_servo_3:
+            MOV #_servoinfo, W0
+            ADD W0, #26, W0 ; W0 = @servoinfo[1]
+            MOV #MAX_DC_SERVO2, W1
+            MOV #MIN_DC_SERVO2, W2
+            MOV #SERVO2_COMPENSATION_VAL, W3
+            MOV.D _servo2_m, W4
+            MOV.D _servo2_n, W6
+            RCALL _init_ServoInfo
+        
+        check_move_servo_3:
 
-        MOV [W14+4], W2
-        BTST.Z W2, #0
-        BRA NZ, move_servos_to_init_pos
+            MOV [W14+4], W2
+            BTST.Z W2, #0
+            BRA Z, move_servos_to_init_pos
 
-    init_servo_3:
+        init_servo_3:
 
-        MOV #0, W0
-        MOV #2, W1
-        RCALL _servo_attach
+            MOV #0, W0
+            MOV #2, W1
+            RCALL _servo_attach
 
-        MOV #_servoinfo, W0
-        ADD W0, #52 , W0  ; W0 = @servoinfo[2]
-        MOV #MAX_DC_SERVO3, W1
-        MOV #MIN_DC_SERVO3, W2
-        MOV #SERVO3_COMPENSATION_VAL, W3
-        MOV.D _servo3_m, W4
-        MOV.D _servo3_n, W6
-        RCALL _init_ServoInfo
+            MOV #_servoinfo, W0
+            ADD W0, #52 , W0  ; W0 = @servoinfo[2]
+            MOV #MAX_DC_SERVO3, W1
+            MOV #MIN_DC_SERVO3, W2
+            MOV #SERVO3_COMPENSATION_VAL, W3
+            MOV.D _servo3_m, W4
+            MOV.D _servo3_n, W6
+            RCALL _init_ServoInfo
 
-    move_servos_to_init_pos:
+        move_servos_to_init_pos:
 
-        MOVE [W14]  , W0
-        MOVE [W14+2], W1
-        MOVE [W14+4], W2
-        MOVE [W14+6], W3
-        RCALL _servos_initial_positions
+            MOV [W14]  , W0
+            MOV [W14+2], W1
+            MOV [W14+4], W2
+            MOV [W14+6], W3
+            RCALL _servos_initial_positions
 
-    end_init_servos:
+        end_init_servos:
 
-    POP W7
-    POP W6
-    POP W5
-    POP W4
+        POP W7
+        POP W6
+        POP W5
+        POP W4
 
-    ULNK
-    RETURN
+        ULNK
+        RETURN
 
 _set_servo_movement_with_dc:
     
