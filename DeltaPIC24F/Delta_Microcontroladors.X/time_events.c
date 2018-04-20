@@ -10,9 +10,9 @@ void init_T4_Interrupt() {
 
 }
 
-void delay(int valor_retard) { //in ms
+void delay(long valor_retard) { //in ms
 
-    long delay_cycles = (long)valor_retard * 1000 / 16;
+    int delay_cycles = (int)(valor_retard * 1000 / 256);
     TMR4 = 0;
     while (TMR4 < delay_cycles);
 
@@ -26,4 +26,11 @@ void _ISR _T4Interrupt() {
 
 	#endif
 
+}
+
+int millis() {
+
+	long countTMR = TMR4 * 256;
+	return (int)(TMR4 / 1000);
+	 
 }
