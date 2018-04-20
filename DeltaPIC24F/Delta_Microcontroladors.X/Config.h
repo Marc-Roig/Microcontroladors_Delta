@@ -5,8 +5,10 @@
 	#include <stdbool.h>
 
 	#include "defines.h"
+	#include "structs.h"
 	#include "inouts.h"
-	
+	 
+	#include "calibration.h"
 	#include "serialcom.h"
 	#include "serialcom_simulator.h"
 	
@@ -16,6 +18,8 @@
 	#include "kinematics.h"
 
 	#include "time_events.h"
+
+
     
 	#define CONFIG_H //Include guard
 
@@ -25,25 +29,31 @@
 	
     void polsadors(int* angle);
     void show_dutycycle_leds(int duty_cycle);
+    
 
-    #ifdef SERIALCOM_H
-		CommandsBuffer buffer;
+
+	#ifndef BUFFER_STRUCT
+
+		#define BUFFER_STRUCT
+		extern CommandsBuffer buffer;
+
 	#endif
 
-	#ifdef KINEMATICS_H
-		DeltaInfo deltainfo;
+
+	#ifndef DELTAINFO_STRUCT
+
+		#define DELTAINFO_STRUCT
+		extern DeltaInfo deltainfo;
+
 	#endif
 
-	#ifdef SERVOS_H
-		ServoInfo servoinfo[4];
+
+	#ifndef SERVOINFO_STRUCT
+
+		#define SERVOINFO_STRUCT
+		extern ServoInfo servoinfo[4];
+
 	#endif
 
-	#ifdef EASESERVOS_H
-		ServoEaser servoseased[4];
-	#endif
-
-	#ifdef SEQUENCE_H
-		Sequence sequence;
-	#endif
 
 #endif //MAIN_H

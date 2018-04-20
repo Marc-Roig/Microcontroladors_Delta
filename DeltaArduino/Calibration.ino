@@ -142,8 +142,6 @@ void calibration_change_dc_potentiometer(int servo_num) {
 
     int min_dc = servoinfo[servo_num].min_duty_cycle;
     int max_dc = servoinfo[servo_num].max_duty_cycle;
-    int last_direction = servoinfo[servo_num].last_direction;
-    int compensation_val = servoinfo[servo_num].slack_compensation_val;
 
     int duty_cycle = map(analogRead(CALIBRATION_POTE_PIN) ,0 , 1023, min_dc, max_dc);
 

@@ -96,7 +96,7 @@ void check_serial() {
 
 bool inc_buffer_end_pointer() {
 
-  buffer.end_ = (buffer.end_ + 1) % SERIAL_BUFFER_LEN;
+  buffer.end_ = (buffer.end_ + 1) % MAX_COMMANDS_NUM;
   buffer.empty = false;
   if (buffer.end_ == buffer.start) {
     buffer.full = true;
@@ -108,7 +108,7 @@ bool inc_buffer_end_pointer() {
 
 bool inc_buffer_start_pointer() {
 
-  buffer.start = (buffer.start + 1) % SERIAL_BUFFER_LEN;
+  buffer.start = (buffer.start + 1) % MAX_COMMANDS_NUM;
   buffer.full = false;
 
   if (buffer.end_ == buffer.start) {

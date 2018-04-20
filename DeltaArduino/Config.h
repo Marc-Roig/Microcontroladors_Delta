@@ -24,24 +24,43 @@
 	//----GLOBAL VARIABLES----//
 	//------------------------//
 
-	#ifdef SERIALCOM_H
+	#if defined(SERIALCOM_H) && !defined(BUFFER_STRUCT)
+
+    	#define BUFFER_STRUCT
 		CommandsBuffer buffer;
+
 	#endif
 
-	#ifdef KINEMATICS_H
+
+	#ifdef KINEMATICS_H && DELTAINFO_STRUCT
+
+		#define DELTAINFO_STRUCT
 		DeltaInfo deltainfo;
+
 	#endif
 
-	#ifdef SERVOS_H
+
+	#ifdef SERVOS_H && SERVOINFO_STRUCT
+
+		#define SERVOINFO_STRUCT
 		ServoInfo servoinfo[4];
+
 	#endif
 
-	#ifdef EASESERVOS_H
+
+	#ifdef EASESERVOS_H && SERVOEASED_STRUCT
+
+		#define SERVOEASED_STRUCT
 		ServoEaser servoseased[4];
+
 	#endif
 
-	#ifdef SEQUENCE_H
+
+	#ifdef SEQUENCE_H && SEQUENCE_STRUCT
+
+		#define SEQUENCE_STRUCT
 		Sequence sequence;
+
 	#endif
 	
 #endif
