@@ -19,5 +19,6 @@
 	int strlength(char *p);
 	int chars_to_int(char a, char b, char c);
 	bool is_alphanumeric(char a);
+	void serial_write_dc_every_ms(int wait_time);
 
 #endif

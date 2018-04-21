@@ -3,6 +3,8 @@
 static volatile bool command_recieved = false;
 static volatile int serial_mode = 0;
 
+CommandsBuffer buffer;
+
 void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
   if(command_recieved) {
@@ -91,7 +93,7 @@ void check_serial() {
 
 bool inc_buffer_end_pointer() {
 
-  buffer.end_ = (buffer.end_ + 1) % SERIAL_BUFFER_LEN;
+  buffer.end_ = (buffer.end_ + 1) % MAX_COMMANDS_NUM;
   buffer.empty = false;
   if (buffer.end_ == buffer.start) {
     buffer.full = true;
@@ -103,7 +105,7 @@ bool inc_buffer_end_pointer() {
 
 bool inc_buffer_start_pointer() {
 
-  buffer.start = (buffer.start + 1) % SERIAL_BUFFER_LEN;
+  buffer.start = (buffer.start + 1) % MAX_COMMANDS_NUM;
   buffer.full = false;
 
   if (buffer.end_ == buffer.start) {
@@ -255,5 +257,25 @@ bool is_alphanumeric(char a) {
 
   if (a > 47 && a < 58) return true;
   return false;
+
+}
+
+
+void serial_write_dc_every_ms(int wait_time) {
+
+    static unsigned int startMilis = 0;
+    
+    if ((millis() - startMilis) > wait_time) {
+
+        startMilis = millis();
+
+        Serial_write("Duty cycle: ");
+        Serial_print((int)servoinfo[0].duty_cycle);
+        Serial_write(" - ");
+        Serial_print((int)servoinfo[1].duty_cycle);
+        Serial_write(" - ");
+        Serial_println(servoinfo[2].duty_cycle);
+
+    }
 
 }
