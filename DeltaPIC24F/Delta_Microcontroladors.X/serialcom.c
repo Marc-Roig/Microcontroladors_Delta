@@ -22,7 +22,6 @@ void Serial_begin(int baudrate) {
     _U2RXIF = 0;
     _U2RXIE = 1; //Enable RX interrupt
 
-
 }
 
 void _ISR _U2TXInterrupt() {
@@ -42,7 +41,7 @@ void _ISR _U2RXInterrupt() {
 
     if (U2STAbits.URXDA) { //what if there are more bits in the buffer??
 
-        serial_push_character(U2RXREG);
+        Serial_push_character(U2RXREG);
 
     }
 
@@ -50,7 +49,7 @@ void _ISR _U2RXInterrupt() {
 
 }
 
-void serial_push_character(char incomingByte) {
+void Serial_push_character(char incomingByte) {
   
   if (RX_buffer.full) {} //Do nothing
   else {
@@ -92,7 +91,7 @@ void Serial_write(char data_to_print[]) {
 
 char Serial_read() {
 
-    if (RX_buffer.empty) return NULL;
+    if (RX_buffer.empty) return '\0';
 
     char toReturnChar = RX_buffer.command[RX_buffer.start];
     inc_RXbuffer_start_pointer();
@@ -112,8 +111,8 @@ void Serial_println(int value) {
 
   char value_to_string[7];
   int_to_char(value, value_to_string);
-  serial_write(value_to_string);
-  serial_write("\r\n");
+  Serial_write(value_to_string);
+  Serial_write("\r\n");
 
 }
 
@@ -121,7 +120,7 @@ void Serial_print(int value) {
 
   char value_to_string[7];
   int_to_char(value, value_to_string);
-  serial_write(value_to_string);
+  Serial_write(value_to_string);
 
 }
 
@@ -159,7 +158,7 @@ bool inc_RXbuffer_end_pointer() {
 
 bool inc_TXbuffer_end_pointer() {
 
-  TX_buffer.end_ = (TX_buffer.end_ + 1) % TX_SERIAL_BUFFER_LEN;
+  TX_buffer.end_ = (TX_buffer.end_ + 1) % SERIAL_BUFFER_LEN;
   TX_buffer.empty = false;
   if (TX_buffer.end_ == TX_buffer.start) {
     TX_buffer.full = true;
@@ -184,7 +183,7 @@ bool inc_RXbuffer_start_pointer() {
 
 bool inc_TXbuffer_start_pointer() {
 
-  TX_buffer.start = (TX_buffer.start + 1) % TX_SERIAL_BUFFER_LEN;
+  TX_buffer.start = (TX_buffer.start + 1) % SERIAL_BUFFER_LEN;
   TX_buffer.full = false;
 
   if (TX_buffer.end_ == TX_buffer.start) {

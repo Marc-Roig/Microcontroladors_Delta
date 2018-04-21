@@ -2,23 +2,8 @@
 
 	#define SERIALCOM_H
 
-	//STRUCTS
-	typedef struct Buffer { //Circular buffer, FIFO
-		int command_len[SERIAL_BUFFER_LEN];
-		int start, end_;
-		bool full, empty;
-		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
-	}Buffer;
-
-	typedef struct SerialBuffer { //Circular buffer, FIFO
-		int start, end_;
-		bool full, empty;
-		char command[SERIAL_BUFFER_LEN];
-	}SerialBuffer;
-
-
 	void Serial_begin(int baudrate);
-	void serial_push_character(char incomingByte);
+	void Serial_push_character(char incomingByte);
 	void Serial_write(char data_to_print[]);
 	char Serial_read();
 	int Serial_available();
