@@ -29,14 +29,13 @@ void setup() {
 
     T4CON = 0X8030;
 
-    engage_servos();
-
     Serial_begin(9600);
 
     //--SERVOS--//
-    //init_servos(true, true, true, true);
-    
-    pinMode(IO_RB3, ANALOG_INPUT);
+    init_servos(true, true, true, true);
+
+    //--CALIBRATION--//
+    calibration_start(true, true, true, false);
     
 }
 
@@ -44,29 +43,17 @@ int analog_value = 512;
 
 void loop() {
 
-    analog_value = analogRead(IO_RB3);
+    servo_calibration(true, true, true, false);
+    move_selected_servos(true, true, true, false);
     
-    serial_println(analog_value);
-    
-    delay(1000);
-
 }
 
 int main(void) {
     
     setup();
 
-    // int duty_cycle = 0;
-
     while (1) {
-
         loop();
-        
-        // polsadors(&duty_cycle);
-
-        // servo1_write_duty_cycle(duty_cycle);      
-
-        // show_dutycycle_leds(duty_cycle);
     }
     
     return 0;
