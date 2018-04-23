@@ -32,23 +32,21 @@
     
 
 
-	#ifndef BUFFER_STRUCT
+	#ifdef SERIALCOM_SIMULATOR
 
-		#define BUFFER_STRUCT
 		extern CommandsBuffer buffer;
 
 	#endif
 
 
-	#ifndef DELTAINFO_STRUCT
+	#ifdef KINEMATICS_H
 
-		#define DELTAINFO_STRUCT
 		extern DeltaInfo deltainfo;
 
 	#endif
 
 
-	#ifndef SERVOINFO_STRUCT
+	#ifdef SERVO_MOVEMENT_H
 
 		#define SERVOINFO_STRUCT
 		extern ServoInfo servoinfo[4];
