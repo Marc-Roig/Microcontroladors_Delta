@@ -31,19 +31,58 @@ void setup() {
 
     Serial_begin(9600);
 
+    init_buffer();
+
     //--SERVOS--//
     init_servos(true, true, true, true);
 
-    //--CALIBRATION--//
-    calibration_start(true, true, true, false);
+    //--DELTA--//
+        //SEQUENCE_MODE 0
+        //CALIBRATION_MODE 1
+        //JOYSTICK_MODE 2
+    init_delta(CALIBRATION_MODE);
     
+    switch (deltainfo.mode) { 
+
+        case SEQUENCE_MODE:     //--JOYSTICK--//
+                                init_joystick();
+
+                                
+                                //--SEQUENCE--//
+                                init_sequence();
+
+                                break;
+
+        case CALIBRATION_MODE:  calibration_start(true, true, true, false);
+                                break;
+
+        case JOYSTICK_MODE:     init_joystick();
+                                break;
+                                
+    }
+
 }
 
-int analog_value = 512;
 
 void loop() {
 
-    servo_calibration(true, true, true, false);
+    switch (deltainfo.mode){
+
+        case SEQUENCE_MODE:     update_sequence_mode();
+                                break;
+
+        case CALIBRATION_MODE:  servo_calibration(true, true, true, false);
+                                break;
+
+        case JOYSTICK_MODE:     joystick_movement();
+                                break;
+
+    }
+
+    //Only the following function can change the position of the servos.
+    //Only the value of servoinfo duty_cycle, angle or xyz may be changed
+    //and specified in servoinfo[].move_servo_from which of the three will
+    //be the used one to move the servo.
     move_selected_servos(true, true, true, false);
     
 }
