@@ -30,7 +30,7 @@ void _ISR _T4Interrupt() {
 
 int millis() {
 
-	long countTMR = TMR4 * 256;
-	return (int)(TMR4 / 1000);
+	long countTMR = TMR4;
+	return (int)(countTMR * 256 / 1000);
 	 
 }
