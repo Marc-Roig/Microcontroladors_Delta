@@ -3,9 +3,13 @@
 .global _pinMode
 .global _digitalRead
 
+.extern _RB3_Analog_Active
 .extern _RB8_Analog_Active
 .extern _RB9_Analog_Active
-.extern _RB3_Analog_Active
+
+.extern _RB3_Analog_Value
+.extern _RB8_Analog_Value
+.extern _RB9_Analog_Value
 
 
 _pinMode:
@@ -148,3 +152,28 @@ _digitalRead:
 
 	RETURN
 
+_analogRead:
+
+	;W0 int pin_num
+
+	SL W0 ;Jump 2 lines for every case
+	BRA W0 ; PC += (W0*2)
+
+	IO_RB3_AR:
+
+		MOV #_RB3_Analog_Value, W0
+		BRA End_analogRead
+
+	IO_RB8_AR:
+
+		MOV #_RB8_Analog_Value, W0
+		BRA End_analogRead
+
+	IO_RB9_AR:
+
+		MOV #_RB9_Analog_Value, W0
+		BRA End_analogRead
+
+	End_analogRead:
+
+		RETURN
