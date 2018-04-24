@@ -1,5 +1,7 @@
 #include "Config.h"
 
+Sequence sequence;
+
 void init_sequence() {
 
 	pinMode(SEQUENCE_SAVE_POS_BUTTON_PIN, INPUT);
@@ -64,18 +66,11 @@ void play_sequence() {
 		durations[i] = SEQUENCE_DEFAULT_MOVEMENT_TIME;
 	}
 
-	servoseased[0].addMoves(sequence.moves[0], durations, sequence.last_move + 1);
-	servoseased[0].play();
-
-	servoseased[1].addMoves(sequence.moves[1], durations, sequence.last_move + 1);
-	servoseased[1].play();
-
-	servoseased[2].addMoves(sequence.moves[2], durations, sequence.last_move + 1);
-	servoseased[2].play();
-
-	servoseased[3].addMoves(sequence.moves[3], durations, sequence.last_move + 1);
-	servoseased[3].play();
-
+	servoseased[0].addMovesAndPlay(sequence.moves[0], durations, sequence.last_move + 1);
+	servoseased[1].addMovesAndPlay(sequence.moves[1], durations, sequence.last_move + 1);
+	servoseased[2].addMovesAndPlay(sequence.moves[2], durations, sequence.last_move + 1);
+	servoseased[3].addMovesAndPlay(sequence.moves[3], durations, sequence.last_move + 1);
+	
 	sequence.playing = true;
 
 }

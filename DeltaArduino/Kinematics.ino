@@ -1,5 +1,7 @@
 #include "Config.h"
 
+DeltaInfo deltainfo;
+
  // robot geometry
  // (look at pics above for explanation)
  const float e = 150.0;     // end effector

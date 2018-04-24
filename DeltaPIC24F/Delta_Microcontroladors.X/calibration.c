@@ -42,9 +42,6 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
 
     debug_calibration(1000);
 
-
-    // delay(1500);
-
 }
 
 void debug_calibration(int wait_time) {

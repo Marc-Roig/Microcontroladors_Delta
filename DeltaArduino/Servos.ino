@@ -10,6 +10,7 @@ const long servo2_n =  (long)(SERVO2_N_ANGLE_TO_DC * 10);
 const long servo3_n =  (long)(SERVO3_N_ANGLE_TO_DC * 10);
 const long servo4_n =  (long)(SERVO4_N_ANGLE_TO_DC * 10);
 
+ServoInfo servoinfo[4];
 
 void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 

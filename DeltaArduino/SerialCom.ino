@@ -1,5 +1,7 @@
 #include "Config.h"
 
+CommandsBuffer buffer;
+
 //Comands 
 
 // G03 XXX XXX XXX - Angles of servos (S1, S2, S3, S4 GRIP)

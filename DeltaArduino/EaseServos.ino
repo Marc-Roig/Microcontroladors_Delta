@@ -1,5 +1,7 @@
 #include "Config.h"
 
+ServoEaser servoseased[4];
+
 // Code adapted from: https://github.com/todbot/ServoEaser
 // Easer functions from: https://github.com/jesusgollonet/ofpennereasing
 

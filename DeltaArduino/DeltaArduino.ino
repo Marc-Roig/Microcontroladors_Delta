@@ -34,8 +34,6 @@ void setup() {
         //JOYSTICK_MODE 2
     init_delta(CALIBRATION_MODE);
 
-
-
     switch (deltainfo.mode) {
 
         case SEQUENCE_MODE:     //--JOYSTICK--//
