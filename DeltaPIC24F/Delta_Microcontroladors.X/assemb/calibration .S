@@ -17,7 +17,7 @@
 
 .text
 
-.extern servoinfo
+.extern _servoinfo
 
 _servo_calibration:
 	
@@ -41,22 +41,22 @@ _servo_calibration:
 	calibrate_with_potentiometer:
 		;SERVO1
 		MOV #0, W0 ; servo_num
-		BTSC W1, #0 ;check if works
+		BTSC W1, #0
 		RCALL _calibration_change_dc_potentiometer
 		
 		;SERVO2
 		INC W0, W0
-		BTSC W1, #1 ;check if works
+		BTSC W1, #1
 		RCALL _calibration_change_dc_potentiometer
 
 		;SERVO3
 		INC W0, W0
-		BTSC W1, #2 ;check if works
+		BTSC W1, #2
 		RCALL _calibration_change_dc_potentiometer
 		
 		;SERVO4
 		INC W0, W0
-		BTSC W1, #3 ;check if works
+		BTSC W1, #3
 		RCALL _calibration_change_dc_potentiometer
 
 		BRA End_switch_case
@@ -64,22 +64,22 @@ _servo_calibration:
 	calibrate_with_buttons:
 		;SERVO1
 		MOV #0, W0 ; servo_num
-		BTSC W1, #0 ;check if works
+		BTSC W1, #0
 		RCALL _calibration_change_dc_buttons
 		
 		;SERVO2
 		INC W0, W0
-		BTSC W1, #1 ;check if works
+		BTSC W1, #1
 		RCALL _calibration_change_dc_buttons
 
 		;SERVO3
 		INC W0, W0
-		BTSC W1, #2 ;check if works
+		BTSC W1, #2
 		RCALL _calibration_change_dc_buttons
 		
 		;SERVO4
 		INC W0, W0
-		BTSC W1, #3 ;check if works
+		BTSC W1, #3
 		RCALL _calibration_change_dc_buttons
 
 	End_switch_case:
@@ -124,17 +124,17 @@ _calibration_start:
 
 	move_servos_from_dc:
 
-		MOV #servoinfo, W0
+		MOV #_servoinfo, W0
 		ADD #servinf_move_servo_from, W0
 		MOV #MOVE_SERVO_FROM_DC, [W0]
 
-		ADD #servoinfo_lenght, W0
+		ADD #_servoinfo_lenght, W0
 		MOV #MOVE_SERVO_FROM_DC, [W0]
 
-		ADD #servoinfo_lenght, W0
+		ADD #_servoinfo_lenght, W0
 		MOV #MOVE_SERVO_FROM_DC, [W0]
 
-		ADD #servoinfo_lenght, W0
+		ADD #_servoinfo_lenght, W0
 		MOV #MOVE_SERVO_FROM_DC, [W0]
 
 
@@ -153,7 +153,7 @@ _calibration_change_dc_potentiometer:
 	PUSH W5
 
 
-	get_servoinfo_mem_pos W0
+	get__servoinfo_mem_pos W0
 	
 	MOV [W0+servinf_min_dc], W3
 	MOV [W0+servinf_max_dc], W4
@@ -248,11 +248,6 @@ _calibration_change_dc_mode:
 
 	ULNK
 	RETURN
-
-	
-
-
- 
 
 		
 

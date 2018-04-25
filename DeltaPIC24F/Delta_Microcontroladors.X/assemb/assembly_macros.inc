@@ -1,38 +1,64 @@
-#define servoinfo_lenght 16
+.equ servoinfo_lenght, 26
 
-#define servinf_duty_cycle 0
-#define servinf_dc_offset  2
-#define servinf_max_duty_cycle 4
-#define servinf_min_duty_cycle 6
-#define servinf_mean_dc 8
-#define servinf_last_direction 10
-#define servinf_slack_comp 12
-#define servinf_move_servo_from 14
-#define servinf_angle 16
-#define servinf_m 18
-#define servinf_n 20
+.equ servinf_duty_cycle, 0
+.equ servinf_dc_offset,  2
+.equ servinf_max_duty_cycle, 4
+.equ servinf_min_duty_cycle, 6
+.equ servinf_mean_dc, 8
+.equ servinf_last_direction, 10
+.equ servinf_slack_comp, 12
+.equ servinf_move_servo_from, 14
+.equ servinf_angle, 16
+.equ servinf_m, 18
+.equ servinf_n, 22
 
-.extern servoinfo ;check if this works
+.extern _servoinfo 
 
-.macro get_servoinfo_mem_pos servo_num
-	
-	PUSH W1
-	PUSH W2
+/*********************************************************************
+* Macro: get_servoinfo_mem_pos(servo_num)
+*
+* Overview: Get the memory position of the array servoinfo[servo_num]
+*
+* PreCondition: This macro doesn't check if servo_num is a valid number
+*               Program will have to check it before calling it or i will
+*               return an invalid memory position
+*
+********************************************************************/
 
-	MOV #servoinfo, W2
-	MUL #\servo_num, #servoinfo_lenght, W1
-	ADD W1, W2, W0
+.macro get_servoinfo_mem_pos servo_num ;CHECKED
+    
+    PUSH W1
+    
+    MOV #servoinfo_length, W1
+    MUL.UU W1, #\servo_num, W0
+    MOV #_servoinfo, W1
+    ADD W0, W1, W0
 
-	POP W2
-	POP W1
+    POP W1
 
 .endm
 
-.macro get_servoinfo_item_mem_pos servo_num, item_num
+/*********************************************************************
+* Macro: get_servoinfo_item_mem_pos(servo_num, item)
+*
+* Overview: Get the memory position of the array servoinfo[servo_num]
+*
+* PreCondition: This macro doesn't check if servo_num or item_num are valid numbers
+*               Program will have to check it before calling it or i will
+*               return an invalid memory position
+*
+********************************************************************/
 
-	MOV #servoinfo, W0
-	MUL #\servo_num, #servoinfo_lenght, W1
-	ADD W1, W0, W0
-	ADD #\item_num, W0
+.macro get_servoinfo_item_mem_pos servo_num, item_num ;CHECKED
+
+    PUSH W1
+    
+    MOV #servoinfo_lenght, W1
+    MUL.UU W1, #\servo_num, W0
+    MOV #_servoinfo, W1
+    ADD W0, W1, W0
+    ADD #\item_num, W0
+
+    POP W1
 
 .endm
