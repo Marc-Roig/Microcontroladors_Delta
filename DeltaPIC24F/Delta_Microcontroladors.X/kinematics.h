@@ -2,19 +2,6 @@
 	
 	#define KINEMATICS_H
 
-	typedef struct DeltaInfo {
-
-		float x;
-		float y;
-		float z;
-
-		int speed;
-
-		bool move_delta;
-
-		int mode;
-
-	}DeltaInfo;
 
 	
 	int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float* y0, float* z0);
@@ -30,6 +17,6 @@
 	bool update_xyz_from_angles();
 
 	//DELTA INITIALIZATIONS
-	void init_delta();
+	void init_delta(int mode);
 
 #endif

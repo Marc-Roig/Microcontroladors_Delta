@@ -1,5 +1,5 @@
 #include "Config.h"
-
+#include "Math.h"
  // robot geometry
  // (look at pics above for explanation)
  const float e = 150.0;     // end effector
@@ -8,14 +8,16 @@
  const float rf = 100.0;
  
  // trigonometric constants
- const float sqrt3 = 1.7320508;
- const float pi = 3.141592653;    // PI
- const float sin120 = sqrt3/2.0;   
- const float cos120 = -0.5;        
- const float tan60 = sqrt3;
- const float sin30 = 0.5;
- const float tan30 = 1/sqrt3;
+ float sqrt3 = 1.7320508;
+ float pi = 3.141592653;    // PI
+ float sin120 = sqrt3/2.0;   
+ float cos120 = -0.5;        
+ float tan60 = sqrt3;
+ float sin30 = 0.5;
+ float tan30 = 1/sqrt3;
  
+ DeltaInfo deltainfo;
+
  // forward kinematics: (theta1, theta2, theta3) -> (x0, y0, z0)
  // returned status: 0=OK, -1=non-existing position
 int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float* y0, float* z0) {
@@ -106,7 +108,6 @@ int delta_calcInverse(float x0, float y0, float z0, float* theta1, float* theta2
      if (status == 0) status = delta_calcAngleYZ(x0*cos120 - y0*sin120, y0*cos120+x0*sin120, z0, theta3);  // rotate coords to -120 deg
 
      return status;
-
 }
 
 void serial_write_xyz_from_angles() {
@@ -187,13 +188,13 @@ bool update_xyz_from_angles() {
 
 }
 
-void init_delta() {
+void init_delta(int mode) {
 
      deltainfo.x = 0;
      deltainfo.y = 0;
      deltainfo.z = -162.5;
 
-     deltainfo.mode = INITIAL_DELTA_MODE;
+     deltainfo.mode = mode;
      set_servo_movement_with_dc(true, true, true, true);
 
 }
