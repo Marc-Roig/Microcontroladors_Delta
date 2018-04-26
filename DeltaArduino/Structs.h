@@ -6,8 +6,8 @@
 
 	typedef struct CommandsBuffer { //Circular buffer for serial communication
 
-		char command[SERIAL_BUFFER_LEN][SERIAL_COMMAND_MAX_LEN];
-		int command_len[SERIAL_BUFFER_LEN];
+		char command[MAX_COMMANDS_NUM][SERIAL_COMMAND_MAX_LEN];
+		int command_len[MAX_COMMANDS_NUM];
 		int start, end_;
 		bool full, empty;
 

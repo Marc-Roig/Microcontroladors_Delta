@@ -74,7 +74,7 @@ void debug_calibration(int wait_time) {
 *
 ********************************************************************/
 
-void calibration_start(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+void calibration_start() {
 
     pinMode(CHANGE_MODE_BUTTON_PIN, INPUT);
     pinMode(INCREASE_DC_BUTTON_PIN, INPUT);

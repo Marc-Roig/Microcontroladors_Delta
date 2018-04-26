@@ -178,16 +178,16 @@ int analogRead(int pin_num) {
 
     switch (pin_num) {
 
-        case IO_RB3:     return RB3_Analog_Value;
+        case IO_RB3:    return RB3_Analog_Value;
                         break;
 
-        case IO_RB8:     return RB8_Analog_Value;
+        case IO_RB8:    return RB8_Analog_Value;
                         break;
 
-        case IO_RB9:     return RB9_Analog_Value;
+        case IO_RB9:    return RB9_Analog_Value;
                         break;
                         
-        default:      return 512;
+        default:        return 512;
                         break;
 
     }
