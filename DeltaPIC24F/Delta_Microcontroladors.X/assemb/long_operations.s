@@ -7,6 +7,9 @@
 .global _add_longs
 .global _add_long_int_ret_long
 .global _add_long_int_ret_int
+.global _sub_longs
+.global _sub_long_int
+.global _sub_int_long
 .global _ASR_long
 .global _SL_long
 .global _float_to_long
@@ -121,6 +124,33 @@ _add_long_int_ret_int: ;CHECKED
     ;W2 b
     
     ADD W0, W2, W0
+    RETURN
+
+_sub_longs:
+    
+    ;W0 a1
+    ;W1 a2
+    ;W2 b1
+    ;W3 b2
+
+    SUB W0, W2, W0
+    SUBB W1, W3, W1
+
+    RETURN
+
+_sub_long_int:
+    
+    ;W0 a1
+    ;W1 a2
+    ;W2 b
+
+    PUSH W3
+    MOV #0, W3
+
+    SUB W0, W2, W0
+    SUBB W1, W3, W1    
+
+    POP W3
     RETURN
 
 _ASR_long: ;CHECKED

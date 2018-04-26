@@ -22,6 +22,7 @@
 * PreCondition: This macro doesn't check if servo_num is a valid number
 *               Program will have to check it before calling it or i will
 *               return an invalid memory position
+*               Use the # to pass a literal: get_servo_info_mem_pos #4
 *
 ********************************************************************/
 
@@ -30,7 +31,7 @@
     PUSH W1
     
     MOV #servoinfo_length, W1
-    MUL.UU W1, #\servo_num, W0
+    MUL.UU W1, \servo_num, W0
     MOV #_servoinfo, W1
     ADD W0, W1, W0
 

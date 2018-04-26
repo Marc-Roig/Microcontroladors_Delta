@@ -177,3 +177,65 @@ _analogRead:
 	End_analogRead:
 
 		RETURN
+
+_map2: ;CHECKED (NOT FOR NEGATIVE NUMBERS)
+	;All parameters are pushed into stack
+	;long x = [W14-26]
+	;long in_min = [W14-22]
+	;long in_max = [W14-18]
+	;long out_min = [W14-14]
+	;long out_max = [W14-10]
+	LNK #4
+
+	PUSH W2
+	PUSH W3
+
+	MOV [W14-26], W0
+	MOV [W14-24], W1
+	MOV [W14-22], W2
+	MOV [W14-20], W3
+
+	RCALL _sub_longs
+
+	MOV.D W0, [W14] ;(x - in_min)
+
+	MOV [W14-10], W0
+	MOV [W14-8], W1
+	MOV [W14-14], W2
+	MOV [W14-12], W3
+
+	RCALL _sub_longs ;(out_max - out_min) 
+
+	MOV [W14], W2
+	MOV [W14+2], W3
+
+	RCALL _mul_longs 
+
+	MOV.D W0, [W14] ;(x - in_min) * (out_max - out_min) 
+
+	MOV [W14-18], W0
+	MOV [W14-16], W1
+	MOV [W14-22], W2
+	MOV [W14-20], W3
+
+	RCALL _sub_longs
+
+	MOV W0, W2
+	MOV W1, W3
+
+	MOV [W14], W0
+	MOV [W14+2], W1
+
+	RCALL _div_longs
+
+	MOV [W14-14], W2
+	MOV [W14-12], W3
+
+	RCALL _add_longs
+
+	POP W3
+	POP W2
+	
+	ULNK
+	
+	RETURN
