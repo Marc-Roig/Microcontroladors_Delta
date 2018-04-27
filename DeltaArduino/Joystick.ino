@@ -8,6 +8,7 @@ void init_joystick()  {
     pinMode(INCREASE_XYZ_BUTTON_PIN, INPUT);
     pinMode(DECREASE_XYZ_BUTTON_PIN, INPUT);
 
+
     servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
@@ -55,8 +56,8 @@ void joystick_debug() {
 void joystick_debug_from_angles() {
 
     serial_write_angles();
-    serial_write_xyz_from_angles();
-    Serial.write("-----------------------\n");
+    // serial_write_xyz_from_angles();
+    Serial_write("-----------------------\n");
 
 }
 

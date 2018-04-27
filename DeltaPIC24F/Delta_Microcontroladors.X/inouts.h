@@ -27,5 +27,6 @@
 	void digitalWrite(int pin_num, int value);
 	int digitalRead(int pin_num);
 	long map(long x, long in_min, long in_max, long out_min, long out_max);
+	float abs2(float val);
 
 #endif

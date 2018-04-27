@@ -7,6 +7,11 @@ void init_joystick()  {
     pinMode(BUTTONS_STEP_XYZ_PIN, INPUT);
     pinMode(INCREASE_XYZ_BUTTON_PIN, INPUT);
     pinMode(DECREASE_XYZ_BUTTON_PIN, INPUT);
+
+    pinMode(JOYSTICK_X_PIN, ANALOG_INPUT);
+    pinMode(JOYSTICK_Y_PIN, ANALOG_INPUT);
+
+    initADC();
     
     servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
@@ -38,7 +43,7 @@ void joystick_movement() {
 
 void joystick_debug() {
 
-    static unsigned long StartTime = millis();
+    static unsigned long StartTime = 0;
 
     int time_difference_ms = 500; // Every 400 ms the program will read the joystick val 
 
@@ -55,8 +60,8 @@ void joystick_debug() {
 void joystick_debug_from_angles() {
 
     serial_write_angles();
-    serial_write_xyz_from_angles();
-    Serial.write("-----------------------\n");
+//    serial_write_xyz_from_angles();
+//    Serial_write("-----------------------\n");
 
 }
 
@@ -66,7 +71,7 @@ void joystick_debug_from_xyz() {
 
 void joystick_move_angles() {
 
-    static unsigned long StartTime = millis();
+    static unsigned long StartTime = 0;
     static int servo_num = 0;
     static int S0 = 0; //Flank detector
 
@@ -77,7 +82,7 @@ void joystick_move_angles() {
     if ((millis() - StartTime) > time_difference_ms ) {
 
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
-        if (abs(joys_x) < 1.5) joys_x = 0;
+        if (abs2(joys_x) < 1.5) joys_x = 0;
 
         servoinfo[servo_num].angle += (int)(0.5 * joys_x); //Multiply joys_x with a gain
         // Serial.println(joys_x);
@@ -144,7 +149,7 @@ void joysitck_change_mode(int* change_joystick_mode) {
 
 void joystick2_move_gripper() {
 
-    static unsigned long StartTime = millis();
+    static unsigned long StartTime = 0;
 
     int time_difference_ms = 400; // Every X ms program will read the joystick val 
 
@@ -152,7 +157,7 @@ void joystick2_move_gripper() {
 
         float joys_grip = map(analogRead(JOYSTICK_X_GRIPPER_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs(joys_grip) < 1) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
+        if (abs2(joys_grip) < 1) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
 
         servoinfo[3].duty_cycle += (15 * joys_grip); //Multiply joys_grip with a gain
 
@@ -198,7 +203,7 @@ void joystick_move_xyz() {
 
 void joystick_move_xy() {
 
-    static unsigned long StartTime = millis();
+    static unsigned long StartTime = 0;
 
     int time_difference_ms = 50; // Every 400 ms the program will read the joystick val 
 
@@ -207,8 +212,8 @@ void joystick_move_xy() {
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
         float joys_y = map(analogRead(JOYSTICK_Y_PIN), 0, 1023, JOYSTICK_NUMBER_OF_SPEEDS/2, -JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs(joys_x) < 1.2) joys_x = 0;
-        if (abs(joys_y) < 1.2) joys_y = 0;
+        if (abs2(joys_x) < 1.2) joys_x = 0;
+        if (abs2(joys_y) < 1.2) joys_y = 0;
 
         float base_speed_increment = 0.5;
 
@@ -223,7 +228,7 @@ void joystick_move_xy() {
 
 void joystick_move_z() {
 
-    static unsigned long StartTime = millis();
+    static unsigned long StartTime = 0;
 
     int time_difference_ms = 400; // Every X ms program will read the joystick val 
 
@@ -231,7 +236,7 @@ void joystick_move_z() {
 
         float joys_z = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs(joys_z) < 1) joys_z = 0;
+        if (abs2(joys_z) < 1) joys_z = 0;
 
         deltainfo.z += (1 * joys_z); //Multiply joys_z with a gain
 

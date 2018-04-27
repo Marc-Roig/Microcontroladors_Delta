@@ -49,7 +49,7 @@ void setup() {
 
                                 
                                 //--SEQUENCE--//
-                                init_sequence();
+//                                init_sequence();
 
                                 break;
 
@@ -68,7 +68,7 @@ void loop() {
 
     switch (deltainfo.mode){
 
-        case SEQUENCE_MODE:     update_sequence_mode();
+        case SEQUENCE_MODE:  //   update_sequence_mode();
                                 break;
 
         case CALIBRATION_MODE:  servo_calibration(true, true, true, false);

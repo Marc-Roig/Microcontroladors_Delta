@@ -32,7 +32,7 @@ void setup() {
         //SEQUENCE_MODE 0
         //CALIBRATION_MODE 1
         //JOYSTICK_MODE 2
-    init_delta(CALIBRATION_MODE);
+    init_delta(JOYSTICK_MODE);
 
     switch (deltainfo.mode) {
 
@@ -71,7 +71,7 @@ void loop() {
     }
 
     //--SERVOS--//
-    move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
+    move_selected_servos(true, false, false, false); //Angle to duty cycle, only with three arm servos  
 
     //--SERIAL--//
     // serial_com_with_simulator();

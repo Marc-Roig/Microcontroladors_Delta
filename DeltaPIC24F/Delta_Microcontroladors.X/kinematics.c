@@ -1,5 +1,4 @@
 #include "Config.h"
-#include "Math.h"
  // robot geometry
  // (look at pics above for explanation)
  const float e = 150.0;     // end effector
@@ -10,11 +9,11 @@
  // trigonometric constants
  float sqrt3 = 1.7320508;
  float pi = 3.141592653;    // PI
- float sin120 = sqrt3/2.0;   
+ float sin120 = 0.8660254;   
  float cos120 = -0.5;        
- float tan60 = sqrt3;
+ float tan60 = 1.7320508;
  float sin30 = 0.5;
- float tan30 = 1/sqrt3;
+ float tan30 = 0.5773503;
  
  DeltaInfo deltainfo;
 
