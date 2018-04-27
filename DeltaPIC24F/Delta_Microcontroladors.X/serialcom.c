@@ -112,7 +112,7 @@ void Serial_println(int value) {
   char value_to_string[7];
   int_to_char(value, value_to_string);
   Serial_write(value_to_string);
-  Serial_write("\r\n");
+  Serial_write("\n");
 
 }
 

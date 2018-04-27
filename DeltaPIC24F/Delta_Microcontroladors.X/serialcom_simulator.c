@@ -279,3 +279,14 @@ void serial_write_dc_every_ms(int wait_time) {
     }
 
 }
+
+void serial_write_angles() {
+
+    Serial_write("Angles: ");
+    Serial_print((int)servoinfo[0].angle);
+    Serial_write(" - ");
+    Serial_print((int)servoinfo[1].angle);
+    Serial_write(" - ");
+    Serial_println(servoinfo[2].angle);
+
+}
