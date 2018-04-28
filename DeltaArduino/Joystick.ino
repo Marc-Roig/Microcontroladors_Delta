@@ -12,6 +12,7 @@ void init_joystick()  {
     servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+    
 }
 
 void joystick_movement() {
@@ -25,6 +26,7 @@ void joystick_movement() {
 
         case JOYSTICK_MOVE_AXIS:        joystick_move_xyz();
                                         // buttons_move_xyz();
+                                        // joystick2_move_gripper();
                                         break;
 
         default:                        break;
