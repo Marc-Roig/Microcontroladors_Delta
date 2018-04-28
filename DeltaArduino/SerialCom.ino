@@ -14,18 +14,26 @@ CommandsBuffer buffer;
 
 void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
-  if(command_recieved) {
-    
-    parse_command(buffer.command[buffer.start]);
+    static unsigned long startTimeSim = millis();
 
-    if (inc_buffer_start_pointer()) {
-      command_recieved = false; //If stack empty message has been read
-      delay(SERIAL_DELAY_MS);
+    if(command_recieved) {
+
+        parse_command(buffer.command[buffer.start]);
+
+        if (inc_buffer_start_pointer()) { 
+            //When command End of Stream is read I send all
+            //the information and wait for more
+            command_recieved = false; //Buffer is empty
+        }
+
     }
 
-  }
-  
-  else check_serial();
+    else if ((millis() - startTimeSim) > SERIAL_DELAY_MS) {
+
+        check_serial();
+        startTimeSim = millis();
+
+    }
 
 }
 
@@ -33,22 +41,23 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
 void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
 
-  int command_num = chars_to_int('0', command[1], command[2]);
-  switch(command_num) {
+    int command_num = chars_to_int('0', command[1], command[2]);
+    
+    switch(command_num) {
 
-    case END_OF_STREAM: serial_next_instruction();
-                        break;
-      
-    case MOVE_SERVOS:   serial_recieve_angles(command);
-                        break;
-      
-    case MOVE_EF:       serial_recieve_ef_pos(command);
-                        break;
+        case END_OF_STREAM: serial_next_instruction();
+                            break;
+          
+        case MOVE_SERVOS:   serial_recieve_angles(command);
+                            break;
+          
+        case MOVE_EF:       serial_recieve_ef_pos(command);
+                            break;
 
-    default:            Serial_write("BAD REQUEST");
-                        break;
+        default:            Serial_write("BAD REQUEST");
+                            break;
 
-  }
+    }
   
 }
 
