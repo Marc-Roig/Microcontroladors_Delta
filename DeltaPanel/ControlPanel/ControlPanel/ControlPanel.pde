@@ -32,6 +32,8 @@ void setup() {
   
   ServoHorn = loadShape("Images/servoHorn.svg");
   ServoHorn.scale(scale_horn_draw);
+
+  cp5.setAutoDraw(false);
   
 }
 
@@ -47,7 +49,11 @@ void draw() {
   myservoChart1.unshift("servo1Chart" , -angle1);
   myservoChart2.unshift("servo2Chart" , -angle2);
   myservoChart3.unshift("servo3Chart" , -angle3);
+
   
+  cp5.draw();
+  
+  draw_axis_charts();
 }
 
 void draw_servos() {
@@ -107,20 +113,71 @@ void change_mode_bar_init(ControlP5 cp5) {
 
 }
 
+void draw_axis_charts() {
+
+  int s1_graph_ypos = (int)(height*0.25 - 75);
+  int s1_graph_xpos = (int)(width * 0.3);
+
+  float s1_graph_xsize = (width*0.45);
+  int s1_graph_ysize = 150;
+  
+  int num_of_x_lines = 20;
+  float perc_per_x_line = 1/float(num_of_x_lines);
+
+  int num_of_y_lines = 6;
+  float perc_per_y_line = 1/float(num_of_y_lines);
+
+
+  strokeWeight(1);
+  stroke(100);
+  textSize(9);
+  textAlign(RIGHT);
+
+  for (int i = 0; i < num_of_y_lines + 1; i++) {
+      line(s1_graph_xpos, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line), s1_graph_xpos-10, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line));  
+      text (10, s1_graph_xpos - 15,  s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line));
+  } 
+
+  for (int i = 0; i < num_of_x_lines + 1; i++) {
+      line(s1_graph_xpos + s1_graph_xsize * (i*perc_per_x_line), s1_graph_ypos, s1_graph_xpos + s1_graph_xsize * (i*perc_per_x_line), s1_graph_ypos - 10);
+  }
+
+  strokeWeight(4);
+  stroke(155);
+
+  line(s1_graph_xpos - 2, s1_graph_ypos, s1_graph_xpos - 2, s1_graph_ypos + s1_graph_ysize); 
+  line(s1_graph_xpos, s1_graph_ypos - 2, s1_graph_xpos + s1_graph_xsize, s1_graph_ypos - 2);
+  line(s1_graph_xpos, s1_graph_ypos + 1 + s1_graph_ysize, s1_graph_xpos + s1_graph_xsize, s1_graph_ypos + s1_graph_ysize + 1); 
+  line(s1_graph_xpos + s1_graph_xsize + 1, s1_graph_ypos, s1_graph_xpos  + s1_graph_xsize + 1 , s1_graph_ypos + s1_graph_ysize); 
+
+  strokeWeight(1);
+  stroke(255, 255, 255, 40);
+
+  for (float i = 1; i < num_of_y_lines; i++) {
+    line(s1_graph_xpos, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line), s1_graph_xpos + s1_graph_xsize, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line));  
+  } 
+
+}
+
 void chart_init() {
   
+
+  int  s1_graph_ypos = (int)(height*0.25 - 75);
+  int  s1_graph_xpos = (int)(width * 0.3);
+
   myservoChart1 = cp5.addChart("servo1")
-               .setPosition(width * 0.3, height*0.25 - 75)
-               .setSize(800, 150)
+               .setPosition(s1_graph_xpos, s1_graph_ypos)
+               .setSize((int)(width*0.45) , 150)
                .setRange(-90, 90)
                .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                .setStrokeWeight(1.5)
                .setColorCaptionLabel(color(40))
                .setFont(createFont("", 13))
                ;
-  
+
   myservoChart1.addDataSet("servo1Chart");
   myservoChart1.setData("servo1Chart", new float[300]);
+
 
   myservoChart2 = cp5.addChart("servo2")
                .setPosition(width * 0.3, height*0.5 - 75)
