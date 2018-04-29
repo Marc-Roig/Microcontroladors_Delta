@@ -41,11 +41,71 @@ void setup() {
   cp5.setAutoDraw(false);
 
   create_servo_value_box();
+  
+  cp5.getController("servo1").setBehavior(new ControlBehavior() {
+    
+    int s1_graph_ypos = (int)(height*0.25 - 75);
+    int s1_graph_xpos = (int)(width * 0.3);
+  
+    float s1_graph_xsize = (width*0.45);
+    int s1_graph_ysize = 150;
+  
+    int num_of_x_lines = 20;
+    float perc_per_x_line = 1/float(num_of_x_lines);
+  
+    int num_of_y_lines = 6;
+    float perc_per_y_line = 1/float(num_of_y_lines);
+    int num_y_vals_to_show = 4;
+  
+    float total_time = 25; //in seconds 
+  
+    public void update() {
+      //Controller serv = cp5.getController("servo1");
+       
+      strokeWeight(1);
+      stroke(100);
+      textSize(9);
+      textAlign(RIGHT);
+      fill(0);
+    
+      for (int i = 0; i < num_of_y_lines + 1; i++) {
+        line(s1_graph_xpos, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line), s1_graph_xpos-10, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line));  
+        text((int)ceil(180*(1 - (i*perc_per_y_line)))-90, s1_graph_xpos - 15, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line) + 4);
+      }
+    
+      textAlign(CENTER);
+      for (int i = 0; i < num_of_x_lines + 1; i++) {
+        line(s1_graph_xpos + s1_graph_xsize * (i*perc_per_x_line), s1_graph_ypos, s1_graph_xpos + s1_graph_xsize * (i*perc_per_x_line), s1_graph_ypos - 10);
+      }
+    
+      for (int i = 0; i < num_of_x_lines + 1; i+=num_of_x_lines/num_y_vals_to_show) {
+        text(total_time*i*perc_per_x_line, s1_graph_xpos + s1_graph_xsize * (i*perc_per_x_line), s1_graph_ypos - 12);
+      }
+    
+      strokeWeight(4);
+      stroke(155);
+    
+      line(s1_graph_xpos - 2, s1_graph_ypos, s1_graph_xpos - 2, s1_graph_ypos + s1_graph_ysize); 
+      line(s1_graph_xpos, s1_graph_ypos - 2, s1_graph_xpos + s1_graph_xsize, s1_graph_ypos - 2);
+      line(s1_graph_xpos, s1_graph_ypos + 1 + s1_graph_ysize, s1_graph_xpos + s1_graph_xsize, s1_graph_ypos + s1_graph_ysize + 1); 
+      line(s1_graph_xpos + s1_graph_xsize + 1, s1_graph_ypos, s1_graph_xpos  + s1_graph_xsize + 1, s1_graph_ypos + s1_graph_ysize); 
+    
+      strokeWeight(1);
+      stroke(255, 255, 255, 20);
+    
+      for (float i = 1; i < num_of_y_lines; i++) {
+        line(s1_graph_xpos, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line), s1_graph_xpos + s1_graph_xsize, s1_graph_ypos + s1_graph_ysize * (i*perc_per_y_line));
+      }
+    }
+  }
+  );
+    
 }
 
 void canvi_mode(int n) {
   println("bar clicked, item-value:", n);
 }
+
 float a= 0.0;
 void draw() {
   background(220);
@@ -60,7 +120,7 @@ void draw() {
 
   cp5.draw();
 
-  draw_axis_charts();
+  //draw_axis_charts();
 }
 
 void draw_servos() {
@@ -115,7 +175,7 @@ void change_mode_bar_init(ControlP5 cp5) {
   //    ButtonBar bar = (ButtonBar)ev.getController();
   //    println("hello ",bar.hover());
   //  }
-  //});
+  //}); 
 }
 void create_servo_value_box() {
 
