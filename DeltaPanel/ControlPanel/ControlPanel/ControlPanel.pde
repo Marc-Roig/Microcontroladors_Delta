@@ -21,12 +21,26 @@ Textlabel angle_val_s1;
 PShape ServoBody;
 PShape ServoHorn;
 
+ServoInfo servoinfo[] = new ServoInfo[3];
+
 float scale_servo_draw = 0.4;
 float scale_horn_draw = 0.2;
 
 float angle1 = 0;
 float angle2 = 0;
 float angle3 = 0;
+
+public class ServoInfo {
+
+  float angle;
+
+  public ServoInfo(int angle_) {
+
+    angle = angle_;
+
+  }
+
+}
 
 void setup() {
   size(1500, 800);
@@ -35,6 +49,10 @@ void setup() {
   change_mode_bar_init(cp5);
 
   chart_init();
+
+  servoinfo[0] = new ServoInfo(0);
+  servoinfo[1] = new ServoInfo(0);
+  servoinfo[2] = new ServoInfo(0);
 
   ServoBody = loadShape("Images/servoBody.svg");
   ServoBody.scale(scale_servo_draw);
@@ -46,47 +64,58 @@ void setup() {
 
   create_servo_value_box();
 
-  cp5.getController("servo1").setBehavior(new TimedEvent());
+  cp5.getController("servo1").setBehavior(new TimedEvent("servo1Chart", "servo1", myservoChartAxis1, servoinfo[0]));
+  cp5.getController("servo2").setBehavior(new TimedEvent("servo2Chart", "servo2", myservoChartAxis2, servoinfo[1]));
+  cp5.getController("servo3").setBehavior(new TimedEvent("servo3Chart", "servo3", myservoChartAxis3, servoinfo[2]));
   
-  cp5.getController("servo1").getController().reset();
-  // cp5.getController("servo1").setBehavior(new ControlBehavior() {
+  // cp5.getController("servo2").setBehavior(new ControlBehavior() {
   //   public void update() {
-  //     myservoChart1.unshift("servo1Chart", -angle1);
+  //     myservoChart2.unshift("servo2Chart", -angle2);
   //   }
   // }
   // );
 
-  cp5.getController("servo2").setBehavior(new ControlBehavior() {
-    public void update() {
-      myservoChart2.unshift("servo2Chart", -angle2);
-    }
-  }
-  );
-
-  cp5.getController("servo3").setBehavior(new ControlBehavior() {
-    public void update() {
-      myservoChart3.unshift("servo3Chart", -angle3);
-    }
-  }
-  );
+  // cp5.getController("servo3").setBehavior(new ControlBehavior() {
+  //   public void update() {
+  //     myservoChart3.unshift("servo3Chart", -angle3);
+  //   }
+  // }
+  // );
     
 }
 
 // custom ControlBehavior
 class TimedEvent extends ControlBehavior {
-  long myTime;
-  int interval = 200;
+  
+  //To work with it in program:
+  //  TimedEvent t = (TimedEvent)cp5.getController("myChart").getBehavior();
+  ServoInfo servoInf;
 
-  public TimedEvent() { 
+  long myTime;
+  Chart myChart;
+  ChartAxis myAxis;
+  
+  public int interval;
+  private String dataSet;
+  public TimedEvent(String dataSet_, String chart_, ChartAxis chartAxis, ServoInfo servo) { 
+
+    dataSet = dataSet_;
+    servoInf = servo;
+    
+    myChart = (Chart)cp5.getController(chart_);
+    interval = (int)((chartAxis.total_time * 1000) / (float)myChart.getDataSet(dataSet_).size());
     reset();
   }
-  void reset() { 
-    myTime = millis() + interval;
-  }
 
+  void reset() { 
+
+    myTime = millis() + interval;
+
+  }
+  
   public void update() {
-    if (millis()>myTime) {
-      myservoChart1.unshift("servo1Chart", -angle1); 
+    if (millis() > myTime) {
+      myChart.unshift(dataSet, -servoInf.angle); 
       reset();
     }
   }
@@ -98,14 +127,19 @@ void canvi_mode(int n) {
 
 float a= 0.0;
 void draw() {
+  
   background(220);
 
   draw_servos();
   angle_val_s1.setValue(nf(-angle1, 3, 1));
 
+  servoinfo[0].angle = angle1;
+  servoinfo[1].angle = angle2;
+  servoinfo[2].angle = angle3;
+
   
-  myservoChart2.unshift("servo2Chart", -angle2);
-  myservoChart3.unshift("servo3Chart", -angle3);
+  //myservoChart2.unshift("servo2Chart", -angle2);
+  //myservoChart3.unshift("servo3Chart", -angle3);
 
   cp5.draw();
   
@@ -169,6 +203,7 @@ void change_mode_bar_init(ControlP5 cp5) {
   //  }
   //}); 
 }
+
 void create_servo_value_box() {
 
     int font_size = 14;
@@ -223,11 +258,12 @@ void chart_init() {
                       .enableYAxis()
                       .enableHorGuides()
                       .enableContourn()
+                      .setTotalTime(10);
                       ;
   
   myservoChart2 = cp5.addChart("servo2")
                   .setPosition(width * 0.3, height*0.5 - 75)
-                  .setSize(800, 150)
+                  .setSize((int)(width*0.5), 150)
                   .setRange(-90, 90)
                   .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                   .setStrokeWeight(1.5)
@@ -243,11 +279,12 @@ void chart_init() {
                       .enableYAxis()
                       .enableHorGuides()
                       .enableContourn()
+                      .setTotalTime(10);
                       ;
 
   myservoChart3 = cp5.addChart("servo3")
                   .setPosition(width * 0.3, height*0.75 - 75)
-                  .setSize(800, 150)
+                  .setSize((int)(width*0.5), 150)
                   .setRange(-90, 90)
                   .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                   .setStrokeWeight(1.5)
@@ -257,11 +294,12 @@ void chart_init() {
 
   myservoChart3.addDataSet("servo3Chart");
   myservoChart3.setData("servo3Chart", new float[300]);
-
+  
   myservoChartAxis3 = new ChartAxis(myservoChart3)
                       .enableXAxis()
                       .enableYAxis()
                       .enableHorGuides()
                       .enableContourn()
+                      .setTotalTime(10);
                       ;
 }

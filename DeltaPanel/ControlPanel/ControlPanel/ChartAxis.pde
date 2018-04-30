@@ -1,9 +1,9 @@
 import controlP5.*;
 
-class ChartAxis {
+public class ChartAxis {
    
     Chart attachedChart;
-    
+
     float graph_ypos; 
     float graph_xpos; 
   
@@ -28,8 +28,9 @@ class ChartAxis {
 
     boolean hor_guides_enabled = false; 
 
+    // public ChartAxis(Chart chart_) {
     public ChartAxis(Chart chart_) {
-        
+
         attachedChart = chart_;
 
         graph_xpos = attachedChart.getPosition()[0];
