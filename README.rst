@@ -25,4 +25,5 @@ The current features of the code:
 CALIBRATION
 ==================
 
+.. image:: DeltaArduinoTests/ControlPanel.png
 .. image:: DeltaArduinoTests/Relation_DC_Angle.PNG
