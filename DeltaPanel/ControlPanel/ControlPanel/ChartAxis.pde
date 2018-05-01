@@ -8,7 +8,7 @@ public class ChartAxis {
     float graph_xpos; 
   
     float graph_width; 
-    int graph_height;
+    float graph_height;
   
     int num_of_x_lines;
     float perc_per_x_line;
@@ -33,11 +33,7 @@ public class ChartAxis {
 
         attachedChart = chart_;
 
-        graph_xpos = attachedChart.getPosition()[0];
-        graph_ypos = attachedChart.getPosition()[1];
-
-        graph_width = attachedChart.getWidth();
-        graph_height = attachedChart.getHeight();
+        updateParameters();
 
         num_of_x_lines = 20;
         perc_per_x_line = 1/float(num_of_x_lines);
@@ -48,6 +44,18 @@ public class ChartAxis {
 
         total_time = 30; 
 
+    }
+
+    public ChartAxis updateParameters() {
+
+        graph_xpos = attachedChart.getPosition()[0];
+        graph_ypos = attachedChart.getPosition()[1];
+
+        graph_width = attachedChart.getWidth();
+        graph_height = attachedChart.getHeight();
+
+        return this;
+        
     }
 
     public void draw() {
