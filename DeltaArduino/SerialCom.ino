@@ -1,6 +1,8 @@
 #include "Config.h"
 
 CommandsBuffer buffer;
+bool command_recieved = false;
+int serial_mode = ASK_FOR_ANGLES;
 
 //Comands 
 
@@ -29,7 +31,7 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
     }
 
     else if ((millis() - startTimeSim) > SERIAL_DELAY_MS) {
-
+        // Serial.write("test");
         check_serial();
         startTimeSim = millis();
 
@@ -45,17 +47,23 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
     
     switch(command_num) {
 
-        case END_OF_STREAM: serial_next_instruction();
-                            break;
-          
-        case MOVE_SERVOS:   serial_recieve_angles(command);
-                            break;
-          
-        case MOVE_EF:       serial_recieve_ef_pos(command);
-                            break;
+        case END_OF_STREAM:   serial_next_instruction();
+                              break;
+            
+        case MOVE_SERVOS:     serial_recieve_angles(command);
+                              break;
+            
+        case MOVE_EF:         serial_recieve_ef_pos(command);
+                              break;
 
-        default:            Serial_write("BAD REQUEST");
-                            break;
+        case SEND_ME_ANGLES:  serial_send_angles();
+                              break;
+
+        case SEND_ME_DC:      serial_send_dc();
+                              break;
+ 
+        default:              Serial_write("BAD REQUEST");
+                              break;
 
     }
   
@@ -65,11 +73,7 @@ void serial_next_instruction() {
 
   switch (serial_mode) {
 
-    case ASK_FOR_ANGLES:  send_command_header(SEND_ME_ANGLES, true);
-                          send_command_header(END_OF_STREAM, true);
-                          break;
-
-    case GIVE_ANGLES:     serial_send_angles();
+    case ASK_FOR_ANGLES:  //serial_send_angles();
                           send_command_header(END_OF_STREAM, true);
                           break;
 
@@ -91,7 +95,10 @@ void check_serial() {
     //Wait some time to start again the communication
   }
   else if (Serial_available() > 0 ) {
+
     incomingByte = Serial_read();
+
+    if (incomingByte == '\0') return; 
 
     buffer.command[buffer.end_][i] = incomingByte;
     i++;
@@ -203,6 +210,18 @@ void serial_send_angles() {
 
 }
 
+void serial_send_dc() {
+
+  send_command_header(NEW_DC_VALUES, false);
+  for (int i = 0; i < 3; i++) {
+    Serial_write(int_to_char_4digits(servoinfo[i].duty_cycle));
+    
+    if (i == 2) Serial_write("\n");
+    else Serial_write(" "); 
+  }
+
+}
+
 void serial_send_speed() {
 
   send_command_header(CHANGE_SPEED, false);
@@ -226,6 +245,7 @@ void send_command_header(int command_num, bool end_with_new_line) {
   Serial_write("G");
   Serial_write(int_to_char_2digits(command_num));
   if (end_with_new_line) Serial_write("\n");
+
   else Serial_write(" ");
 
 }

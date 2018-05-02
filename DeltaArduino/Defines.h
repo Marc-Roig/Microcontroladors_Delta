@@ -131,6 +131,8 @@
     //------SERIAL------//
     //------------------//  
 
+    #define SPACE_CHARACTER 32
+
     #define SERIAL_DELAY_MS 100
 
     //SERIAL COM MODES
@@ -144,13 +146,17 @@
     #define MOVE_EF 5
     #define END_OF_STREAM 6
     #define EMERGENCY_STOP 9
+    #define NEW_DC_VALUES 10
 
     #define SEND_ME_ANGLES 20
-    #define SEND_ANGLES_EFPOS 21
+    #define SEND_ME_DC 21
+    #define SEND_ANGLES_EFPOS 22
 
     //SERIAL BUFFER
 
-    #define MAX_COMMANDS_NUM 5
-    #define SERIAL_COMMAND_MAX_LEN 16
+    #define MAX_COMMANDS_NUM 6
+    #define SERIAL_COMMAND_MAX_LEN 20
+
+    
 
 #endif

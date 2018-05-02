@@ -19,11 +19,13 @@ static final int END_OF_STREAM = 6;
 static final int SEND_MORE = 7;
 static final int ASK_TO_LISTEN = 8;
 static final int EMERGENCY_STOP = 9;
+static final int NEW_DC_VALUES = 10;
 
 static final int SEND_ANGLES = 20;
-static final int SEND_ANGLES_EFPOS = 21;
+static final int SEND_DC = 21;
+static final int SEND_ANGLES_EFPOS = 22;
 
-static final int SERIAL_BUFFER_LEN = 10;
+static final int SERIAL_BUFFER_LEN = 15;
 // static final int SERIAL_COMMAND_MAX_LEN = 50;
 
 boolean noPorts_available = true;
@@ -87,7 +89,13 @@ int serial_mode = SERVOS_TAB;
 
 boolean command_recieved = false;
 
+void init_communication() {
 
+  println("Starting Communication with Arduino");
+
+  serial_send_header(END_OF_STREAM, true);
+
+}
 
 void serial_communication(){
        
@@ -101,10 +109,16 @@ void serial_communication(){
 }
 
 void check_serial() {
+
   char incomingByte;
+
   if (myPort.available() > 0) {
     
     incomingByte = myPort.readChar();
+    // println(incomingByte);
+
+    if (incomingByte == '\0') return;
+
     buffer.command[buffer.end] += Character.toString(incomingByte);
 
     if (incomingByte == '\n'){
@@ -116,12 +130,14 @@ void check_serial() {
       buffer.inc_end_pointer();
     }
   }
+
 }
 
 void parse_command(String command) {
 
   if (command.charAt(0) != 'G') {
-
+    // write_console(command);
+    // println(command);
     return;
   }
 
@@ -130,11 +146,18 @@ void parse_command(String command) {
   switch (command_num) {
     case SEND_ANGLES:       serial_send_angles(); 
                             break;
+
     case END_OF_STREAM:     serial_next_instruction();
                             break;
 
-    default:
-      break;
+    case MOVE_SERVOS:       update_angles(command);
+                            break;
+
+    case NEW_DC_VALUES:     update_dc(command);
+                            break;
+                            
+    default:                serial_send_header(END_OF_STREAM, true);
+                            break;
   } 
 }
 
@@ -143,10 +166,68 @@ void serial_next_instruction() {
   switch(serial_mode) {
     case SERVOS_TAB:
       serial_send_header(SEND_ANGLES, true);
+      serial_send_header(SEND_DC, true);
       serial_send_header(END_OF_STREAM, true);
       break;
     default:
       break;
+
+  }
+
+}
+void update_angles(String command) {
+
+  //G03 090 112 001
+  float last_angle0 = servoinfo[0].angle;
+  float last_angle1 = servoinfo[1].angle;
+  float last_angle2 = servoinfo[2].angle;
+
+  try {
+
+    servoinfo[0].angle = chars_to_int(command.charAt(4), command.charAt(5), command.charAt(6));
+    servoinfo[1].angle = chars_to_int(command.charAt(8), command.charAt(9), command.charAt(10));
+    servoinfo[2].angle = chars_to_int(command.charAt(12), command.charAt(13), command.charAt(14));
+
+    myservoBox1.assignItemValue("θ:", nf(servoinfo[0].angle, 3, 0));
+    myservoBox2.assignItemValue("θ:", nf(servoinfo[1].angle, 3, 0));
+    myservoBox3.assignItemValue("θ:", nf(servoinfo[2].angle, 3, 0));
+
+  } catch(ArrayIndexOutOfBoundsException excepcion) {
+
+    println("UPDATE ANGLES -> Array out of Bounds");
+
+    servoinfo[0].angle = last_angle0;
+    servoinfo[1].angle = last_angle1;
+    servoinfo[2].angle = last_angle2;
+
+  }
+
+}
+
+void update_dc(String command) {
+
+  //G10 1090 1112 1001
+  int last_duty_cycle0 = servoinfo[0].duty_cycle;
+  int last_duty_cycle1 = servoinfo[1].duty_cycle;
+  int last_duty_cycle2 = servoinfo[2].duty_cycle;
+
+  try {
+
+    servoinfo[0].duty_cycle = chars_to_int_4digits(command.charAt(4), command.charAt(5), command.charAt(6), command.charAt(7));
+    servoinfo[1].duty_cycle = chars_to_int_4digits(command.charAt(9), command.charAt(10), command.charAt(11), command.charAt(12));
+    servoinfo[2].duty_cycle = chars_to_int_4digits(command.charAt(14), command.charAt(15), command.charAt(16), command.charAt(17));
+
+    myservoBox1.assignItemValue("DC:", nf(servoinfo[0].duty_cycle, 3, 0));
+    myservoBox2.assignItemValue("DC:", nf(servoinfo[1].duty_cycle, 3, 0));
+    myservoBox3.assignItemValue("DC:", nf(servoinfo[2].duty_cycle, 3, 0));
+
+  } catch(ArrayIndexOutOfBoundsException excepcion) {
+
+    println("UPDATE ANGLES -> Array out of Bounds");
+
+    servoinfo[0].duty_cycle = last_duty_cycle0;
+    servoinfo[1].duty_cycle = last_duty_cycle1;
+    servoinfo[2].duty_cycle = last_duty_cycle2;
 
   }
 
@@ -188,4 +269,13 @@ int chars_to_int(char a, char b, char c){
   int third = (int)c-48;
   
   return (first*100 + second*10 + third);
+}
+
+int chars_to_int_4digits(char a, char b, char c, char d){
+  int first = (int)a-48;
+  int second = (int)b-48;
+  int third = (int)c-48;
+  int fourth = (int)d-48;
+  
+  return (first*1000 + second*100 + third*10 + fourth);
 }

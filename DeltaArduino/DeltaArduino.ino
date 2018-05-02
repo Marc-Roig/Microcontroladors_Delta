@@ -2,11 +2,6 @@
 
 //GLOBAL VARIABLES
 
-//--SERIAL COMUNICATION--//
-
-bool command_recieved = false;
-int serial_mode = ASK_FOR_ANGLES;
-
 
 int servoFrameMillis = 20;  // minimum time between servo updates
 
@@ -16,7 +11,7 @@ void setup() {
     Serial_begin(9600);
 
     // Serial.write("G20\n"); //Processing is waiting to arduino
-    // Serial.write("G06\n");
+    Serial.write("G06\n"); 
 
     init_buffer(); 
 
@@ -74,7 +69,7 @@ void loop() {
     move_selected_servos(true, false, false, false); //Angle to duty cycle, only with three arm servos  
 
     //--SERIAL--//
-    // serial_com_with_simulator();
+    serial_com_with_simulator();
 
 
 }
