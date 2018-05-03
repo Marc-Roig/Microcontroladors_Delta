@@ -22,10 +22,12 @@ float angle3 = 0;
 public class ServoInfo {
 
   float angle;
+  int duty_cycle;
 
   public ServoInfo(int angle_) {
 
     angle = angle_;
+    duty_cycle = 0;
 
   }
 
@@ -37,15 +39,13 @@ void setup() {
 
   size(1500, 800);
 
-  
-
-
   servoinfo[0] = new ServoInfo(0);
   servoinfo[1] = new ServoInfo(0);
   servoinfo[2] = new ServoInfo(0);
 
   choosePort();
   buffer = new Buffer();
+  if (!noPorts_available) init_communication();
 
   //CP5
 
@@ -120,24 +120,28 @@ void drawBottomStatusBar() {
 }
 
 void canvi_mode(int n) {
+
   println("bar clicked, item-value:", n);
+
 }
 
-int a = 0;
+// int a = 0;
 
 void draw() {
 
   background(220);
 
+  if (!noPorts_available) serial_communication();
+
   draw_servos();
 
-  servoinfo[0].angle = angle2;
-  servoinfo[1].angle = angle2;
-  servoinfo[2].angle = angle3;
+  // servoinfo[0].angle = angle2;
+  // servoinfo[1].angle = angle2;
+  // servoinfo[2].angle = angle3;
 
   drawBottomStatusBar();
 
-  write_console(String.valueOf(a++)+"\n");
+  // write_console(String.valueOf(a++)+"\n");
   cp5.draw();
 
   timerLabel.setValue(c.toString());

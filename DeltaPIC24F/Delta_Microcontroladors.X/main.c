@@ -33,6 +33,9 @@ void setup() {
 
     init_buffer();
 
+    // Serial.write("G20\n"); //Processing is waiting to PIC
+    Serial_write("G06\n"); 
+
     //--SERVOS--//
     init_servos(true, true, true, true);
 
@@ -84,6 +87,9 @@ void loop() {
     //and specified in servoinfo[].move_servo_from which of the three will
     //be the used one to move the servo.
     move_selected_servos(true, true, true, false);
+
+        //--SERIAL--//
+    serial_com_with_simulator();
     
 }
 

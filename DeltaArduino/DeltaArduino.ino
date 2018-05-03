@@ -11,7 +11,7 @@ void setup() {
     Serial_begin(9600);
 
     // Serial.write("G20\n"); //Processing is waiting to arduino
-    Serial.write("G06\n"); 
+    Serial_write("G06\n"); 
 
     init_buffer(); 
 

@@ -53,8 +53,8 @@ void Serial_push_character(char incomingByte) {
   
   if (RX_buffer.full) {} //Do nothing
   else {
-
     RX_buffer.command[RX_buffer.end_] = incomingByte;
+
     inc_RXbuffer_end_pointer();
 
   }

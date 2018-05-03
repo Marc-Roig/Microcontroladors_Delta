@@ -19,6 +19,7 @@
 	#include "joystick.h"
 
 	#include "serialcom.h"
+	#include "misc.h"
 	#include "serialcom_simulator.h"
 	
 	#include "kinematics.h"

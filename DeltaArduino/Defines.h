@@ -131,8 +131,6 @@
     //------SERIAL------//
     //------------------//  
 
-    #define SPACE_CHARACTER 32
-
     #define SERIAL_DELAY_MS 100
 
     //SERIAL COM MODES

@@ -33,7 +33,7 @@ void joystick_movement() {
 
     }
 
-    joystick_debug();
+    // joystick_debug();
 
     joysitck_change_mode(&move_axis_or_angles);
 

@@ -137,13 +137,14 @@ void parse_command(String command) {
 
   if (command.charAt(0) != 'G') {
     // write_console(command);
-    // println(command);
+    println(command);
     return;
   }
 
   int command_num = chars_to_int('0', command.charAt(1), command.charAt(2));
   
   switch (command_num) {
+
     case SEND_ANGLES:       serial_send_angles(); 
                             break;
 
@@ -234,9 +235,10 @@ void update_dc(String command) {
 }
 
 void serial_send_header(int command_num, boolean end_with_new_line) {
-
+  println("G" + int_to_string_2digits(command_num));
+  if (command_num == 6) println(" ");
   myPort.write("G" + int_to_string_2digits(command_num));
-  if (end_with_new_line) myPort.write("\n");
+  if (end_with_new_line) myPort.write("\n\0");
   else myPort.write(" ");
   
 }
