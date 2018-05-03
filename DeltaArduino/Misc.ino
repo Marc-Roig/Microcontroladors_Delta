@@ -53,10 +53,12 @@ char* int_to_char(int number) {
 
 char* int_to_char_2digits(int numb) {
 
-  char* sentence = "  ";
+  char* sentence = "   ";
 
   sentence[1] = numb % 10 + '0';
   sentence[0] = numb / 10 % 10 + '0';
+
+  sentence[2] = '\0';
 
   return sentence;
 
@@ -78,11 +80,42 @@ char* int_to_char_2digits(int numb) {
 
 char* int_to_char_3digits(int numb) {
 
-  char* sentence = "   ";
+  char* sentence = "    ";
 
   sentence[2] = numb % 10 + '0';
   sentence[1] = numb / 10 % 10 + '0';
   sentence[0] = numb / 100 % 10 + '0';
+
+  sentence[3] = '\0';
+
+  return sentence;
+
+}
+
+/*********************************************************************
+* Function: char* int_to_char_4digits(int numb);
+*
+* Overview: Returns a String from a number (0 - 9999)
+*           String will always have four characters
+*
+* PreCondition: none
+*
+* Input: int - number to convert
+*
+* Output: String - number converted to String
+*
+********************************************************************/
+
+char* int_to_char_4digits(int numb) {
+
+  char* sentence = "     ";
+
+  sentence[3] = numb % 10 + '0';
+  sentence[2] = numb / 10 % 10 + '0';
+  sentence[1] = numb / 100 % 10 + '0';
+  sentence[0] = numb / 1000 % 10 + '0';
+
+  sentence[4] = '\0';
 
   return sentence;
 

@@ -11,7 +11,7 @@ void init_joystick()  {
     pinMode(JOYSTICK_X_PIN, ANALOG_INPUT);
     pinMode(JOYSTICK_Y_PIN, ANALOG_INPUT);
 
-    initADC();
+    init_ADC();
     
     servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;

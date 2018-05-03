@@ -1,8 +1,3 @@
-//-------------//
-//-----I/0-----//
-//-------------//
-
-
 //---------------------------//
 //----------DEFINES----------//
 //---------------------------//
@@ -61,9 +56,9 @@
     #define MAX_DC_SERVO2 920
     #define MAX_DC_SERVO3 980
 
-    #define MIN_DC_SERVO1 300
-    #define MIN_DC_SERVO2 300
-    #define MIN_DC_SERVO3 300
+    #define MIN_DC_SERVO1 400
+    #define MIN_DC_SERVO2 400
+    #define MIN_DC_SERVO3 400
 
     #define SERVO1_COMPENSATION_VAL 20
     #define SERVO2_COMPENSATION_VAL 20
@@ -73,9 +68,9 @@
     #define SERVO2_M_ANGLE_TO_DC -4.8262
     #define SERVO3_M_ANGLE_TO_DC -4.5929
 
-    #define SERVO1_N_ANGLE_TO_DC 1072
-    #define SERVO2_N_ANGLE_TO_DC 908
-    #define SERVO3_N_ANGLE_TO_DC 960
+    #define SERVO1_N_ANGLE_TO_DC 1448
+    #define SERVO2_N_ANGLE_TO_DC 1134
+    #define SERVO3_N_ANGLE_TO_DC 2231
 
     //GRIPPER
     #define MAX_DC_SERVO4 1900
@@ -135,7 +130,7 @@
     //------SERIAL------//
     //------------------//  
 
-    #define SERIAL_DELAY_MS 100
+    #define SERIAL_DELAY_MS 1000
 
     //SERIAL COM MODES
     #define ASK_FOR_ANGLES  0
@@ -148,9 +143,11 @@
     #define MOVE_EF 5
     #define END_OF_STREAM 6
     #define EMERGENCY_STOP 9
+    #define NEW_DC_VALUES 10
 
     #define SEND_ME_ANGLES 20
-    #define SEND_ANGLES_EFPOS 21
+    #define SEND_ME_DC 21
+    #define SEND_ANGLES_EFPOS 22
 
     //SERIAL BUFFER
 

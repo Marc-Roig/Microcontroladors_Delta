@@ -11,6 +11,7 @@ void Serial_begin(int baudrate) {
 
 void Serial_write(char* data) {
 
+	if (data == " ") Serial.write(' '); //there seems to be a problem printing " "
 	Serial.write(data);
 
 }

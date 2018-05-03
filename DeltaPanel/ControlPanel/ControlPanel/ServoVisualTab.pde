@@ -113,16 +113,20 @@ class TimedEvent extends ControlBehavior {
 void draw_servos() {
 
   //--FOLLOW MOUSE--//
-  angle1 = degrees(atan2(mouseY-(height*0.25), (mouseX-(width * 0.15)-54)));
-  angle2 = degrees(atan2(mouseY-(height*0.5), (mouseX-(width * 0.15)-54)));
-  angle3 = degrees(atan2(mouseY-(height*0.75), (mouseX-(width * 0.15)-54)));
+  // angle1 = degrees(atan2(mouseY-(height*0.25), (mouseX-(width * 0.15)-54)));
+  // angle2 = degrees(atan2(mouseY-(height*0.5), (mouseX-(width * 0.15)-54)));
+  // angle3 = degrees(atan2(mouseY-(height*0.75), (mouseX-(width * 0.15)-54)));
+
+  angle1 = servoinfo[0].angle;
+  angle2 = servoinfo[1].angle;
+  angle3 = servoinfo[2].angle;
 
   //--DRAW SERVO 1--//
   pushMatrix();
   translate(width * 0.15, height*0.25);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(89.5 + angle1));
+  rotate(radians(179.5 + angle1));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 
@@ -131,7 +135,7 @@ void draw_servos() {
   translate(width * 0.15, height*0.5);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(89.5 + angle2));
+  rotate(radians(179.5 + angle2));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 
@@ -140,7 +144,7 @@ void draw_servos() {
   translate(width * 0.15, height*0.75);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(89.5 + angle3));
+  rotate(radians(179.5 + angle3));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 }

@@ -1,3 +1,5 @@
+#include "Config.h"
+
 /*********************************************************************
 * Function: char* int_to_char(int number);
 *
@@ -12,7 +14,7 @@
 *
 ********************************************************************/
 
-char* int_to_char(int number) {
+void int_to_char(int number, char* converted_char) {
     
     int number_len = 1;
     int temp = number;
@@ -22,20 +24,16 @@ char* int_to_char(int number) {
         number_len++;
     }
 
-    char* val = (char*) malloc(number_len+2);
+    int i;
+    for (i = 0; i < number_len; i++) {
 
-    for (int i = 0; i < number_len; i++) {
-
-        val[i] = number / (int)(pow(10, (number_len-i-1))) % 10 + '0';
-
+        converted_char[i] = number / ((int)power(10, (number_len-i-1))) % 10 + '0';
+        
     }
     
-    val[number_len] = '\n';
-    val[number_len+1] = '\0';
+    converted_char[number_len] = '\0';
 
-    return val;
 }
-
 
 /*********************************************************************
 * Function: char* int_to_char_2digits(int numb);
