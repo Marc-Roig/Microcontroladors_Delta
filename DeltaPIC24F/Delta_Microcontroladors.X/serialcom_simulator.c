@@ -2,7 +2,7 @@
 
 CommandsBuffer buffer;
 
-bool command_recieved = false;
+volatile bool command_recieved = false;
 int serial_mode = ASK_FOR_ANGLES;
 
 //Comands 
@@ -22,7 +22,7 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
     if(command_recieved) {
 
         parse_command(buffer.command[buffer.start]);
-        Serial_write("test\n");    
+
         if (inc_buffer_start_pointer()) { 
             //When command End of Stream is read I send all
             //the information and wait for more
@@ -95,6 +95,7 @@ void check_serial() {
     //Wait some time to start again the communication
   }
   else if (Serial_available() > 0 ) {
+
     incomingByte = Serial_read();
 
     if (incomingByte == '\0') return; 
@@ -104,16 +105,12 @@ void check_serial() {
 
     if (incomingByte == '\n') {
       buffer.command_len[buffer.end_] = i; 
-          //Serial_write("test\n");
-          char test[2];
-          test[0]= buffer.command[buffer.end_][2];
-          test[1]= '\0';
-          Serial_write(test);
 
       i = 0;
 
       if (buffer.command[buffer.end_][2] == (END_OF_STREAM + '0')) {
         command_recieved = true;
+        
       }
 
       inc_buffer_end_pointer();
@@ -211,7 +208,9 @@ void serial_send_angles() {
   send_command_header(MOVE_SERVOS, false);
   int i;
   for (i = 0; i < 3; i++) {
-    Serial_write(int_to_char_3digits(servoinfo[i].angle));
+    char char_to_send[4];
+    int_to_char_3digits_2(servoinfo[i].angle, char_to_send);
+    Serial_write(char_to_send);
     
     if (i == 2) Serial_write("\n");
     else Serial_write(" "); 
@@ -224,7 +223,9 @@ void serial_send_dc() {
   send_command_header(NEW_DC_VALUES, false);
   int i;
   for (i = 0; i < 3; i++) {
-    Serial_write(int_to_char_4digits(servoinfo[i].duty_cycle));
+    char char_to_send[5];
+    int_to_char_4digits_2(servoinfo[i].duty_cycle, char_to_send);
+    Serial_write(char_to_send);
     
     if (i == 2) Serial_write("\n");
     else Serial_write(" "); 
@@ -253,7 +254,9 @@ void serial_send_ef_pos() {
 void send_command_header(int command_num, bool end_with_new_line) {
 
   Serial_write("G");
-  Serial_write(int_to_char_2digits(command_num));
+  char nums_to_send[3];
+  int_to_char_2digits_2(command_num, nums_to_send);
+  Serial_write(nums_to_send);
   if (end_with_new_line) Serial_write("\n");
 
   else Serial_write(" ");

@@ -109,7 +109,11 @@ int Serial_available() {
 
 void Serial_println(int value) {
 
-  char value_to_string[7];
+  char value_to_string[10];
+  if (value < 0 ) {
+      Serial_write("-");
+      value *= -1;
+  }
   int_to_char(value, value_to_string);
   Serial_write(value_to_string);
   Serial_write("\n");

@@ -37,8 +37,8 @@ void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, 
             }
             else if (servoinfo[i].move_servo_from == MOVE_SERVO_FROM_XYZ) { 
 
-                // if (i == 0) update_angles_from_xyz(); //All servo angles are updated at once
-                // update_dc_from_angle(i);
+                if (i == 0) update_angles_from_xyz(); //All servo angles are updated at once
+                update_dc_from_angle(i);
 
             }
 

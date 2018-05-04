@@ -43,7 +43,7 @@ void setup() {
         //SEQUENCE_MODE 0
         //CALIBRATION_MODE 1
         //JOYSTICK_MODE 2
-    init_delta(CALIBRATION_MODE);
+    init_delta(JOYSTICK_MODE);
     
     switch (deltainfo.mode) { 
 
