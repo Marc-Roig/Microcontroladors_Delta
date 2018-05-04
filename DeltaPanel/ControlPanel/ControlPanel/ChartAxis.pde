@@ -89,7 +89,7 @@ public class ChartAxis {
 
             for (int i = 0; i < num_of_y_lines + 1; i++) {
                 line(graph_xpos, graph_ypos + graph_height * (i*perc_per_y_line), graph_xpos-10, graph_ypos + graph_height * (i*perc_per_y_line));  
-                if (yaxis_labels_enabled) text((int)ceil(180*(1 - (i*perc_per_y_line)))-90, graph_xpos - 15, graph_ypos + graph_height * (i*perc_per_y_line) + 4);
+                if (yaxis_labels_enabled) text((int)ceil(180*(1 - (i*perc_per_y_line))), graph_xpos - 15, graph_ypos + graph_height * (i*perc_per_y_line) + 4);
             }
             
         }

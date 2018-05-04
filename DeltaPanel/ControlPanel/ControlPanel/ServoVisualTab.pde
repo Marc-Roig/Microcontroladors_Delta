@@ -1,4 +1,4 @@
-
+  
 Chart myservoChart1;
 Chart myservoChart2;
 Chart myservoChart3;
@@ -126,7 +126,7 @@ void draw_servos() {
   translate(width * 0.15, height*0.25);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(179.5 + angle1));
+  rotate(radians(179.5 - angle1));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 
@@ -135,7 +135,7 @@ void draw_servos() {
   translate(width * 0.15, height*0.5);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(179.5 + angle2));
+  rotate(radians(179.5 - angle2));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 
@@ -144,7 +144,7 @@ void draw_servos() {
   translate(width * 0.15, height*0.75);
   shape(ServoBody, - 320*scale_servo_draw, - 123*scale_servo_draw);
   translate(54, 0);
-  rotate(radians(179.5 + angle3));
+  rotate(radians(179.5 - angle3));
   shape(ServoHorn, - 189*scale_horn_draw, - 560*scale_horn_draw);
   popMatrix();
 }
@@ -158,7 +158,7 @@ void chart_init() {
   myservoChart1 = cp5.addChart("servo1")
                   .setPosition(s1_graph_xpos, s1_graph_ypos)
                   .setSize((int)(width*0.5), 150)
-                  .setRange(-90, 90)
+                  .setRange(0, 180)
                   .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                   .setStrokeWeight(1.5)
                   .setColorCaptionLabel(color(40))
@@ -187,7 +187,7 @@ void chart_init() {
   myservoChart2 = cp5.addChart("servo2")
                   .setPosition(width * 0.3, height*0.5 - 75)
                   .setSize((int)(width*0.5), 150)
-                  .setRange(-90, 90)
+                  .setRange(0, 180)
                   .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                   .setStrokeWeight(1.5)
                   .setColorCaptionLabel(color(40))
@@ -216,7 +216,7 @@ void chart_init() {
   myservoChart3 = cp5.addChart("servo3")
                   .setPosition(width * 0.3, height*0.75 - 75)
                   .setSize((int)(width*0.5), 150)
-                  .setRange(-90, 90)
+                  .setRange(0, 180)
                   .setView(Chart.LINE) // use Chart.LINE, Chart.PIE, Chart.AREA, Chart.BAR_CENTERED
                   .setStrokeWeight(1.5)
                   .setColorCaptionLabel(color(40))

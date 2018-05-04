@@ -1,4 +1,4 @@
-import controlP5.*;
+  import controlP5.*;
 import processing.serial.*;
 
 //--COMUNICAITON--//
@@ -121,7 +121,27 @@ void drawBottomStatusBar() {
 
 void canvi_mode(int n) {
 
-  println("bar clicked, item-value:", n);
+  switch (n) {
+    //Calibration
+    case 0:     current_delta_mode = CALIBRATION_MODE;
+                send_change_mode = true;
+                println("Changing mode to: CALIBRATION");
+                break;
+    //Sequence
+    case 1:     current_delta_mode = SEQUENCE_MODE;
+                send_change_mode = true;
+                println("Changing mode to: SEQUENCE");
+                break;
+    //Joystick
+    case 2:     current_delta_mode = JOYSTICK_MODE;
+                send_change_mode = true;
+                println("Changing mode to: JOYSTICK");
+                break;
+
+    default:    break;
+  }
+
+
 
 }
 
@@ -164,6 +184,7 @@ void change_mode_bar_init(ControlP5 cp5) {
     .addItems(split("CALIBRATION SEQUENCE JOYSTICK", " "))
     .setFont(createFont("", 15))
     ;
+
   println(b.getItem("a"));
   //b.changeItem("a","text","first");
   //b.changeItem("b","text","second");

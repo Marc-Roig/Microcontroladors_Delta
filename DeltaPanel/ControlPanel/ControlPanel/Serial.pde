@@ -25,10 +25,22 @@ static final int SEND_ANGLES = 20;
 static final int SEND_DC = 21;
 static final int SEND_ANGLES_EFPOS = 22;
 
+static final int CHANGE_TO_CALIBRATION = 30;
+static final int CHANGE_TO_JOYSTICK = 31;
+static final int CHANGE_TO_SEQUENCE = 32;
+static final int CHANGE_TO_POWER_OFF = 33;
+
 static final int SERIAL_BUFFER_LEN = 15;
 // static final int SERIAL_COMMAND_MAX_LEN = 50;
 
+static final int CALIBRATION_MODE = 0;
+static final int SEQUENCE_MODE = 1;
+static final int JOYSTICK_MODE = 2;
+
+
 boolean noPorts_available = true;
+boolean send_change_mode = false;
+int current_delta_mode = JOYSTICK_MODE;
 
 void choosePort() {
    
@@ -44,6 +56,7 @@ void choosePort() {
 }
 
 public class Buffer {
+  
   String[] command;
   int start, end;
   boolean full, empty;
@@ -81,6 +94,25 @@ public class Buffer {
       return true;
     }
     return false;
+  }
+
+  public boolean dec_end_pointer() {
+
+    if (empty) return true;
+
+    if ((end - 1) < 0) end = SERIAL_BUFFER_LEN - 1;
+    else end -= 1;
+    full = false;
+
+    if (end == start) {
+
+      empty = true;
+      return true;
+
+    }
+
+    return false;
+
   }
   
 }
@@ -122,9 +154,17 @@ void check_serial() {
     buffer.command[buffer.end] += Character.toString(incomingByte);
 
     if (incomingByte == '\n'){
-      print(buffer.command[buffer.end]);
+
+      if (buffer.command[buffer.end].charAt(0) != 'G') {
+
+        write_console(buffer.command[buffer.end]);
+        buffer.dec_end_pointer();
+        
+      }
+
       if(buffer.command[buffer.end].charAt(2) == '6') {
         command_recieved = true;
+        print(buffer.command[buffer.end]);
       }
 
       buffer.inc_end_pointer();
@@ -136,8 +176,8 @@ void check_serial() {
 void parse_command(String command) {
 
   if (command.charAt(0) != 'G') {
-    // write_console(command);
-    println(command);
+    write_console(command);
+    // println(command);
     return;
   }
 
@@ -160,6 +200,23 @@ void parse_command(String command) {
     default:                serial_send_header(END_OF_STREAM, true);
                             break;
   } 
+
+  if (send_change_mode) {
+    switch(current_delta_mode) {
+
+      case CALIBRATION_MODE: serial_send_header(CHANGE_TO_CALIBRATION, true);
+                             break;
+      
+      case SEQUENCE_MODE:    serial_send_header(CHANGE_TO_SEQUENCE, true);
+                             break;
+
+      case JOYSTICK_MODE:    serial_send_header(CHANGE_TO_JOYSTICK, true);
+                             break;
+
+      default:               break;
+    }
+  }
+
 }
 
 void serial_next_instruction() {
@@ -235,6 +292,7 @@ void update_dc(String command) {
 }
 
 void serial_send_header(int command_num, boolean end_with_new_line) {
+
   println("G" + int_to_string_2digits(command_num));
   if (command_num == 6) println(" ");
   myPort.write("G" + int_to_string_2digits(command_num));
@@ -244,6 +302,7 @@ void serial_send_header(int command_num, boolean end_with_new_line) {
 }
 
 void serial_send_angles() {
+
   //String firstAngle = int_to_string((int)arms_angles[0]+90);
   //String secondAngle = int_to_string((int)arms_angles[1]+90);
   //String thirdAngle = int_to_string((int)arms_angles[2]+90);
