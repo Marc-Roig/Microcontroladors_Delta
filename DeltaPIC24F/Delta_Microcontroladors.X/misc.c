@@ -18,7 +18,7 @@ void int_to_char(int number, char* converted_char) {
     
     int number_len = 1;
     int temp = number;
-
+    
     while(temp > 9) {
         temp /= 10;
         number_len++;
@@ -26,13 +26,12 @@ void int_to_char(int number, char* converted_char) {
 
     int i;
     for (i = 0; i < number_len; i++) {
-
+        
         converted_char[i] = number / ((int)power(10, (number_len-i-1))) % 10 + '0';
         
     }
+        converted_char[i] = '\0';
     
-    converted_char[number_len] = '\0';
-
 }
 
 /*********************************************************************
@@ -51,10 +50,10 @@ void int_to_char(int number, char* converted_char) {
 
 char* int_to_char_2digits(int numb) {
 
-  char* sentence = "   ";
-
-  sentence[1] = numb % 10 + '0';
-  sentence[0] = numb / 10 % 10 + '0';
+  char sentence[3];
+  
+  sentence[1] = (numb % 10) + '0';
+  sentence[0] = ((numb / 10) % 10) + '0';
 
   sentence[2] = '\0';
 
@@ -62,6 +61,14 @@ char* int_to_char_2digits(int numb) {
 
 }
 
+void int_to_char_2digits_2(int numb, char* sentence) {
+    
+    sentence[1] = (numb % 10) + '0';
+    sentence[0] = ((numb / 10) % 10) + '0';
+
+    sentence[2] = '\0';
+  
+}
 /*********************************************************************
 * Function: char* int_to_char_3digits(int numb);
 *
@@ -90,8 +97,21 @@ char* int_to_char_3digits(int numb) {
 
 }
 
+void int_to_char_3digits_2(int numb, char* sentence) {
+
+
+  sentence[2] = numb % 10 + '0';
+  sentence[1] = numb / 10 % 10 + '0';
+  sentence[0] = numb / 100 % 10 + '0';
+
+  sentence[3] = '\0';
+
+
+}
+
 /*********************************************************************
-* Function: char* int_to_char_4digits(int numb);
+* DEPRECATED
+* Function: char* int_to_char_4digits(int numb
 *
 * Overview: Returns a String from a number (0 - 9999)
 *           String will always have four characters
@@ -116,6 +136,17 @@ char* int_to_char_4digits(int numb) {
   sentence[4] = '\0';
 
   return sentence;
+
+}
+
+void int_to_char_4digits_2(int numb, char* sentence) {
+
+  sentence[3] = numb % 10 + '0';
+  sentence[2] = numb / 10 % 10 + '0';
+  sentence[1] = numb / 100 % 10 + '0';
+  sentence[0] = numb / 1000 % 10 + '0';
+
+  sentence[4] = '\0';
 
 }
 
