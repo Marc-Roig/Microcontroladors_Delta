@@ -53,12 +53,12 @@
 
     //ARMS
     #define MAX_DC_SERVO1 1100
-    #define MAX_DC_SERVO2 920
-    #define MAX_DC_SERVO3 980
+    #define MAX_DC_SERVO2 1600
+    #define MAX_DC_SERVO3 2400
 
     #define MIN_DC_SERVO1 400
-    #define MIN_DC_SERVO2 400
-    #define MIN_DC_SERVO3 400
+    #define MIN_DC_SERVO2 1000
+    #define MIN_DC_SERVO3 1400
 
     #define SERVO1_COMPENSATION_VAL 20
     #define SERVO2_COMPENSATION_VAL 20
@@ -126,11 +126,7 @@
     #define JOYSTICK_MOVE_ANGLES 0
     #define JOYSTICK_MOVE_AXIS 1
 
-    //------------------//  
-    //------SERIAL------//
-    //------------------//  
-
-    #define SERIAL_DELAY_MS 1000
+    //-----------------ñ
 
     //SERIAL COM MODES
     #define ASK_FOR_ANGLES  0
@@ -148,6 +144,11 @@
     #define SEND_ME_ANGLES 20
     #define SEND_ME_DC 21
     #define SEND_ANGLES_EFPOS 22
+
+    #define CHANGE_TO_CALIBRATION 30
+    #define CHANGE_TO_JOYSTICK 31
+    #define CHANGE_TO_SEQUENCE 32
+    #define CHANGE_TO_POWER_OFF 33
 
     //SERIAL BUFFER
 

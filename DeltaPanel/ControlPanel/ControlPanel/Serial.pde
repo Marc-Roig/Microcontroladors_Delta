@@ -215,6 +215,7 @@ void parse_command(String command) {
 
       default:               break;
     }
+    send_change_mode = false;
   }
 
 }

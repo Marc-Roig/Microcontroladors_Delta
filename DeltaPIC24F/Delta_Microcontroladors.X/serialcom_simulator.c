@@ -48,23 +48,36 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
 
     switch(command_num) {
 
-        case END_OF_STREAM:   serial_next_instruction();
-                              break;
+        case END_OF_STREAM:             serial_next_instruction();
+                                        break;
             
-        case MOVE_SERVOS:     serial_recieve_angles(command);
-                              break;
+        case MOVE_SERVOS:               serial_recieve_angles(command);
+                                        break;
             
-        case MOVE_EF:         serial_recieve_ef_pos(command);
-                              break;
+        case MOVE_EF:                   serial_recieve_ef_pos(command);
+                                        break;
 
-        case SEND_ME_ANGLES:  serial_send_angles();
-                              break;
+        case SEND_ME_ANGLES:            serial_send_angles();
+                                        break;
 
-        case SEND_ME_DC:      serial_send_dc();
-                              break;
+        case SEND_ME_DC:                serial_send_dc();
+                                        break;
+
+        case CHANGE_TO_CALIBRATION:     deltainfo.mode = CALIBRATION_MODE;
+                                        calibration_start(true, true, true, false);
+                                        break;
+
+        case CHANGE_TO_JOYSTICK:        deltainfo.mode = JOYSTICK_MODE;
+                                        init_joystick();
+                                        break;
+
+        case CHANGE_TO_SEQUENCE:        deltainfo.mode = SEQUENCE_MODE;
+                                        init_joystick();
+                                        init_sequence();
+                                        break;
  
-        default:              Serial_write("BAD REQUEST");
-                              break;
+        default:                        Serial_write("SERIAL BAD REQUEST");
+                                        break;
 
     }
   

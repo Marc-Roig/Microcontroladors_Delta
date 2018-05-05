@@ -150,6 +150,11 @@
     #define SEND_ME_DC 21
     #define SEND_ANGLES_EFPOS 22
 
+    #define CHANGE_TO_CALIBRATION 30
+    #define CHANGE_TO_JOYSTICK 31
+    #define CHANGE_TO_SEQUENCE 32
+    #define CHANGE_TO_POWER_OFF 33
+
     //SERIAL BUFFER
 
     #define MAX_COMMANDS_NUM 6

@@ -35,9 +35,9 @@ void joystick_movement() {
 
     }
 
-    joystick_debug();
+    //joystick_debug();
 
-    joysitck_change_mode(&move_axis_or_angles);
+    //joysitck_change_mode(&move_axis_or_angles);
 
 }
 
@@ -78,15 +78,14 @@ void joystick_move_angles() {
     int time_difference_ms = 400; // Every 200 ms program will read the joystick val 
 
     bool change_axis_button = digitalRead(JOYSTICK_BUTTON_PIN);
-
+    
     if ((millis() - StartTime) > time_difference_ms ) {
 
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
         if (abs2(joys_x) < 1.5) joys_x = 0;
 
         servoinfo[servo_num].angle += (int)(0.5 * joys_x); //Multiply joys_x with a gain
-        // Serial.println(joys_x);
-
+        //Serial_println((int)joys_x);
         StartTime = millis();
 
     }
