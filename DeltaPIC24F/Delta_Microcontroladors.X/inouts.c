@@ -58,7 +58,20 @@ volatile bool RB9_Analog_Active = false;
 //----ANALOG PINS----//
 //-------------------//
 
-//Call when the pins are set to analog mode
+
+/*********************************************************************
+* Function: void init_ADC();
+*
+* Overview: Initialize all board registers to read RB3, RB8 or RB9
+*           analog values. If any of this pins was initialized to
+*           analog input and then changed to digital this function
+*           has to be called again to update the registers.
+*
+* PreCondition: All pins to be set to Analog input have to be initialized
+*               with pinmode(pin, ANALOG_INPUT) before calling this function
+*
+********************************************************************/
+
 void init_ADC() {
 
     int num_of_active_pins = 0;
@@ -110,6 +123,16 @@ void init_ADC() {
 
 }
 
+
+/*********************************************************************
+* Function: void init_analog_input(int pin_name);
+*
+* Overview: Internal function to activate RB3, RB8, RB9 to analog.
+*           After activating all analog pins needed init_ADC() must
+*           be called.
+*
+********************************************************************/
+
 void init_analog_input(int pin_name) {
 
     switch (pin_name) {
@@ -127,6 +150,39 @@ void init_analog_input(int pin_name) {
 
 }
 
+/*********************************************************************
+* Function: void turn_off_analog_input(int pin_name);
+*
+* Overview: Internal function to deactivate RB3, RB8, RB9 from analog.
+*           After deactivating all analog pins needed init_ADC() must
+*           be called.
+*
+********************************************************************/
+
+void turn_off_analog_input(int pin_name) {
+
+    switch (pin_name) {
+
+        case IO_RB3:    RB3_Analog_Active = false;
+                        break;
+
+        case IO_RB8:    RB8_Analog_Active = false;
+                        break;
+
+        case IO_RB9:    RB9_Analog_Active = false;
+                        break;
+
+    }
+}
+
+/*********************************************************************
+* Function: void _ISR _ADC1Interrupt();
+*
+* Overview: Analog reading interrupt. The measurements are saved in a
+*           buffer (ADC1BUF0).
+*
+********************************************************************/
+
 void _ISR _ADC1Interrupt() {
 
     int *ADC16Ptr;
@@ -143,6 +199,15 @@ void _ISR _ADC1Interrupt() {
 
 }
 
+/*********************************************************************
+* Function: void ADC_update_values();
+*
+* Overview: An alternative to the analog interrupt. This function can be called
+*           from a time interrupt or from main loop if analog interrupt is 
+*           disabled, thus allowing you to refresh values with a more precise
+*           timing.
+*
+********************************************************************/
 
 void ADC_update_values() {
 
@@ -172,6 +237,15 @@ void ADC_update_values() {
 }
 
 
+/*********************************************************************
+* Function: analogRead(int pin_num)
+*
+* Overview: Returns the values of the analog pins. Currently it does not check
+*           if the pins are initialized as analog pins. This functions is 
+*           the one to be called in program.
+*
+********************************************************************/
+
 int analogRead(int pin_num) {
     //In the initialization make a poll read (lectura per enquesta)
     //to get the real value of the analog pin
@@ -197,6 +271,13 @@ int analogRead(int pin_num) {
 //--------------------//
 //----DIGITAL PINS----//
 //--------------------//
+
+/*********************************************************************
+* Function: digitalWrite(int pin_num, int value);
+*
+* Overview: Write a value on a previously set as a digital output pin.
+*
+********************************************************************/
 
 void digitalWrite(int pin_num, int value) {
 
@@ -228,6 +309,13 @@ void digitalWrite(int pin_num, int value) {
     }
 
 }
+
+/*********************************************************************
+* Function: digitalRead(int pin_num);
+*
+* Overview: Read a value of a previously set as a digital input pin.
+*
+********************************************************************/
 
 int digitalRead(int pin_num) {
     
@@ -263,11 +351,26 @@ int digitalRead(int pin_num) {
 //----MISC FUNCTIONS----//
 //----------------------//
 
+/*********************************************************************
+* Function: map(long x, long in_min, long in_max, long out_min, long out_max);
+*
+* Overview: Change range of value.
+*
+********************************************************************/
+
 long map(long x, long in_min, long in_max, long out_min, long out_max) {
 
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 
 }
+
+/*********************************************************************
+* Function: abs2(float val);
+*
+* Overview: Returns absolute value of a number. Could not call it abs
+*           due to some incompatibilities with the mplab ide.
+*
+********************************************************************/
 
 float abs2(float val) {
 
