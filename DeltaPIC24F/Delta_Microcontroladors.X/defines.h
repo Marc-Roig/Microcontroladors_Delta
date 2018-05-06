@@ -126,7 +126,11 @@
     #define JOYSTICK_MOVE_ANGLES 0
     #define JOYSTICK_MOVE_AXIS 1
 
-    //-----------------ñ
+    //------------------//  
+    //------SERIAL------//
+    //------------------//  
+
+    #define SERIAL_DELAY_MS 100
 
     //SERIAL COM MODES
     #define ASK_FOR_ANGLES  0

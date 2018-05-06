@@ -19,7 +19,7 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
     static unsigned long startTimeSim = 0;
 
-    if(command_recieved) {
+    if(command_recieved && (millis() - startTimeSim) > SERIAL_DELAY_MS) {
 
         parse_command(buffer.command[buffer.start]);
 
@@ -31,7 +31,7 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
     }
 
-    else if ((millis() - startTimeSim) > SERIAL_DELAY_MS) {
+    else {
         //Serial_write("test");
         check_serial();
         startTimeSim = millis();
