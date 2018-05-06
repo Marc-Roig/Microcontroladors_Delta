@@ -40,8 +40,22 @@ void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, 
 
             }
 
-            servo_writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset, i);
 
+
+            if (servoinfo[i].duty_cycle + servoinfo[i].dc_offset > servoinfo[i].max_duty_cycle) {
+
+                servo_writeMicroseconds(servoinfo[i].max_duty_cycle);
+
+            } else if (servoinfo[i].duty_cycle + servoinfo[i].dc_offset < servoinfo[i].min_duty_cycle) {
+
+                servo_writeMicroseconds(servoinfo[i].min_duty_cycle);
+
+            }
+            else {
+
+                servo_writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset, i);
+
+            }
         }
 
     }
@@ -61,6 +75,14 @@ void update_angle_from_dc(int servo_num) {
     //(duty_cycle*10 - n*10)/m*10 = (duty_cycle - n)/m (m and n are multiplied by 10 to work with decimals without floats)
 
 }
+
+/*********************************************************************
+* Function: update_dc_from_angle(int servo_num);
+*
+* Overview: Update duty_cycle value from the angle saved in servoinfo
+*
+********************************************************************/
+
 
 void update_dc_from_angle(int servo_num) {
 
