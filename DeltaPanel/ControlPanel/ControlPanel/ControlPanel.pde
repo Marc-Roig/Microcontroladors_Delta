@@ -57,7 +57,7 @@ void setup() {
   init_ServoVisualTab();
   
   init_console();
-  ConsoleSetMax(20);
+  // ConsoleSetMax(20);
   // write_console("aaaa\n");
 
   cp5.setAutoDraw(false);

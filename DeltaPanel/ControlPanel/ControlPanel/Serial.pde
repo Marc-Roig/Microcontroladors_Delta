@@ -132,6 +132,7 @@ void init_communication() {
 void serial_communication(){
        
   if(command_recieved) {
+
       parse_command(buffer.command[buffer.start]);
       
       if (buffer.inc_start_pointer()) command_recieved = false; //Empty = All stream has been read 
@@ -155,16 +156,12 @@ void check_serial() {
 
     if (incomingByte == '\n'){
 
-      if (buffer.command[buffer.end].charAt(0) != 'G') {
-
-        write_console(buffer.command[buffer.end]);
+      if (buffer.command[buffer.end].charAt(0) == '\n') {
         buffer.dec_end_pointer();
-        
-      }
+      } 
 
       if(buffer.command[buffer.end].charAt(2) == '6') {
         command_recieved = true;
-        print(buffer.command[buffer.end]);
       }
 
       buffer.inc_end_pointer();
@@ -177,9 +174,8 @@ void parse_command(String command) {
 
   if (command.charAt(0) != 'G') {
     write_console(command);
-    // println(command);
     return;
-  }
+  } else print(command); 
 
   int command_num = chars_to_int('0', command.charAt(1), command.charAt(2));
   
