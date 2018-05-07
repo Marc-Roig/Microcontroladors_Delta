@@ -26,6 +26,7 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
             //When command End of Stream is read I send all
             //the information and wait for more
             command_recieved = false; //Buffer is empty
+            startTimeSim = millis();
         }
 
     }
@@ -33,7 +34,6 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
     else {
         // Serial.write("test");
         check_serial();
-        startTimeSim = millis();
 
     }
 
@@ -64,18 +64,21 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
 
         case CHANGE_TO_CALIBRATION:     deltainfo.mode = CALIBRATION_MODE;
                                         calibration_start(true, true, true, false);
+                                        Serial_write("Changing to Calibration Mode\n");
                                         break;
 
         case CHANGE_TO_JOYSTICK:        deltainfo.mode = JOYSTICK_MODE;
+                                        Serial_write("Changing to Joystick Mode\n");
                                         init_joystick();
                                         break;
 
         case CHANGE_TO_SEQUENCE:        deltainfo.mode = SEQUENCE_MODE;
+                                        Serial_write("Changing to Sequence Mode\n");
                                         init_joystick();
                                         init_sequence();
                                         break;
  
-        default:                        Serial_write("SERIAL BAD REQUEST");
+        default:                        Serial_write("SERIAL BAD REQUEST\n");
                                         break;
 
     }

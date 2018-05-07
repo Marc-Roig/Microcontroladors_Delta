@@ -29,12 +29,13 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
             command_recieved = false; //Buffer is empty
         }
 
+        startTimeSim = millis();
+
     }
 
     else {
         //Serial_write("test");
         check_serial();
-        startTimeSim = millis();
 
     }
 
@@ -64,14 +65,17 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
                                         break;
 
         case CHANGE_TO_CALIBRATION:     deltainfo.mode = CALIBRATION_MODE;
+                                        Serial_write("Changing mode to Calibration");
                                         calibration_start(true, true, true, false);
                                         break;
 
         case CHANGE_TO_JOYSTICK:        deltainfo.mode = JOYSTICK_MODE;
+                                        Serial_write("Changing mode to Joystick");
                                         init_joystick();
                                         break;
 
         case CHANGE_TO_SEQUENCE:        deltainfo.mode = SEQUENCE_MODE;
+                                        Serial_write("Changing mode to Sequence");
                                         init_joystick();
                                         init_sequence();
                                         break;
