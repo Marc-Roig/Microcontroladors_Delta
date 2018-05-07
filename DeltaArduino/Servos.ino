@@ -41,17 +41,19 @@ void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, 
             }
 
 
-
             if (servoinfo[i].duty_cycle + servoinfo[i].dc_offset > servoinfo[i].max_duty_cycle) {
 
                 servo_writeMicroseconds(servoinfo[i].max_duty_cycle, i);
+                servoinfo[i].duty_cycle = servoinfo[i].max_duty_cycle - servoinfo[i].dc_offset;
+                update_angle_from_dc(i);
 
             } else if (servoinfo[i].duty_cycle + servoinfo[i].dc_offset < servoinfo[i].min_duty_cycle) {
 
                 servo_writeMicroseconds(servoinfo[i].min_duty_cycle, i);
+                servoinfo[i].duty_cycle = servoinfo[i].min_duty_cycle + servoinfo[i].dc_offset;
+                update_angle_from_dc(i);
 
-            }
-            else {
+            } else {
 
                 servo_writeMicroseconds(servoinfo[i].duty_cycle + servoinfo[i].dc_offset, i);
 
