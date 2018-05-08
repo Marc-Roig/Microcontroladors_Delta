@@ -7,8 +7,8 @@
     //---------------//
     
     //SERVOS
-    #define SERVO1_PIN 9
-    #define SERVO2_PIN 10
+    #define SERVO1_PIN 10
+    #define SERVO2_PIN 9
     #define SERVO3_PIN 3
     #define SERVO4_PIN 5 //GRIPPER
 
@@ -33,7 +33,7 @@
 
     //SEQUENCE
     #define SEQUENCE_SAVE_POS_BUTTON_PIN 2
-    #define SEQUENCE_PLAY_BUTTON_PIN 6
+    #define SEQUENCE_PLAY_BUTTON_PIN 4
     
     //----------------//
     //-----SERVOS-----//    
@@ -63,13 +63,13 @@
     #define SERVO2_COMPENSATION_VAL 0
     #define SERVO3_COMPENSATION_VAL 0
 
-    #define SERVO1_M_ANGLE_TO_DC -10.4
-    #define SERVO2_M_ANGLE_TO_DC -11.041
-    #define SERVO3_M_ANGLE_TO_DC -9.0743
+    #define SERVO1_M_ANGLE_TO_DC -8.6791
+    #define SERVO2_M_ANGLE_TO_DC -9.6412
+    #define SERVO3_M_ANGLE_TO_DC -8.9747
 
-    #define SERVO1_N_ANGLE_TO_DC 2542.5
-    #define SERVO2_N_ANGLE_TO_DC 2701.8
-    #define SERVO3_N_ANGLE_TO_DC 2692.1
+    #define SERVO1_N_ANGLE_TO_DC 1822
+    #define SERVO2_N_ANGLE_TO_DC 2240
+    #define SERVO3_N_ANGLE_TO_DC 2600
 
     //GRIPPER
     #define MAX_DC_SERVO4 1900
@@ -122,7 +122,7 @@
     //-----JOYSTICK-----//
     //------------------//
 
-    #define JOYSTICK_NUMBER_OF_SPEEDS 20
+    #define JOYSTICK_NUMBER_OF_SPEEDS 30
     
     #define JOYSTICK_MOVE_ANGLES 0
     #define JOYSTICK_MOVE_AXIS 1
@@ -131,7 +131,7 @@
     //------SERIAL------//
     //------------------//  
 
-    #define SERIAL_DELAY_MS 100
+    #define SERIAL_DELAY_MS 30
 
     //SERIAL COM MODES
     #define ASK_FOR_ANGLES  0

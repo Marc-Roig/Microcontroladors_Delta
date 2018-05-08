@@ -150,7 +150,7 @@ void joystick2_move_gripper() {
 
     static unsigned long StartTime = 0;
 
-    int time_difference_ms = 400; // Every X ms program will read the joystick val 
+    int time_difference_ms = 50; // Every X ms program will read the joystick val 
 
     if ((millis() - StartTime) > time_difference_ms ) {
 
@@ -229,7 +229,7 @@ void joystick_move_z() {
 
     static unsigned long StartTime = 0;
 
-    int time_difference_ms = 400; // Every X ms program will read the joystick val 
+    int time_difference_ms = 50; // Every X ms program will read the joystick val 
 
     if ((millis() - StartTime) > time_difference_ms ) {
 

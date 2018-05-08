@@ -1,5 +1,6 @@
 .include "p24fj128ga010.inc"
 .include "assembly_macros.inc"
+.include "assembly_routines.inc"
 
 .data
 

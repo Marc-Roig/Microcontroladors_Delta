@@ -73,7 +73,7 @@ void joystick_move_angles() {
     static int servo_num = 0;
     static int S0 = 0; //Flank detector
 
-    int time_difference_ms = 400; // Every 200 ms program will read the joystick val 
+    int time_difference_ms = 100; // Every 200 ms program will read the joystick val 
 
     bool change_axis_button = digitalRead(JOYSTICK_BUTTON_PIN);
 
@@ -228,7 +228,7 @@ void joystick_move_z() {
 
     static unsigned long StartTime = millis();
 
-    int time_difference_ms = 400; // Every X ms program will read the joystick val 
+    int time_difference_ms = 50; // Every X ms program will read the joystick val 
 
     if ((millis() - StartTime) > time_difference_ms ) {
 

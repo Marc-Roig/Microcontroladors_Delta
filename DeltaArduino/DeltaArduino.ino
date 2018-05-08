@@ -66,7 +66,7 @@ void loop() {
     }
 
     //--SERVOS--//
-    move_selected_servos(true, false, false, false); //Angle to duty cycle, only with three arm servos  
+    move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
 
     //--SERIAL--//
     serial_com_with_simulator();

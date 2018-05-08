@@ -1,7 +1,5 @@
 .include "p24fj128ga010.inc"
-
-.global _pinMode
-.global _digitalRead
+.include "assembly_routines.inc"
 
 .extern _RB3_Analog_Active
 .extern _RB8_Analog_Active
