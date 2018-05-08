@@ -44,6 +44,13 @@ void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, boo
 
 }
 
+/*********************************************************************
+* Function: debug_calibration(int wait_time);
+*
+* Overview: Print values of angles, dc, xyz to debug calibration.
+*
+********************************************************************/
+
 void debug_calibration(int wait_time) {
     
     static unsigned int startMilis = 0;

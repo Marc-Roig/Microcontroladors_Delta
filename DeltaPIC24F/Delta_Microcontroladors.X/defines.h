@@ -121,7 +121,7 @@
     //-----JOYSTICK-----//
     //------------------//
 
-    #define JOYSTICK_NUMBER_OF_SPEEDS 20
+    #define JOYSTICK_NUMBER_OF_SPEEDS 25
     
     #define JOYSTICK_MOVE_ANGLES 0
     #define JOYSTICK_MOVE_AXIS 1
@@ -130,7 +130,7 @@
     //------SERIAL------//
     //------------------//  
 
-    #define SERIAL_DELAY_MS 100
+    #define SERIAL_DELAY_MS 20
 
     //SERIAL COM MODES
     #define ASK_FOR_ANGLES  0
