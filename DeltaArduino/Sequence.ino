@@ -14,6 +14,10 @@ void init_sequence() {
 	sequence.playing = false;
 	sequence.arrived = false;
 
+	for (int i = 0; i < 4; i++) {
+		servoseased[i].setBufferEmptyFunc(sequence_finalized);
+	}
+
 	// ServoEaser servo_easers[4];
 
 }
@@ -21,6 +25,7 @@ void init_sequence() {
 void sequence_update() {
 
 	static char S0 = 0;
+	static char S1 = 0;
 
 	if (sequence.playing) return;
 
@@ -34,8 +39,8 @@ void sequence_update() {
       
     } else if (!save_pos_button) S0 = 0;
 
-    if (play_sequence_button) play_sequence();
-
+    if (play_sequence_button && !S1) play_sequence();
+    else if (!play_sequence_button) S1 = 0;
 
 }
 
@@ -43,7 +48,6 @@ void new_move() {
 
 	if (sequence.moves_full) return;
 	Serial.write("ADDED NEW MOVE\n");
-
 
 	sequence.moves[0][sequence.last_move] = servoinfo[0].duty_cycle;
 	sequence.moves[1][sequence.last_move] = servoinfo[1].duty_cycle;
@@ -62,14 +66,20 @@ void play_sequence() {
 
 	if (sequence.playing) return;
 
+	Serial.write("playing sequence\n");
+
 	for (int i = 0; i < sequence.last_move+1; i++) {
 		durations[i] = SEQUENCE_DEFAULT_MOVEMENT_TIME;
 	}
 
-	servoseased[0].addMovesAndPlay(sequence.moves[0], durations, sequence.last_move + 1);
-	servoseased[1].addMovesAndPlay(sequence.moves[1], durations, sequence.last_move + 1);
-	servoseased[2].addMovesAndPlay(sequence.moves[2], durations, sequence.last_move + 1);
-	servoseased[3].addMovesAndPlay(sequence.moves[3], durations, sequence.last_move + 1);
+	servoinfo[0].move_servo_from = MOVE_SERVO_FROM_DC;
+    servoinfo[1].move_servo_from = MOVE_SERVO_FROM_DC;
+    servoinfo[2].move_servo_from = MOVE_SERVO_FROM_DC;
+
+	servoseased[0].addMovesAndPlay(sequence.moves[0], durations, sequence.last_move);
+	servoseased[1].addMovesAndPlay(sequence.moves[1], durations, sequence.last_move);
+	servoseased[2].addMovesAndPlay(sequence.moves[2], durations, sequence.last_move);
+	servoseased[3].addMovesAndPlay(sequence.moves[3], durations, sequence.last_move);
 	
 	sequence.playing = true;
 
@@ -89,9 +99,21 @@ void sequence_remove_last_move() {
 
 inline void sequence_finalized() {
 
-	//Choose if it has to repeat the movement or create a new one
-	sequence.playing = false;
-	reset_sequence();
+	static int i = 0;
+
+	i++;
+
+	if (i >= 3) {
+		//Choose if it has to repeat the movement or create a new one
+		sequence.playing = false;
+		reset_sequence();
+
+		servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+	    servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+	    servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+
+		i = 0;
+	}
 
 }
 
@@ -110,6 +132,7 @@ inline void sequence_confirm_next_move(int servo_num) {
 
 			finished_servos[i] = false;
 			servoseased[i].proceed(1000);
+
 
 		}
 		

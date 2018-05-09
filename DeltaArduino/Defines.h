@@ -32,8 +32,8 @@
     #define DECREASE_XYZ_BUTTON_PIN 12
 
     //SEQUENCE
-    #define SEQUENCE_SAVE_POS_BUTTON_PIN 2
-    #define SEQUENCE_PLAY_BUTTON_PIN 4
+    #define SEQUENCE_SAVE_POS_BUTTON_PIN 12
+    #define SEQUENCE_PLAY_BUTTON_PIN 8
     
     //----------------//
     //-----SERVOS-----//    
@@ -72,8 +72,8 @@
     #define SERVO3_N_ANGLE_TO_DC 2600
 
     //GRIPPER
-    #define MAX_DC_SERVO4 1900
-    #define MIN_DC_SERVO4 965
+    #define MAX_DC_SERVO4 1700
+    #define MIN_DC_SERVO4 960
     #define SERVO4_COMPENSATION_VAL 0
 
     //--------------------//
@@ -154,6 +154,8 @@
     #define CHANGE_TO_JOYSTICK 31
     #define CHANGE_TO_SEQUENCE 32
     #define CHANGE_TO_POWER_OFF 33
+
+    #define MOVE_SERVO_TO_HOME 40
 
     //SERIAL BUFFER
 

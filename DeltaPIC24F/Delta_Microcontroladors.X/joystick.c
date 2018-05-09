@@ -29,6 +29,7 @@ void joystick_movement() {
 
         case JOYSTICK_MOVE_AXIS:        joystick_move_xyz();
                                         // buttons_move_xyz();
+                                        joystick2_move_gripper();
                                         break;
 
         default:                        break;
@@ -154,11 +155,13 @@ void joystick2_move_gripper() {
 
     if ((millis() - StartTime) > time_difference_ms ) {
 
-        float joys_grip = map(analogRead(JOYSTICK_X_GRIPPER_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
+        float joys_grip = map(analogRead(JOYSTICK_X_GRIPPER_PIN), 0, 1023, -7, 7);
 
-        if (abs2(joys_grip) < 1) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
+        if (abs2(joys_grip) < 1.5) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
 
         servoinfo[3].duty_cycle += (15 * joys_grip); //Multiply joys_grip with a gain
+        if (servoinfo[3].duty_cycle > servoinfo[3].max_duty_cycle) servoinfo[3].duty_cycle = servoinfo[3].max_duty_cycle;
+        if (servoinfo[3].duty_cycle < servoinfo[3].min_duty_cycle) servoinfo[3].duty_cycle = servoinfo[3].min_duty_cycle;
 
         StartTime = millis();
 

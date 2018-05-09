@@ -77,6 +77,10 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
                                         init_joystick();
                                         init_sequence();
                                         break;
+
+        case MOVE_SERVO_TO_HOME:        Serial_write("Moving servos to home");
+                                        servos_power_off_positions(true, true, true, true);
+                                        break;
  
         default:                        Serial_write("SERIAL BAD REQUEST\n");
                                         break;
