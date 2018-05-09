@@ -40,7 +40,7 @@ void setup() {
 
                                 break;
 
-        case CALIBRATION_MODE:  calibration_start(true, true, true, false);
+        case CALIBRATION_MODE:  calibration_start(true, true, true, true);
                                 break;
 
         case JOYSTICK_MODE:     init_joystick();
@@ -66,7 +66,7 @@ void loop() {
     }
 
     //--SERVOS--//
-    move_selected_servos(true, true, true, false); //Angle to duty cycle, only with three arm servos  
+    move_selected_servos(true, true, true, true); //Angle to duty cycle, only with three arm servos  
 
     //--SERIAL--//
     serial_com_with_simulator();
@@ -78,7 +78,7 @@ void update_sequence_mode() {
 
      //--SERVO EASER--//
     for (int i = 0; i < 4; i ++) {
-        servoseased[i].update();
+        if (servoseased[i].isRuning()) servoseased[i].update();
     }
 
     //--SEQUENCE--//

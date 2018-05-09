@@ -74,7 +74,7 @@ void ServoEaser::getNextPos() {
 
     if (buffer_empty) {
 
-        if (bufferemptiedFunc != NULL) bufferemptiedFunc(servo_num);
+        if (bufferemptiedFunc != NULL) bufferemptiedFunc();
         running = false;
         return;
     
@@ -278,5 +278,11 @@ void ServoEaser::setEasingFunc( EasingFunc func ) {
 void ServoEaser::setArrivedFunc( ArrivedFunc func ) {
 
     arrivedFunc = func;
+
+}
+
+void ServoEaser::setBufferEmptyFunc( BufferEmptiedFunc func ) {
+
+    bufferemptiedFunc = func;
 
 }

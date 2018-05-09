@@ -8,7 +8,7 @@
     // arguments provided are: currPos of servo & movesIndex of move list (if appl)
     typedef void (*ArrivedFunc)(int servo_num);
 
-    typedef void (*BufferEmptiedFunc)(int servo_num);
+    typedef void (*BufferEmptiedFunc)();
 
     class ServoEaser {
 
@@ -72,6 +72,7 @@
 
             void setEasingFunc(EasingFunc func);
             void setArrivedFunc(ArrivedFunc func);
+            void setBufferEmptyFunc( BufferEmptiedFunc func );
 
     };
 
