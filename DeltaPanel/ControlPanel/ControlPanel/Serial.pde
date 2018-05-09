@@ -30,6 +30,8 @@ static final int CHANGE_TO_JOYSTICK = 31;
 static final int CHANGE_TO_SEQUENCE = 32;
 static final int CHANGE_TO_POWER_OFF = 33;
 
+static final int MOVE_SERVO_TO_HOME = 40;
+
 static final int SERIAL_BUFFER_LEN = 15;
 // static final int SERIAL_COMMAND_MAX_LEN = 50;
 
@@ -173,7 +175,8 @@ void check_serial() {
 void parse_command(String command) {
 
   if (command.charAt(0) != 'G') {
-    write_console(command);
+    // write_console(command);
+    print(command);
     return;
   } else print(command); 
 

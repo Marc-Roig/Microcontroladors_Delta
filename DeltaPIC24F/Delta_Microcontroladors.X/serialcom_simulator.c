@@ -77,7 +77,7 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
         case CHANGE_TO_SEQUENCE:        deltainfo.mode = SEQUENCE_MODE;
                                         Serial_write("Changing mode to Sequence");
                                         init_joystick();
-                                        init_sequence();
+                                        //init_sequence();
                                         break;
  
         default:                        Serial_write("SERIAL BAD REQUEST");

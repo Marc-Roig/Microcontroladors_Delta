@@ -282,4 +282,14 @@ void set_servo_movement_with_dc(bool set_servo1, bool set_servo2, bool set_servo
     
 }
 
+void servos_power_off_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
+    #ifdef EASESERVOS_H
+
+        for (int i = 0; i < 3; i ++) {
+            servoseased[i].addMoveAndPlay((int)(90 * servoinfo[servo_num].m + servoinfo[servo_num].n)/10, 2000);
+        }
+
+    #endif 
+
+}
