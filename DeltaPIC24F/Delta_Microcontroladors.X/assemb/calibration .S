@@ -153,7 +153,7 @@ _calibration_change_dc_potentiometer:
     PUSH W4
     PUSH W5
 
-    get_servoinfo_mem_pos W0
+    GET_SERVOINFO_MEM_POS W0
     
     MOV [W0+servinf_min_dc], W3
     MOV [W0+servinf_max_dc], W4
@@ -161,29 +161,26 @@ _calibration_change_dc_potentiometer:
 
     MOV #CALIBRATION_POTE_PIN, W0
     RCALL _analogRead
-
-    PUSH W0
-    CLR W0
-    PUSH W0 ;long x
-
-    MOV #0, W1
-    PUSH W1
-    PUSH W0 ;long in_min
-
     MOV #1023, W1
+    
+    ;Prepare to push data to call map
+    PUSH W0
+    MOV #0, W0
+    PUSH W0
+    PUSH W0
+    PUSH W0
     PUSH W1
-    PUSH W0 ;long in_max
-
+    PUSH W0
     PUSH W3
-    PUSH W0 ;long out_min
-
+    PUSH W0
     PUSH W4
-    PUSH W0 ;long out_max
-
+    PUSH W0
+    
     RCALL _map2
-
+    
+    SUB #20, W15
     MOV W0, [W5]
-    SUB 
+
 
     POP W5
     POP W4
