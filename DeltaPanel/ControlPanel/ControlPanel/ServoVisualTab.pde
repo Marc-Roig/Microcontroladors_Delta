@@ -104,7 +104,7 @@ class TimedEvent extends ControlBehavior {
   
   public void update() {
     if (update_values && millis() > myTime) {
-      myChart.unshift(dataSet, -servoInf.angle); 
+      myChart.unshift(dataSet, servoInf.angle); 
       reset();
     }
   }
