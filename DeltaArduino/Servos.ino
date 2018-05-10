@@ -1,4 +1,4 @@
-#include "Config.h"
+    #include "Config.h"
 
 const long servo1_m =  (long)(SERVO1_M_ANGLE_TO_DC * 10);
 const long servo2_m =  (long)(SERVO2_M_ANGLE_TO_DC * 10);
@@ -175,7 +175,7 @@ void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycl
     servo_inf->dc_offset = 0;
 
     servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servo_inf->duty_cycle = servo_inf->mean_dc;
+    servo_inf->duty_cycle = (90 * servoinfo[i].m + servoinfo[i].n)/10;
 
     servo_inf->move_servo_from = MOVE_SERVO_FROM_DC;
 

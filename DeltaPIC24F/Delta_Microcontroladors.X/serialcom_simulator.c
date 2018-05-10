@@ -21,22 +21,18 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
     if(command_recieved && (millis() - startTimeSim) > SERIAL_DELAY_MS) {
 
-        parse_command(buffer.command[buffer.start]);
+        do { parse_command(buffer.command[buffer.start]);
+        } while (!inc_buffer_start_pointer());
 
-        if (inc_buffer_start_pointer()) { 
-            //When command End of Stream is read I send all
-            //the information and wait for more
-            command_recieved = false; //Buffer is empty
-        }
-
+        //When command End of Stream is read I send all
+        //the information and wait for more
+        command_recieved = false; //Buffer is empty
         startTimeSim = millis();
 
     }
 
     else {
-        //Serial_write("test");
         check_serial();
-
     }
 
 }
@@ -78,6 +74,10 @@ void parse_command(char command[SERIAL_COMMAND_MAX_LEN]) {
                                         Serial_write("Changing mode to Sequence");
                                         init_joystick();
                                         //init_sequence();
+                                        break;
+
+        case MOVE_SERVO_TO_HOME:        Serial_write("Moving servos to home");
+                                        servos_power_off_positions(true, true, true, true);
                                         break;
  
         default:                        Serial_write("SERIAL BAD REQUEST");

@@ -38,7 +38,7 @@ void joystick_movement() {
 
     //joystick_debug();
 
-    //joysitck_change_mode(&move_axis_or_angles);
+    joysitck_change_mode(&move_axis_or_angles);
 
 }
 
@@ -207,7 +207,7 @@ void joystick_move_xy() {
 
     static unsigned long StartTime = 0;
 
-    int time_difference_ms = 50; // Every 400 ms the program will read the joystick val 
+    int time_difference_ms = 50; // Every 50 ms the program will read the joystick val 
 
     if ((millis() - StartTime) > time_difference_ms ) {
 

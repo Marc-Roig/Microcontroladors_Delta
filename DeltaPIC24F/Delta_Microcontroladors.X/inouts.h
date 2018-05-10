@@ -9,9 +9,9 @@
 	#define HIGH 1
 	#define LOW 0
 
-	#define IO_RB3 0
-	#define IO_RB8 1
-	#define IO_RB9 2
+	#define IO_RB3 0 //Do not change, analogRead will stop working
+	#define IO_RB8 1 //Do not change, analogRead will stop working
+	#define IO_RB9 2 //Do not change, analogRead will stop working
 	#define IO_RE8 3
 	#define IO_RE9 4
 	#define IO_RA14 5

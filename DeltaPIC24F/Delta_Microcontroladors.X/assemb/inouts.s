@@ -150,31 +150,35 @@ _digitalRead:
 
 	RETURN
 
-_analogRead:
+ _analogRead:
 
 	;W0 int pin_num
 
-	SL W0 ;Jump 2 lines for every case
+	CP W0, #3
+	BRA GE, End_analogRead
+	
+	SL W0, W0, W0;Jump 2 lines for every case
 	BRA W0 ; PC += (W0*2)
 
 	IO_RB3_AR:
 
-		MOV #_RB3_Analog_Value, W0
+		MOV _RB3_Analog_Value, W0
 		BRA End_analogRead
 
 	IO_RB8_AR:
 
-		MOV #_RB8_Analog_Value, W0
+		MOV _RB8_Analog_Value, W0
 		BRA End_analogRead
 
 	IO_RB9_AR:
 
-		MOV #_RB9_Analog_Value, W0
+		MOV _RB9_Analog_Value, W0
 		BRA End_analogRead
 
 	End_analogRead:
 
 		RETURN
+    
 
 _map2: ;CHECKED (NOT FOR NEGATIVE NUMBERS)
 	;All parameters are pushed into stack

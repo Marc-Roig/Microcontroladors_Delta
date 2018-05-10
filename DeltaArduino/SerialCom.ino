@@ -20,21 +20,17 @@ void serial_com_with_simulator() { //FUNCITON TO CALL IN MAIN
 
     if(command_recieved && (millis() - startTimeSim) > SERIAL_DELAY_MS) {
 
-        parse_command(buffer.command[buffer.start]);
+        do { parse_command(buffer.command[buffer.start]);
+        } while (!inc_buffer_start_pointer());
 
-        if (inc_buffer_start_pointer()) { 
-            //When command End of Stream is read I send all
-            //the information and wait for more
-            command_recieved = false; //Buffer is empty
-            startTimeSim = millis();
-        }
-
+        //When command End of Stream is read I send all
+        //the information and wait for more
+        command_recieved = false; //Buffer is empty
+        startTimeSim = millis();
     }
 
     else {
-        // Serial.write("test");
         check_serial();
-
     }
 
 }

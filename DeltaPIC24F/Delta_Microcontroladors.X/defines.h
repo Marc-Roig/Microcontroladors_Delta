@@ -154,6 +154,8 @@
     #define CHANGE_TO_SEQUENCE 32
     #define CHANGE_TO_POWER_OFF 33
 
+    #define MOVE_SERVO_TO_HOME 40
+
     //SERIAL BUFFER
 
     #define MAX_COMMANDS_NUM 10

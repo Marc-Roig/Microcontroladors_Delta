@@ -290,6 +290,13 @@ void servos_power_off_positions(bool move_servo1, bool move_servo2, bool move_se
             servoseased[i].addMoveAndPlay((int)(90 * servoinfo[servo_num].m + servoinfo[servo_num].n)/10, 2000);
         }
 
+    #else 
+
+        for (int i = 0; i < 3; i ++) {
+            servoseased[i].duty_cycle = (int)(90 * servoinfo[servo_num].m + servoinfo[servo_num].n)/10;
+        }
+
     #endif 
 
 }
+
