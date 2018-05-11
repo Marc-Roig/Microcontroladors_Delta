@@ -14,12 +14,22 @@
 .global _SL_long
 .global _float_to_long
 
+/*********************************************************************
+* Function: _mul_longs:
+*
+* Overview: Multiply two longs
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        long n2 - W2, W3
+*
+* Output: long result - W0, W1
+*
+********************************************************************/
+
 _mul_longs:  ;CHECKED
 
-	;W0 a1	long a
-    ;W1 a2 
-    ;W2 b1	long b
-    ;W3 b2
     LNK #0X08
 
     MOV W0, [W14]
@@ -43,6 +53,22 @@ _mul_longs:  ;CHECKED
 
     RETURN
 
+
+
+/*********************************************************************
+* Function: _div_longs:
+*
+* Overview: Divide two longs 
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        long n2 - W2, W3
+*
+* Output: long result - W0, W1 - (n1/n2)
+*
+********************************************************************/
+
 _div_longs: ;CHECKED
 
 	;a / b
@@ -62,21 +88,49 @@ _div_longs: ;CHECKED
     RETURN
 	;returned long at W0 and W1
 
-_div_long_int:
 
-    ;W0 a1 long a
-    ;W1 a2
-    ;W2 b  int b
+
+/*********************************************************************
+* Function: _div_long_int:
+*
+* Overview: Divide long and int
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int  n2 - W2
+*
+* Output: long result - W0, W1 - (n1/n2)
+*
+********************************************************************/
+
+_div_long_int:
 
     PUSH W3
 
-    MOV #0, W3
+    MOV #0, W3 ; transform n2 of 1 word into 2 words.
 
     RCALL _div_longs
 
     POP W3
 
     RETURN
+
+
+
+/*********************************************************************
+* Function: _mul_long_int:
+*
+* Overview: mult long and int
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int  n2 - W2
+*
+* Output: long result - W0, W1 - (n1*n2)
+*
+********************************************************************/
 
 _mul_long_int: ;CHECKED
 
@@ -93,19 +147,45 @@ _mul_long_int: ;CHECKED
     POP W3
 
     RETURN
+
+
+
+/*********************************************************************
+* Function: _add_longs:
+*
+* Overview: Add two longs
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        long n2 - W2, W3
+*
+* Output: long result - W0, W1 - (n1+n2)
+*
+********************************************************************/
     
 _add_longs: ;CHECKED
-
-    ;W0 a1
-    ;W1 a2
-    ;W2 b1
-    ;W3 b2
 
     ADD W0, W2, W0
     ADDC W1, W3, W1
 
     RETURN
 
+
+
+/*********************************************************************
+* Function: _add_long_int_ret_long:
+*
+* Overview: Add long and int (2 words, 1 word) and return a long (2 words)
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int n2  - W2
+*
+* Output: long result - W0, W1 - (n1+n2)
+*
+********************************************************************/
 
 _add_long_int_ret_long: ;CHECKED
     
@@ -117,6 +197,22 @@ _add_long_int_ret_long: ;CHECKED
     ADDC W1, #0, W1
     RETURN
     
+
+
+/*********************************************************************
+* Function: _add_long_int_ret_int:
+*
+* Overview: Add long and int (2 words, 1 word) and return a int (1 word)
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int n2  - W2
+*
+* Output: int result - W0 - (n1+n2) -> works with lower word of n1
+*
+********************************************************************/
+
 _add_long_int_ret_int: ;CHECKED
     
     ;W0 a1
@@ -125,6 +221,22 @@ _add_long_int_ret_int: ;CHECKED
     
     ADD W0, W2, W0
     RETURN
+
+
+
+/*********************************************************************
+* Function: _sub_longs:
+*
+* Overview: Substract two longs (2 words each)
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int n2  - W2, W3
+*
+* Output: int result - W0 - (n1+n2) -> works with lower word of n1
+*
+********************************************************************/
 
 _sub_longs:
     
@@ -137,6 +249,22 @@ _sub_longs:
     SUBB W1, W3, W1
 
     RETURN
+
+
+
+/*********************************************************************
+* Function: _sub_long_int:
+*
+* Overview: Add long and int (2 words, 1 word) and return a long (2 words)
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*        int n2  - W2
+*
+* Output: long result - W0, W1 - (n1-n2)
+*
+********************************************************************/
 
 _sub_long_int:
     
@@ -152,6 +280,19 @@ _sub_long_int:
 
     POP W3
     RETURN
+
+/*********************************************************************
+* Function: _ASR_long:
+*
+* Overview: Arithmetic shift right long
+*
+* PreCondition: none
+*
+* Input: long n1 - W0, W1
+*
+* Output: long result - W0, W1
+*
+********************************************************************/
 
 _ASR_long: ;CHECKED
 	
