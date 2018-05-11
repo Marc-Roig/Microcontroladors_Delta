@@ -25,16 +25,19 @@
 
 #include "Config.h"
 
+volatile bool delta_on;
+
 void setup() {
 
     T4CON = 0X8030;
-
+    
+    init_INT4(); //Emergency stop interruption
+    
     Serial_begin(9600);
+    
+    init_buffer(); //Buffer to communicate with control panel (Processing)
 
-    init_buffer();
-
-    // Serial.write("G20\n"); //Processing is waiting to PIC
-    Serial_write("G06\n"); 
+    Serial_write("G06\n"); //Processing is waiting to PIC
 
     //--SERVOS--//
     init_servos(true, true, true, true);
@@ -86,9 +89,9 @@ void loop() {
     //Only the value of servoinfo duty_cycle, angle or xyz may be changed
     //and specified in servoinfo[].move_servo_from which of the three will
     //be the used one to move the servo.
-    move_selected_servos(true, true, true, false);
+    if (delta_on) move_selected_servos(true, true, true, false);
 
-        //--SERIAL--//
+    //--SERIAL WITH PROCESSING--//
     serial_com_with_simulator();
     
 }
@@ -105,56 +108,24 @@ int main(void) {
 
 }
 
-
-void show_dutycycle_leds(int duty_cycle) {
-
-    if (duty_cycle <= 0xff ) {
-        
-        LATA = LATA | duty_cycle;
-        LATA = LATA & (0xFF00 + duty_cycle);
-        
-    }
+void init_INT4() {
+    
+    _INT4EP = 0;
+    _INT4IF = 0;
+    _INT4IE = 1;
     
 }
 
-void polsadors(int* duty_cycle) {
-
-    static int S3 = 0, S6 = 0, S4 = 0;
-    static int mode = 0; 
-
-    int max_duty_cycle = 1100;
-    int min_duty_cycle = 430;
-
-    int steps[] = {25, 50, 100};
-
-    //--INCREMENT duty_cycle--//
-    if ((PORTD & 0x0040) == 0 && S3 == 0) {
-
-        *duty_cycle += steps[mode];
-
-     if (*duty_cycle >= max_duty_cycle) *duty_cycle = max_duty_cycle;
-
-     S3 = 1;
+void _ISR _INT1Interrupt() {
+    
+    if (!delta_on) {
+        delta_on = true;
+        attach_servos();
     }
-    else if (PORTD & 0x0040) S3 = 0;
-
-    //--DECREMENT duty_cycle--//
-    if ((PORTD & 0x0080) == 0 && S6 == 0) {
-     
-        *duty_cycle -= steps[mode];
-
-        if (*duty_cycle <= min_duty_cycle) *duty_cycle = min_duty_cycle;
-        S6 = 1;
-
+    else {
+        delta_on = false;
+        disengage_servos();
     }
-    else if (PORTD & 0x0080) S6 = 0;
+        _INT1IF = 0;
 
-    //--CHANGE STEP--//
-    if ((PORTD & 0x2000) == 0 && S4 == 0) {
-
-     mode = (mode + 1) % 3; 
-     S4 = 1;
-     
-    }
-    else if (PORTD & 0x2000) S4 = 0;
 }

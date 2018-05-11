@@ -1,5 +1,7 @@
 #include "Config.h"
 
+int move_axis_or_angles = JOYSTICK_MOVE_ANGLES;
+
 void init_joystick()  {
 
     pinMode(JOYSTICK_BUTTON_PIN, INPUT);
@@ -13,14 +15,19 @@ void init_joystick()  {
 
     init_ADC();
     
-    servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
-    servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
-    servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+    if (move_axis_or_angles == JOYSTICK_MOVE_ANGLES) {
+        servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+        servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+        servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+    }
+    else {
+        servoinfo[0].move_servo_from = MOVE_SERVO_FROM_XYZ;
+        servoinfo[1].move_servo_from = MOVE_SERVO_FROM_XYZ;
+        servoinfo[2].move_servo_from = MOVE_SERVO_FROM_XYZ;
+    }
 }
 
 void joystick_movement() {
-
-    static int move_axis_or_angles = JOYSTICK_MOVE_ANGLES;
 
     switch (move_axis_or_angles) {
 

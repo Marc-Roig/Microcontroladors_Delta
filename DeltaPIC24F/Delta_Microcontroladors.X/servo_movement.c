@@ -12,7 +12,27 @@ const long servo4_n =  (long)(SERVO3_N_ANGLE_TO_DC * 10);
 
 ServoInfo servoinfo[4];
 
-
+/*******************************************************************
+* Function: move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4);
+*
+* Overview: Move all of the delta servos from the servoinfo dc value, servoinfo angle value or deltainfo
+*           xyz value.
+*
+* PreCondition: Servos will move from the value specified in servoinfo[i].move_servo_from and all the others
+*               will be updated from it. There are three different parameters to move the servos:
+*
+*               - MOVE_SERVO_FROM_ANGLE
+*               - MOVE_SERVO_FROM_DC
+*               - MOVE_SERVO_FROM_XYZ
+*
+* Input: bool - Will move the servo 1
+*        bool - Will move the servo 2
+*        bool - Will move the servo 3
+*        bool - Will move the servo 4
+*
+* Output: none
+*
+********************************************************************/
 void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
@@ -73,6 +93,13 @@ void move_selected_servos(bool move_servo1, bool move_servo2, bool move_servo3, 
 
 }
 
+/*******************************************************************
+* Function: update_angle_from_dc(int servo_num);
+*
+* Overview: Update servoinfo angle value from servoinfo dc value.
+*
+********************************************************************/
+
 void update_angle_from_dc(int servo_num) {
 
     // servoinfo[servo_num].angle = (servoinfo[servo_num].duty_cycle - servoinfo[servo_num].n) / servoinfo[servo_num].m;
@@ -80,6 +107,13 @@ void update_angle_from_dc(int servo_num) {
     //(duty_cycle*10 - n*10)/m*10 = (duty_cycle - n)/m (m and n are multiplied by 10 to work with decimals without floats)
 
 }
+
+/*******************************************************************
+* Function: update_dc_from_angle(int servo_num);
+*
+* Overview: Update servoinfo dc value from servoinfo angle value.
+*
+********************************************************************/
 
 void update_dc_from_angle(int servo_num) {
 
@@ -92,7 +126,7 @@ void update_dc_from_angle(int servo_num) {
 } 
 
 
-/*********************************************************************
+/*******************************************************************
 * Function: check_servo_change_direction(int num_servo, int new_duty_cycle);
 *
 * Overview: Servos need an extra duty cycle value to compensate the slack
@@ -170,7 +204,7 @@ void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycl
     servo_inf->dc_offset = 0;
 
     servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servo_inf->duty_cycle = servo_inf->mean_dc;
+    servo_inf->duty_cycle = (90 * servo_inf->m + servo_inf->n)/10;
 
     servo_inf->move_servo_from = MOVE_SERVO_FROM_DC;
 
@@ -291,9 +325,9 @@ void servos_power_off_positions(bool move_servo1, bool move_servo2, bool move_se
         }
 
     #else 
-
-        for (int i = 0; i < 3; i ++) {
-            servoseased[i].duty_cycle = (int)(90 * servoinfo[servo_num].m + servoinfo[servo_num].n)/10;
+        int i;
+        for (i = 0; i < 3; i ++) {
+            servoinfo[i].duty_cycle = (int)(90 * servoinfo[i].m + servoinfo[i].n)/10;
         }
 
     #endif 

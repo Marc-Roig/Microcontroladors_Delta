@@ -188,13 +188,13 @@ void _ISR _ADC1Interrupt() {
     int *ADC16Ptr;
     
     ADC16Ptr = &ADC1BUF0;
-    AD1CON1bits.ASAM = 0; // Stop sampling
+    // AD1CON1bits.ASAM = 0; // Stop sampling
 
     if (RB3_Analog_Active) RB3_Analog_Value = *ADC16Ptr++;
     if (RB8_Analog_Active) RB8_Analog_Value = *ADC16Ptr++;
     if (RB9_Analog_Active) RB9_Analog_Value = *ADC16Ptr++;
 
-    AD1CON1bits.ASAM = 1; // Continue sampling
+    // AD1CON1bits.ASAM = 1; // Continue sampling
     _AD1IF = 0;
 
 }
