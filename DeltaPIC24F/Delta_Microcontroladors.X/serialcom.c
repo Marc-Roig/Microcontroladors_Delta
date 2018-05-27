@@ -7,9 +7,11 @@ volatile bool Serial_busy = false; //True if sending data through TX
 
 void Serial_begin(int baudrate) { 
 
-    U2MODE = 0x8000;
+    U2MODE = 0x8000; //Enable Uart
 
-    U2STA = 0x1400;
+    U2STA = 0x1400; //Interrupt when any character is in buffer
+                    //Recieve is enabled
+                    //Transmit is enabled
 
     U2BRG = 25; //9600 BAUDRATE
 

@@ -48,18 +48,18 @@ void int_to_char(int number, char* converted_char) {
 *
 ********************************************************************/
 
-char* int_to_char_2digits(int numb) {
+// char* int_to_char_2digits(int numb) { DEPRECATED, DOESN'T WORK IN C
 
-  char sentence[3];
+//   char sentence[3];
   
-  sentence[1] = (numb % 10) + '0';
-  sentence[0] = ((numb / 10) % 10) + '0';
+//   sentence[1] = (numb % 10) + '0';
+//   sentence[0] = ((numb / 10) % 10) + '0';
 
-  sentence[2] = '\0';
+//   sentence[2] = '\0';
 
-  return sentence;
+//   return sentence;
 
-}
+// }
 
 void int_to_char_2digits_2(int numb, char* sentence) {
     
@@ -83,19 +83,19 @@ void int_to_char_2digits_2(int numb, char* sentence) {
 *
 ********************************************************************/
 
-char* int_to_char_3digits(int numb) {
+// char* int_to_char_3digits(int numb) { DEPRECATED, DOESN'T WORK IN C
 
-  char* sentence = "    ";
+//   char* sentence = "    ";
 
-  sentence[2] = numb % 10 + '0';
-  sentence[1] = numb / 10 % 10 + '0';
-  sentence[0] = numb / 100 % 10 + '0';
+//   sentence[2] = numb % 10 + '0';
+//   sentence[1] = numb / 10 % 10 + '0';
+//   sentence[0] = numb / 100 % 10 + '0';
 
-  sentence[3] = '\0';
+//   sentence[3] = '\0';
 
-  return sentence;
+//   return sentence;
 
-}
+// }
 
 void int_to_char_3digits_2(int numb, char* sentence) {
 

@@ -50,12 +50,8 @@
 
         int angle;
         
-        //--ANGLE TO DUTY_CYCLE
         long m;
         long n;
-        // float m;
-        // float n;
-
 
     }ServoInfo;
 

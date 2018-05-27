@@ -25,29 +25,41 @@
 
 #include "Config.h"
 
-volatile bool delta_on;
+volatile bool delta_on; //If false delta servomotors will not move
+
+/*********************************************************************
+* Function: void setup()
+*
+* Overview: Initialize all parameters, timers, ...
+*           
+* PreCondition: Has to be the first function to be called in main.
+*
+********************************************************************/
 
 void setup() {
 
-    T4CON = 0X8030;
+    //--TIMERS--//
+    T4CON = 0X8010; //Enable T4, Preescaler 1:8
+    PR4 = 3999; //Initialize timer4 to tick every 1 ms.
     
-    init_INT4(); //Emergency stop interruption
-    
-    Serial_begin(9600);
-    
-    init_buffer(); //Buffer to communicate with control panel (Processing)
+    //--EMERGENCY STOP--//
+    init_INT4(); 
 
-    Serial_write("G06\n"); //Processing is waiting to PIC
+    //--SERIAL COM--//
+    Serial_begin(9600); 
+    init_buffer(); //Buffer to communicate with control panel (Processing)
+    Serial_write("G06\n"); //Processing is waiting to communicate, wake him up.
 
     //--SERVOS--//
     init_servos(true, true, true, true);
 
-    //--DELTA--//
-        //SEQUENCE_MODE 0
-        //CALIBRATION_MODE 1
-        //JOYSTICK_MODE 2
+    //--DELTA--// SEQUENCE_MODE, CALIBRATION_MODE, JOYSTICK_MODE
+
     init_delta(JOYSTICK_MODE);
     
+    //Delta has 3 different working modes, it has been defined in the
+    //init_delta(...) function.
+
     switch (deltainfo.mode) { 
 
         case SEQUENCE_MODE:     //--JOYSTICK--//
@@ -69,6 +81,16 @@ void setup() {
 
 }
 
+
+/*********************************************************************
+* Function: void loop()
+*
+* Overview: Read specified peripherals (buttons, joysticks,...) depending
+*           on the mode, move the servos and communicate with the panel.
+*           
+* PreCondition: Has to be called in a loop in main.
+*
+********************************************************************/
 
 void loop() {
 
@@ -96,6 +118,14 @@ void loop() {
     
 }
 
+
+/*********************************************************************
+* Function: int main()
+*
+* Overview: Calls setup and loop to copy the Arduino format
+*
+********************************************************************/
+
 int main(void) {
     
     setup();
@@ -108,6 +138,14 @@ int main(void) {
 
 }
 
+
+/*********************************************************************
+* Function: void init_INT4()
+*
+* Overview: Initialize external interrupt 4
+*
+********************************************************************/
+
 void init_INT4() {
     
     _INT4EP = 0;
@@ -116,16 +154,26 @@ void init_INT4() {
     
 }
 
-void _ISR _INT1Interrupt() {
+
+/*********************************************************************
+* Function: _ISR _INT4Interrupt()
+*
+* Overview: External interrupt 4 is called whenever INT4 pin goes high.
+*           
+* PreCondition: Has to be initialized in init_INT4();
+*
+********************************************************************/
+
+void _ISR _INT4Interrupt() {
     
-    if (!delta_on) {
+    if (!delta_on) { //If delta is on turn it off
         delta_on = true;
         attach_servos();
     }
-    else {
+    else {  //turn it on
         delta_on = false;
         disengage_servos();
     }
-        _INT1IF = 0;
+        _INT4IF = 0;
 
 }

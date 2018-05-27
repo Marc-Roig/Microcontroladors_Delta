@@ -13,7 +13,8 @@
     void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4);
     void init_servos(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4);
     void set_servo_movement_with_dc(bool set_servo1, bool set_servo2, bool set_servo3, bool set_servo4);
-
+    void servos_power_off_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4);
+    
     extern const long servo1_m;
     extern const long servo2_m;
     extern const long servo3_m;

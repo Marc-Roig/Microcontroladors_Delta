@@ -2,11 +2,11 @@
 
 void init_T4_Interrupt() {
 
-	T4CON = 0X8000;
-	PR4 = 3999;
+	T4CON = 0X8000; //Enable timer
+	PR4 = 3999; //pulse every 1 ms
 	TMR4 = 0;
 	_T4IF = 0;
-	_T4IE = 0;
+	_T4IE = 1; //Enable interrupt
 
 }
 
@@ -30,7 +30,8 @@ void _ISR _T4Interrupt() {
 
 int millis() {
 
-	long countTMR = TMR4;
-	return (int)(countTMR * 256 / 1000);
+	// long countTMR = TMR4;
+	// return (int)(countTMR * 16 / 1000);
+	return (int)TMR4;
 	 
 }

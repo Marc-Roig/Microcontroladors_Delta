@@ -1,11 +1,8 @@
 .include "p24fj128ga010.inc"
-
-.global _init_ServoInfo
-.global _check_servo_change_direction
-.global _servos_initial_positions
-.global _init_servos
-.global _set_servo_movement_with_dc
-
+.include "assembly_routines.inc"
+#include "defines.h" 
+    ;Only works if file extension is " .S". Doesn't not for ".s".
+    
 .extern _servoinfo
 
 .extern _servo1_m
@@ -19,16 +16,25 @@
 .extern _servo4_n
 
 
+;/*********************************************************************
+;* Function: _init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_);
+;*
+;* Overview: Initialize al servoinfo parameter values
+;*
+;* PreCondition: Transfer all parameters through working registers W0 to W7
+;*
+;* Input: ServoInfo*                    -W0 - the servo information struct
+;*        int max_duty_cycle            -W1 - max duty cycle of the servo 
+;*        int min_duty_cycle            -W2 - mix duty cycle of the servo 
+;*        int slack_compensation_val    -W3 - value of compensation when servo is changing direction 
+;*        long m                        -W4 - slope of the equation duty_cycle - angle 
+;*        long n                        -W6 - offset of the equation duty_cycle - angle
+;*
+;* Output: none
+;*
+;********************************************************************/
+
 _init_ServoInfo: ;CHECKED
-    
-    ; W0 ServoInfo adress
-    ; W1 MAX DUTY CYCLE
-    ; W2 MIN DUTY CYCLE
-    ; W3 SLACK COMPENSATION VAL
-    ; W4 M_ 1
-    ; W5 M_ 2
-    ; W6 N_ 1
-    ; W7 N_ 2
 
     ; servo_inf->angle = 90;
     MOV #90, W8
@@ -75,10 +81,24 @@ _init_ServoInfo: ;CHECKED
 
     RETURN
 
+
+;/*******************************************************************
+;* Function: check_servo_change_direction(int num_servo, int new_duty_cycle);
+;*
+;* Overview: Servos need an extra duty cycle value to compensate the slack
+;*           when changing direction. 
+;*
+;* PreCondition: The new duty cycle value has to be checked in this function
+;*               first before changing the duty_cycle value of servoinfo.
+;*
+;* Input: unsigned int num_servo      - W0 - Servo number to check 
+;*        unsigned int new_duty_cycle - W1 - The new duty_cycle to update
+;*
+;* Output: none
+;*
+;********************************************************************/
+
 _check_servo_change_direction: ;CHECKED
-    
-    ;W0 unsigned int num_servo
-    ;W1 unsigned int new_duty_cycle
 
     CP W0, #4
     BRA GE, End_change_dir
@@ -149,9 +169,28 @@ _check_servo_change_direction: ;CHECKED
 
     RETURN
 
+;/*********************************************************************
+;* Function: void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3);
+;*
+;* Overview: To reduce the slack of the gears all servos are moved
+;*           clockwise. To ensure they are left moved clockwise
+;*           they are first moved counterclockwise just in case they
+;*           coudln't move any more clockwise.
+;*
+;* PreCondition: none
+;*
+;* Input: bool - W0 - Will move the servo 1
+;*        bool - W1 - Will move the servo 2
+;*        bool - W2 - Will move the servo 3
+;*        bool - W3 - Will move the servo 4 -> gripper is not used in this board
+;*
+;* Output: none
+;*
+;********************************************************************/
+
 _servos_initial_positions: ;CHECKED
 
-    ;W4 and W5 will be modified in this routine
+    ;W4, W5, W6, W7 will be modified in this routine
     PUSH W4
     PUSH W5
     PUSH W6
@@ -165,7 +204,7 @@ _servos_initial_positions: ;CHECKED
     PUSH W2 
     PUSH W1
     PUSH W0
-    ; PUSH W3
+   ;PUSH W3 -> gripper (servo 4) is not used in this board
     PUSH W2 
     PUSH W1
     PUSH W0
@@ -173,15 +212,23 @@ _servos_initial_positions: ;CHECKED
     
     MOV #0, W4 ;pivot to loop 3 times
     MOV #_servoinfo, W7
+
+    ; All three servos are moved to 55 degrees. To do that the duty cycle
+    ; of each has to be calculated from its m and n (regression line got from
+    ; calibrationg every servo) after that this value is send to the 
+    ; _servo_writeMicroseconds routine to move every servo.
+
+    ; This is a loop to calculate this duty cycle and calling the _servo_writeMicroseconds
+    ; functions for every servo.
     
     first_move_loop:
 
-        POP W5
+        POP W5 ;move_servo booleans had been pushed into the stack previously
         BTST.Z W5, #0
         BRA Z, end_or_repeat_loop ; move_servos[i] = false
 
-        MOV [W7+18], W0
-        MOV [W7+20], W1
+        MOV [W7+18], W0 ;servoinfo.m
+        MOV [W7+20], W1 ;servoinfo.n
         MOV #55, W2
         RCALL _mul_long_int
     
@@ -216,6 +263,8 @@ _servos_initial_positions: ;CHECKED
     
     MOV #0, W4 ;pivot to loop 3 times
     MOV #_servoinfo, W7
+
+    ; Same procedure, move servos to 90 degrees
 
     second_move_loop:
 
@@ -259,7 +308,7 @@ _servos_initial_positions: ;CHECKED
     POP W4
     
     RETURN
-
+;/*
 _init_servos:
     
     ;W0 - Bool move_servo_1
@@ -356,7 +405,9 @@ _init_servos:
 
     ULNK
     RETURN
-
+    ;*/
+    
+    ;/*
 _set_servo_movement_with_dc:
     
     ;W0 -> bool set_servo1
@@ -369,7 +420,8 @@ _set_servo_movement_with_dc:
     Set_servo1:
 
         CP W0, #1
-        ADD #_servoinfo, #16, W4 ; @servoinfo[0].move_servo_from 
+	MOV #_servoinfo, W4
+        ADD W4, #16, W4 ; @servoinfo[0].move_servo_from 
         BRA NZ, Set_servo2
         MOV #MOVE_SERVO_FROM_DC, [W4] ; servoinfo[0].move_servo_from = MOVE_SERVO_FROM_DC
 
@@ -400,7 +452,7 @@ _set_servo_movement_with_dc:
 
     RETURN
 
-
+    ;*/
 
 
 

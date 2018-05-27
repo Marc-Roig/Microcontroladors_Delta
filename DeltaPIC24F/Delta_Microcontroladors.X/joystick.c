@@ -2,6 +2,19 @@
 
 int move_axis_or_angles = JOYSTICK_MOVE_ANGLES;
 
+/*********************************************************************
+* Function: init_joystick();
+*
+* Overview: Initialize all parameters for the joystick movement
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void init_joystick()  {
 
     pinMode(JOYSTICK_BUTTON_PIN, INPUT);
@@ -13,10 +26,11 @@ void init_joystick()  {
     pinMode(JOYSTICK_X_PIN, ANALOG_INPUT);
     pinMode(JOYSTICK_Y_PIN, ANALOG_INPUT);
 
-    init_ADC();
+    init_ADC(); //Initialize Analog conversion
     
+    //Servos can move from XYZ, Angles and Duty cycle. Choose one
     if (move_axis_or_angles == JOYSTICK_MOVE_ANGLES) {
-        servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE;
+        servoinfo[0].move_servo_from = MOVE_SERVO_FROM_ANGLE; 
         servoinfo[1].move_servo_from = MOVE_SERVO_FROM_ANGLE;
         servoinfo[2].move_servo_from = MOVE_SERVO_FROM_ANGLE;
     }
@@ -26,6 +40,24 @@ void init_joystick()  {
         servoinfo[2].move_servo_from = MOVE_SERVO_FROM_XYZ;
     }
 }
+
+/*********************************************************************
+* Function: joystick_movement();
+*
+* Overview: Principal function of the joystick. Depending on the mode
+*           it will call the functions to move the individual angles
+*           of the servos or move on the xyz plane. Furthermore, 
+*           joystick_change_mode will change the mode everytime 
+*           JOYSTICK_CHANGE_AXIS_ANGLES button (defined in defines.h)
+*           is pressed
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
 
 void joystick_movement() {
 
@@ -49,11 +81,25 @@ void joystick_movement() {
 
 }
 
+/*********************************************************************
+* Function: joystick_debug();
+*
+* Overview: Serial print angles every especified time in the time_difference_ms
+*           variable.
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void joystick_debug() {
 
     static unsigned long StartTime = 0;
 
-    int time_difference_ms = 500; // Every 400 ms the program will read the joystick val 
+    int time_difference_ms = 500; // Every 500 ms the program will read the joystick val 
 
     if ((millis() - StartTime) > time_difference_ms ) {
 
@@ -65,6 +111,19 @@ void joystick_debug() {
 
 }
 
+/*********************************************************************
+* Function: joystick_debug_from_angles();
+*
+* Overview: Serial print angles to debug
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void joystick_debug_from_angles() {
 
     serial_write_angles();
@@ -73,14 +132,25 @@ void joystick_debug_from_angles() {
 
 }
 
-void joystick_debug_from_xyz() {
 
-}
+/*********************************************************************
+* Function: joystick_move_angles();
+*
+* Overview: Change individual servo angle with the joystick. Clicking
+*           on the JOYSTICK_BUTTON_PIN will change the servo to move.
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
 
 void joystick_move_angles() {
 
-    static unsigned long StartTime = 0;
-    static int servo_num = 0;
+    static unsigned long StartTime = 0; //Internal timer
+    static int servo_num = 0; //Servo to move
     static int S0 = 0; //Flank detector
 
     int time_difference_ms = 400; // Every 200 ms program will read the joystick val 
@@ -93,7 +163,7 @@ void joystick_move_angles() {
         if (abs2(joys_x) < 1.5) joys_x = 0;
 
         servoinfo[servo_num].angle += (int)(0.5 * joys_x); //Multiply joys_x with a gain
-        //Serial_println((int)joys_x);
+
         StartTime = millis();
 
     }
@@ -101,7 +171,7 @@ void joystick_move_angles() {
     //--CHANGE MOTOR--//
     if (!change_axis_button && !S0) {
 
-        servo_num = (servo_num + 1) % 3;
+        servo_num = (servo_num + 1) % 3; //Three motors to move
         S0 = 1; 
 
     } else if (change_axis_button) S0 = 0;
@@ -128,7 +198,7 @@ void joysitck_change_mode(int* change_joystick_mode) {
     static int S0 = 0;
     bool joystick_change_mode_button = digitalRead(JOYSTICK_CHANGE_AXIS_ANGLES);
 
-    if (joystick_change_mode_button && !S0) {
+    if (joystick_change_mode_button && !S0) { //Only if button has been pressed
 
         *change_joystick_mode = (*change_joystick_mode + 1) % 2;
 
@@ -154,9 +224,24 @@ void joysitck_change_mode(int* change_joystick_mode) {
 
 }
 
+/*********************************************************************
+* Function: joystick2_move_gripper();
+*
+* Overview: Currently not implemented for PIC24FJ128GA010. The Explorer16
+*           expansion board we used didn't have enough analog pins. 
+*           It is suposed to move the gripper 
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void joystick2_move_gripper() {
 
-    static unsigned long StartTime = 0;
+    static unsigned long StartTime = 0; //Internal timer
 
     int time_difference_ms = 50; // Every X ms program will read the joystick val 
 
@@ -167,9 +252,12 @@ void joystick2_move_gripper() {
         if (abs2(joys_grip) < 1.5) joys_grip = 0; // Minimum movement of joystick, to avoid jitter
 
         servoinfo[3].duty_cycle += (15 * joys_grip); //Multiply joys_grip with a gain
+
+        //Maximum and minimum aperture of the gripper
         if (servoinfo[3].duty_cycle > servoinfo[3].max_duty_cycle) servoinfo[3].duty_cycle = servoinfo[3].max_duty_cycle;
         if (servoinfo[3].duty_cycle < servoinfo[3].min_duty_cycle) servoinfo[3].duty_cycle = servoinfo[3].min_duty_cycle;
 
+        //reset timer
         StartTime = millis();
 
     }
@@ -210,6 +298,19 @@ void joystick_move_xyz() {
 
 }
 
+/*********************************************************************
+* Function: joystick_move_xy();
+*
+* Overview: Move XY axis with a single joystick
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void joystick_move_xy() {
 
     static unsigned long StartTime = 0;
@@ -221,7 +322,7 @@ void joystick_move_xy() {
         float joys_x = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
         float joys_y = map(analogRead(JOYSTICK_Y_PIN), 0, 1023, JOYSTICK_NUMBER_OF_SPEEDS/2, -JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs2(joys_x) < 1.2) joys_x = 0;
+        if (abs2(joys_x) < 1.2) joys_x = 0; //To take into account that the center position of joystick may not be 512.  
         if (abs2(joys_y) < 1.2) joys_y = 0;
 
         float base_speed_increment = 0.5;
@@ -235,6 +336,19 @@ void joystick_move_xy() {
     } 
 }
 
+/*********************************************************************
+* Function: joystick_move_z();
+*
+* Overview: Move vertical axis with a joystick.
+*           
+* PreCondition: none
+*
+* Input: none
+*
+* Output: none
+*
+********************************************************************/
+
 void joystick_move_z() {
 
     static unsigned long StartTime = 0;
@@ -245,7 +359,7 @@ void joystick_move_z() {
 
         float joys_z = map(analogRead(JOYSTICK_X_PIN), 0, 1023, -JOYSTICK_NUMBER_OF_SPEEDS/2, JOYSTICK_NUMBER_OF_SPEEDS/2);
 
-        if (abs2(joys_z) < 1) joys_z = 0;
+        if (abs2(joys_z) < 1) joys_z = 0; //To take into account that the center position of joystick may not be 512. 
 
         deltainfo.z += (1 * joys_z); //Multiply joys_z with a gain
 

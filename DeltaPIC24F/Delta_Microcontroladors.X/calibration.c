@@ -16,33 +16,33 @@
 *
 ********************************************************************/
 
-void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+// void servo_calibration(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    static int change_dc_mode = CHANGE_WITH_POTENTIOMETER;
+//     static int change_dc_mode = CHANGE_WITH_POTENTIOMETER;
 
-    switch (change_dc_mode) {
+//     switch (change_dc_mode) {
 
-        case CHANGE_WITH_POTENTIOMETER:     if (move_servo1) calibration_change_dc_potentiometer(0);
-                                            if (move_servo2) calibration_change_dc_potentiometer(1);
-                                            if (move_servo3) calibration_change_dc_potentiometer(2);
-                                            if (move_servo4) calibration_change_dc_potentiometer(3);
-                                            break;
+//         case CHANGE_WITH_POTENTIOMETER:     if (move_servo1) calibration_change_dc_potentiometer(0);
+//                                             if (move_servo2) calibration_change_dc_potentiometer(1);
+//                                             if (move_servo3) calibration_change_dc_potentiometer(2);
+//                                             if (move_servo4) calibration_change_dc_potentiometer(3);
+//                                             break;
 
-        case CHANGE_WITH_BUTTONS:           if (move_servo1) calibration_change_dc_buttons(0);
-                                            if (move_servo2) calibration_change_dc_buttons(1);
-                                            if (move_servo3) calibration_change_dc_buttons(2);
-                                            if (move_servo4) calibration_change_dc_buttons(3);
-                                            break;
+//         case CHANGE_WITH_BUTTONS:           if (move_servo1) calibration_change_dc_buttons(0);
+//                                             if (move_servo2) calibration_change_dc_buttons(1);
+//                                             if (move_servo3) calibration_change_dc_buttons(2);
+//                                             if (move_servo4) calibration_change_dc_buttons(3);
+//                                             break;
 
-        default:                            break;
+//         default:                            break;
 
-    } 
+//     } 
     
-    calibration_change_dc_mode(&change_dc_mode);    
+//     calibration_change_dc_mode(&change_dc_mode);    
 
-    debug_calibration(1000);
+//     debug_calibration(1000);
 
-}
+// }
 
 /*********************************************************************
 * Function: debug_calibration(int wait_time);
@@ -81,23 +81,23 @@ void debug_calibration(int wait_time) {
 *
 ********************************************************************/
 
-void calibration_start() {
+// void calibration_start() {
 
-    pinMode(CHANGE_MODE_BUTTON_PIN, INPUT);
-    pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
-    pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
-    pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
+//     pinMode(CHANGE_MODE_BUTTON_PIN, INPUT);
+//     pinMode(INCREASE_DC_BUTTON_PIN, INPUT);
+//     pinMode(DECREASE_DC_BUTTON_PIN, INPUT);
+//     pinMode(CHANGE_STEP_CHANGE_PIN, INPUT);
 
-    pinMode(CALIBRATION_POTE_PIN, ANALOG_INPUT);
+//     pinMode(CALIBRATION_POTE_PIN, ANALOG_INPUT);
 
-    init_ADC();
+//     init_ADC();
 
-    servoinfo[0].move_servo_from = MOVE_SERVO_FROM_DC;
-    servoinfo[1].move_servo_from = MOVE_SERVO_FROM_DC;
-    servoinfo[2].move_servo_from = MOVE_SERVO_FROM_DC;
-    servoinfo[3].move_servo_from = MOVE_SERVO_FROM_DC;
+//     servoinfo[0].move_servo_from = MOVE_SERVO_FROM_DC;
+//     servoinfo[1].move_servo_from = MOVE_SERVO_FROM_DC;
+//     servoinfo[2].move_servo_from = MOVE_SERVO_FROM_DC;
+//     servoinfo[3].move_servo_from = MOVE_SERVO_FROM_DC;
 
-}
+// }
 
 
 /*********************************************************************

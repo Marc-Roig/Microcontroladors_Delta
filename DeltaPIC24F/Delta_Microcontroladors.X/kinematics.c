@@ -1,6 +1,5 @@
 #include "Config.h"
  // robot geometry
- // (look at pics above for explanation)
  const float e = 150.0;     // end effector
  const float f = 207.85;     // base
  const float re = 200.0;
@@ -17,8 +16,17 @@
  
  DeltaInfo deltainfo;
 
- // forward kinematics: (theta1, theta2, theta3) -> (x0, y0, z0)
- // returned status: 0=OK, -1=non-existing position
+/*********************************************************************
+* Function: int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float* y0, float* z0);
+*
+* Overview: Calculate position of the end effector with given angles.
+*           To get an extended explanation:
+*           http://forums.trossenrobotics.com/tutorials/introduction-129/delta-robot-kinematics-3276/
+*
+* Output:   returned status: 0=OK, -1=non-existing position
+*
+********************************************************************/
+
 int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float* y0, float* z0) {
 
      float t = (f-e)*tan30/2;
@@ -68,9 +76,16 @@ int delta_calcForward(float theta1, float theta2, float theta3, float* x0, float
      return 0;
 
 }
- 
- // inverse kinematics
- // helper functions, calculates angle theta1 (for YZ-pane)
+
+/*********************************************************************
+* Function: int delta_calcAngleYZ(float x0, float y0, float z0, float* theta);
+*
+* Overview: helper functions, calculates angle theta1 (for YZ-pane)
+*
+* Output:   returned status: 0=OK, -1=non-existing position
+*
+********************************************************************/
+
 int delta_calcAngleYZ(float x0, float y0, float z0, float* theta) {
 
      float y1 = -0.5 * 0.57735 * f; // f/2 * tg 30
@@ -93,9 +108,16 @@ int delta_calcAngleYZ(float x0, float y0, float z0, float* theta) {
      return 0;
 
 }
- 
- // inverse kinematics: (x0, y0, z0) -> (theta1, theta2, theta3)
- // returned status: 0=OK, -1=non-existing position
+
+/*********************************************************************
+* Function: int delta_calcInverse(float x0, float y0, float z0, float* theta1, float* theta2, float* theta3);
+*
+* Overview: inverse kinematics: (x0, y0, z0) -> (theta1, theta2, theta3)
+*
+* Output:   returned status: 0=OK, -1=non-existing position
+*
+********************************************************************/
+
 int delta_calcInverse(float x0, float y0, float z0, float* theta1, float* theta2, float* theta3) {
 
      *theta1 = 0;
@@ -108,6 +130,13 @@ int delta_calcInverse(float x0, float y0, float z0, float* theta1, float* theta2
 
      return status;
 }
+
+/*********************************************************************
+* Function: serial_write_xyz_from_angles();
+*
+* Overview: Convert angles to xyz and print values in console to debug
+*
+********************************************************************/
 
 void serial_write_xyz_from_angles() {
 

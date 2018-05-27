@@ -1,11 +1,5 @@
 .include "p24fj128ga010.inc"
-
-.global _servo1_writeMicroseconds
-.global _servo2_writeMicroseconds
-.global _servo3_writeMicroseconds
-.global _servo_writeMicroseconds
-.global _disengage_servos
-.global _attach_servos
+.include "assembly_routines.inc"
 
 
 _servo1_writeMicroseconds: ;CHECKED
@@ -25,6 +19,8 @@ _servo3_writeMicroseconds: ;CHECKED
 	;W0 int microsec
 	MOV W0, OC3RS
 	RETURN
+
+    
 
 _servo_writeMicroseconds: ;CHECKED
 	
@@ -53,6 +49,8 @@ _servo_writeMicroseconds: ;CHECKED
 	End_WriteM:
 
 	RETURN
+	
+	
 
 _disengage_servos: ;CHECKED
 	
@@ -68,6 +66,8 @@ _disengage_servos: ;CHECKED
 
 	POP.S
 	RETURN
+
+
 
 _servo_attach: ;CHECKED
 	
@@ -145,6 +145,7 @@ _servo_attach: ;CHECKED
 
 	RETURN
 
+	
 
 _attach_servos: ;CHECKED
 	

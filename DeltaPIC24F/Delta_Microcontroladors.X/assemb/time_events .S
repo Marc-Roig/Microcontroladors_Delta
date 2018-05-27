@@ -1,8 +1,6 @@
 .include "p24fj128ga010.inc"
+.include "assembly_routines.inc"
 
-.global _init_T4_Interrupt
-.global _init_T4
-.global _delay
 
 _init_T4_Interrupt:
 

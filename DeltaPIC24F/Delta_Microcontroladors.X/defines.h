@@ -68,9 +68,9 @@
     #define SERVO2_M_ANGLE_TO_DC -4.8262
     #define SERVO3_M_ANGLE_TO_DC -4.5929
 
-    #define SERVO1_N_ANGLE_TO_DC 1448
-    #define SERVO2_N_ANGLE_TO_DC 1134
-    #define SERVO3_N_ANGLE_TO_DC 2231
+    #define SERVO1_N_ANGLE_TO_DC 948
+    #define SERVO2_N_ANGLE_TO_DC 1821
+    #define SERVO3_N_ANGLE_TO_DC 2219
 
     //GRIPPER
     #define MAX_DC_SERVO4 1900

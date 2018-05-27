@@ -127,7 +127,7 @@ void update_dc_from_angle(int servo_num) {
 
 
 /*******************************************************************
-* Function: check_servo_change_direction(int num_servo, int new_duty_cycle);
+* Function: void check_servo_change_direction(int num_servo, int new_duty_cycle);
 *
 * Overview: Servos need an extra duty cycle value to compensate the slack
 *           when changing direction. 
@@ -135,49 +135,47 @@ void update_dc_from_angle(int servo_num) {
 * PreCondition: The new duty cycle value has to be checked in this function
 *               first before changing the duty_cycle value of servoinfo.
 *
-* Input: bool - Will move the servo 1
-*        bool - Will move the servo 2
-*        bool - Will move the servo 3
-*        bool - Will move the servo 4
+* Input: unsigned int - num_servo - Servo number to check
+*        unsigned int - new_duty_cycle - The new duty_cycle to update
 *
 * Output: none
 *
 ********************************************************************/
 
-void check_servo_change_direction(unsigned int num_servo, unsigned int new_duty_cycle) {
+// void check_servo_change_direction(unsigned int num_servo, unsigned int new_duty_cycle) {
 
-  int min_step_to_change_dir = 20;
+//   int min_step_to_change_dir = 20;
 
-  if (new_duty_cycle > servoinfo[num_servo].duty_cycle + min_step_to_change_dir) {
+//   if (new_duty_cycle > servoinfo[num_servo].duty_cycle + min_step_to_change_dir) {
 
-    if (servoinfo[num_servo].last_direction == COUNTERCLOCKWISE) {
+//     if (servoinfo[num_servo].last_direction == COUNTERCLOCKWISE) {
 
-        // Serial.write("changed to CLOCKWISE\n");
+//         // Serial.write("changed to CLOCKWISE\n");
 
-        servoinfo[num_servo].last_direction = CLOCKWISE;
-        servoinfo[num_servo].dc_offset += servoinfo[num_servo].slack_compensation_val;
+//         servoinfo[num_servo].last_direction = CLOCKWISE;
+//         servoinfo[num_servo].dc_offset += servoinfo[num_servo].slack_compensation_val;
 
-    }
+//     }
 
-  }
-  else if (new_duty_cycle < servoinfo[num_servo].duty_cycle - min_step_to_change_dir) {
+//   }
+//   else if (new_duty_cycle < servoinfo[num_servo].duty_cycle - min_step_to_change_dir) {
 
-    if (servoinfo[num_servo].last_direction == CLOCKWISE) {
+//     if (servoinfo[num_servo].last_direction == CLOCKWISE) {
 
-        // Serial.write("changed to COUNTERCLOCKWISE\n");
+//         // Serial.write("changed to COUNTERCLOCKWISE\n");
 
-        servoinfo[num_servo].last_direction = COUNTERCLOCKWISE;
-        servoinfo[num_servo].dc_offset -= servoinfo[num_servo].slack_compensation_val;
+//         servoinfo[num_servo].last_direction = COUNTERCLOCKWISE;
+//         servoinfo[num_servo].dc_offset -= servoinfo[num_servo].slack_compensation_val;
 
-    }
+//     }
 
-  }
+//   }
 
-}
+// }
 
 
 /*********************************************************************
-* Function: init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_);
+* Function: void init_ServoInfo(struct ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, float m_, float n_);
 *
 * Overview: none
 *
@@ -187,35 +185,35 @@ void check_servo_change_direction(unsigned int num_servo, unsigned int new_duty_
 *        int max_duty_cycle             - max duty cycle of the servo 
 *        int min_duty_cycle             - mix duty cycle of the servo 
 *        int slack_compensation_val     - value of compensation when servo is changing direction 
-*        int m                          - slope of the equation duty_cycle - angle 
-*        int n                          - offset of the equation duty_cycle - angle
+*        long m                         - slope of the equation duty_cycle - angle 
+*        long n                         - offset of the equation duty_cycle - angle
 *
 * Output: none
 *
 ********************************************************************/
 
-void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, long m_, long n_) {
+// void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycle_, int slack_compensation_val_, long m_, long n_) {
 
-    servo_inf->angle = 90;
+//     servo_inf->angle = 90;
     
-    servo_inf->max_duty_cycle = max_duty_cycle_;
-    servo_inf->min_duty_cycle = min_duty_cycle_;
+//     servo_inf->max_duty_cycle = max_duty_cycle_;
+//     servo_inf->min_duty_cycle = min_duty_cycle_;
 
-    servo_inf->dc_offset = 0;
+//     servo_inf->dc_offset = 0;
 
-    servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
-    servo_inf->duty_cycle = (90 * servo_inf->m + servo_inf->n)/10;
+//     servo_inf->mean_dc = (max_duty_cycle_ + min_duty_cycle_)/2; 
+//     servo_inf->duty_cycle = (90 * servo_inf->m + servo_inf->n)/10;
 
-    servo_inf->move_servo_from = MOVE_SERVO_FROM_DC;
+//     servo_inf->move_servo_from = MOVE_SERVO_FROM_DC;
 
-    servo_inf->last_direction = CLOCKWISE;
-    servo_inf->slack_compensation_val = slack_compensation_val_;
+//     servo_inf->last_direction = CLOCKWISE;
+//     servo_inf->slack_compensation_val = slack_compensation_val_;
 
-    // servo_inf->m = m_;
-    servo_inf->m = m_; //Multiplied by 10 to opperate with decimals and avoiding floats
-    // servo_inf->n = n_;
-    servo_inf->n = n_;
-}
+//     // servo_inf->m = m_;
+//     servo_inf->m = m_; //Multiplied by 10 to opperate with decimals and avoiding floats
+//     // servo_inf->n = n_;
+//     servo_inf->n = n_;
+// }
 
 /*********************************************************************
 * Function: void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3);
@@ -230,41 +228,42 @@ void init_ServoInfo(ServoInfo* servo_inf, int max_duty_cycle_, int min_duty_cycl
 * Input: bool - Will move the servo 1
 *        bool - Will move the servo 2
 *        bool - Will move the servo 3
+*        bool - Will move the servo 4
 *
 * Output: none
 *
 ********************************************************************/
 
-void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
+// void servos_initial_positions(bool move_servo1, bool move_servo2, bool move_servo3, bool move_servo4) {
 
-    bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
-    int i;
+//     bool move_servos[] = {move_servo1, move_servo2, move_servo3, move_servo4};
+//     int i;
     
-    for (i = 0; i < 3; i++) {
+//     for (i = 0; i < 3; i++) {
         
-        if (move_servos[i]) {
-            // servoinfo[i].duty_cycle = 55 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
-            servoinfo[i].duty_cycle = (55 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
-            servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
-        }
-    }
+//         if (move_servos[i]) {
+//             // servoinfo[i].duty_cycle = 55 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
+//             servoinfo[i].duty_cycle = (55 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
+//             servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
+//         }
+//     }
 
-    delay(1000);
+//     delay(1000);
     
     
-    for (i = 0; i < 3; i++) {
+//     for (i = 0; i < 3; i++) {
         
-        if (move_servos[i]) {
+//         if (move_servos[i]) {
 
-            // servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
-            servoinfo[i].duty_cycle = (90 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
-            // servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
-            servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
+//             // servoinfo[i].duty_cycle = 90 * servoinfo[i].m + servoinfo[i].n - servoinfo[i].slack_compensation_val;
+//             servoinfo[i].duty_cycle = (90 * servoinfo[i].m + servoinfo[i].n)/10 - servoinfo[i].slack_compensation_val;
+//             // servos[i].writeMicroseconds(servoinfo[i].duty_cycle); //left servo moved counterclowised
+//             servo_writeMicroseconds(servoinfo[i].duty_cycle, i);
 
-        }
-    }
+//         }
+//     }
 
-}
+// }
 
 /*********************************************************************
 * Function: init_servos();
